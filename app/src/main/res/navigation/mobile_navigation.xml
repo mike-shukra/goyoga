@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/nav_profile">
+
+    <fragment
+        android:id="@+id/nav_select"
+        android:name="ru.yogago.goyoga.ui.home.SelectFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_action"
+        android:name="ru.yogago.goyoga.ui.notifications.ActionFragment"
+        android:label="@string/title_notifications"
+        tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="ru.yogago.goyoga.ui.profile.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_nav_profile_to_nav_editUser"
+            app:destination="@id/nav_editUser" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_editUser"
+        android:name="ru.yogago.goyoga.ui.profile.EditUserFragment"
+        android:label="edit_user_fragment"
+        tools:layout="@layout/edit_user_fragment" />
+
+</navigation>

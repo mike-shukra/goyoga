@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">GoYoga</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="welcome">Добро пожаловать</string>
+    <string name="invalid_username">Неверное имя пользователя</string>
+    <string name="invalid_password">Неверный пароль</string>
+    <string name="noValue">Не указано</string>
+    <string name="invalid_password_replay">Пароли не совпадают</string>
+    <string name="user_pict">Картинка</string>
+    <string name="e_mail">e-mail:</string>
+    <string name="pass">Пароль:</string>
+    <string name="replay">Повтор:</string>
+    <string name="prompt_password">Пароль</string>
+    <string name="action_sign_in">Войти</string>
+    <string name="action_sign_in_short">Вход</string>
+    <string name="save">Сохранить</string>
+    <string name="name">Имя:</string>
+    <string name="registrationHead">Регистрация</string>
+    <string name="registration">Регистрация</string>
+    <string name="timeOutMessage">Сервер заснул, подождите секунд 10 и повторите попытку.</string>
+    <string name="repeat">Повторить</string>
+    <string name="name_login">Имя</string>
+    <string name="profile_field_name">Имя</string>
+    <string name="profile_field_email">email</string>
+    <string name="edit">Редактировать</string>
+    <string name="new_pass">Изменить пароль</string>
+    <string name="title_profile">Профиль</string>
+    <string name="title_select">Выборка</string>
+    <string name="title_action">Тренировка</string>
+    <string name="login">Логин:</string>
+
+</resources>
