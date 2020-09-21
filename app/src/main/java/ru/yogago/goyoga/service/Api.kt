@@ -11,7 +11,7 @@ interface Api{
     @GET("Action/data")
     fun getDataAsync(): Deferred<Response<Data>>
 
-    @POST("/register")
+    @POST("register")
     fun registerUserAsync(@Body registrationBody: RegistrationBody): Deferred<Response<RegistrationResponse>>
 
     @FormUrlEncoded
@@ -21,16 +21,25 @@ interface Api{
         @Field("passwd") passwd: String
     ): Deferred<Response<Token>>
 
-    @DELETE("api/user/sign_out")
+    @FormUrlEncoded
+    @POST("Select/runData")
+    fun createAsync(
+        @Field("level") level: String,
+        @Field("knee") knee: String,
+        @Field("loins") loins: String,
+        @Field("neck") neck: String
+    ): Deferred<Response<Data>>
+
+    @DELETE("sign_out")
     fun logOutAsync(): Deferred<Response<Message>>
 
-    @DELETE("api/user")
+    @DELETE("user")
     fun deleteUserAsync(): Deferred<Response<Message>>
 
-    @PATCH("api/user/password")
+    @PATCH("user/password")
     fun updatePasswordAsync(@Body password: String): Deferred<Response<Token>>
 
-    @PATCH("api/user/data")
+    @PATCH("user/data")
     fun updateUserAsync(@Body user: UserData): Deferred<Response<UserData>>
 
 }

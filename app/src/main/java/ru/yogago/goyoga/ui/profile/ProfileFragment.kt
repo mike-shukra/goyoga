@@ -7,12 +7,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import ru.yogago.goyoga.R
+import ru.yogago.goyoga.data.AppConstants
+import ru.yogago.goyoga.data.SelectedIndexArray
 import ru.yogago.goyoga.ui.login.LoginActivity
 import ru.yogago.goyoga.ui.login.LoginViewModel
 import ru.yogago.goyoga.ui.login.LoginViewModelFactory
@@ -37,6 +38,15 @@ class ProfileFragment : Fragment() {
         val profileEditButton: Button = root.findViewById(R.id.profileEditButton)
         val profileUserName: TextView = root.findViewById(R.id.profileUserName)
         val profileUserEmail: TextView = root.findViewById(R.id.profileUserEmail)
+        val createButton = root.findViewById<Button>(R.id.createButton)
+        val levelSpinner = root.findViewById<Spinner>(R.id.levelSpinner)
+        val checkBoxKnee = root.findViewById<CheckBox>(R.id.checkBoxKnee)
+        val checkBoxNeck = root.findViewById<CheckBox>(R.id.checkBoxNeck)
+        val checkBoxLoins = root.findViewById<CheckBox>(R.id.checkBoxLoins)
+
+        createButton.setOnClickListener {
+
+        }
 
         profileLogOutButton.setOnClickListener {
             loginViewModel.logOut()
@@ -56,6 +66,19 @@ class ProfileFragment : Fragment() {
         profileViewModel.user.observe(viewLifecycleOwner, {
             profileUserName.text = it.first_name
             profileUserEmail.text = it.email
+
+            val selectedIndex = SelectedIndexArray(selectedIndex = AppConstants.levels.indexOf(it.level), arr = AppConstants.levels)
+            val adapter = ArrayAdapter(
+                this.requireContext(),
+                android.R.layout.simple_spinner_dropdown_item,
+                selectedIndex.arr as Array<out String>
+            )
+            levelSpinner.adapter = adapter
+            levelSpinner.setSelection(selectedIndex.selectedIndex)
+
+            checkBoxKnee.isChecked = it.dangerknee == 1
+            checkBoxNeck.isChecked = it.dangerneck == 1
+            checkBoxLoins.isChecked = it.dangerloins == 1
 
         })
         profileViewModel.error.observe(viewLifecycleOwner, {

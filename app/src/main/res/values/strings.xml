@@ -30,5 +30,11 @@
     <string name="title_select">Выборка</string>
     <string name="title_action">Тренировка</string>
     <string name="login">Логин:</string>
+    <string name="level">Уровень сложности</string>
+    <string name="create">Сформировать</string>
+    <string name="dangers_head">Имеются травмы</string>
+    <string name="knee">Колено</string>
+    <string name="loins">Поясница</string>
+    <string name="neck">Шея</string>
 
 </resources>

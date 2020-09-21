@@ -8,6 +8,7 @@ import kotlinx.coroutines.launch
 import ru.yogago.goyoga.data.AppConstants.LOG_TAG
 import ru.yogago.goyoga.data.Asana
 import ru.yogago.goyoga.data.Data
+import ru.yogago.goyoga.data.UserData
 import ru.yogago.goyoga.service.ApiFactory
 import ru.yogago.goyoga.service.DataBase
 import ru.yogago.goyoga.service.TokenProvider
@@ -28,6 +29,20 @@ class MainModel {
         GlobalScope.launch(Dispatchers.IO) {
             val data = getRemoteData()
             if (data?.error == "no") {
+                val updateDataDB = updateDataDB(data.asanas, data.userData)
+            } else {
+                selectViewModel.error.postValue(data?.error)
+            }
+            val asanas = loadAsanasFromDB()
+            selectViewModel.asanas.postValue(asanas)
+
+        }
+    }
+
+    fun create() {
+        GlobalScope.launch(Dispatchers.IO) {
+            val data = getCreatedRemoteData()
+            if (data?.error == "no") {
                 val saveAsanasToDB = saveAsanasToDB(data.asanas)
                 Log.d(LOG_TAG, "MainModel - loadData - saveAsanasToDB: $saveAsanasToDB")
 
@@ -39,11 +54,29 @@ class MainModel {
 
         }
     }
-
+    private suspend fun updateDataDB(asanas: List<Asana>, userData: UserData): Boolean{
+        return suspendCoroutine {
+            GlobalScope.launch(Dispatchers.IO) {
+                val saveAsanasToDB = saveAsanasToDB(asanas)
+                Log.d(LOG_TAG, "MainModel - loadData - saveAsanasToDB: $saveAsanasToDB")
+                val saveUserToDB = saveUserToDB(userData)
+                Log.d(LOG_TAG, "MainModel - loadData - saveUserToDB: $saveUserToDB")
+                it.resume(true)
+            }
+        }
+    }
     private suspend fun saveAsanasToDB(items: List<Asana>): List<Long> {
         return suspendCoroutine {
             val response = dbDao.insertAsanas(items)
             Log.d(LOG_TAG, "MainModel - saveAsanasToDB response: $response")
+            it.resume(response)
+        }
+    }
+
+    private suspend fun saveUserToDB(user: UserData): Long {
+        return suspendCoroutine {
+            val response = dbDao.insertUser(user)
+            Log.d(LOG_TAG, "MainModel - saveUserToDB response: $response")
             it.resume(response)
         }
     }
@@ -57,6 +90,37 @@ class MainModel {
     }
 
     private suspend fun getRemoteData(): Data? {
+        return suspendCoroutine {
+            GlobalScope.launch(Dispatchers.Main) {
+                val request = service.getDataAsync()
+                try {
+                    val response = request.await()
+                    if(response.isSuccessful) {
+                        val data = response.body()!!
+                        Log.d(LOG_TAG, "MainModel - getRemoteData - data: $data")
+                        val asanas = data.asanas
+                        Log.d(LOG_TAG, "MainModel - getRemoteData - asanas: $asanas")
+                        val userData = data.userData
+                        Log.d(LOG_TAG, "MainModel - getRemoteData - userData: $userData")
+                        it.resume(data)
+                    } else {
+                        Log.d(LOG_TAG,"MainModel - getRemoteData error: " + response.errorBody().toString())
+                        val error = response.errorBody().toString()
+                        selectViewModel.error.postValue(error)
+                        it.resume(null)
+                    }
+                }
+                catch (e: Exception) {
+                    Log.d(LOG_TAG, "MainModel - getRemoteData - Exception: $e")
+                    val error = e.toString()
+                    selectViewModel.error.postValue(error)
+                    it.resume(null)
+                }
+            }
+        }
+    }
+
+    private suspend fun getCreatedRemoteData(): Data? {
         return suspendCoroutine {
             GlobalScope.launch(Dispatchers.Main) {
                 val request = service.getDataAsync()
