@@ -22,6 +22,7 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimaryDark"
             android:orientation="horizontal"
+            android:padding="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -39,6 +40,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     android:text="@string/profile_field_name"
+                    android:maxWidth="160dp"
+                    android:maxLines="1"
                     android:textColor="@color/colorWhiteMiddle" />
 
                 <TextView
@@ -46,6 +49,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
+                    android:maxWidth="160dp"
+                    android:maxLines="1"
                     android:text="@string/profile_field_email"
                     android:textColor="@color/colorWhiteMiddle" />
 
@@ -103,6 +108,105 @@
 
         </LinearLayout>
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/level"
+                    android:textColor="@color/colorWhiteMiddle"
+                    android:textSize="16sp" />
+
+                <Spinner
+                    android:id="@+id/levelSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/colorPrimaryLite"
+                    android:spinnerMode="dialog"
+                    android:layout_marginTop="16dp"
+                    android:textSize="16sp">
+
+                </Spinner>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="@string/dangers_head"
+                    android:textColor="@color/colorWhiteMiddle"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:orientation="vertical">
+                    <CheckBox
+                        android:id="@+id/checkBoxKnee"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/knee"
+                        android:layoutDirection="rtl"
+                        android:layout_marginTop="16dp"
+                        android:textSize="18sp" />
+
+                    <CheckBox
+                        android:id="@+id/checkBoxNeck"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/loins"
+                        android:layoutDirection="rtl"
+                        android:layout_marginTop="16dp"
+                        android:textSize="18sp" />
+
+                    <CheckBox
+                        android:id="@+id/checkBoxLoins"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/neck"
+                        android:layout_marginTop="16dp"
+                        android:layoutDirection="rtl"
+                        android:textSize="18sp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+
+                    <Button
+                        android:id="@+id/createButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:background="@drawable/button_background"
+                        android:enabled="true"
+                        android:paddingStart="32dp"
+                        android:paddingTop="16dp"
+                        android:paddingEnd="32dp"
+                        android:paddingBottom="16dp"
+                        android:text="@string/create"
+                        android:textColor="@color/colorWhiteLite" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
