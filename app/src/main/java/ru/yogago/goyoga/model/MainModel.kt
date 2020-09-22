@@ -105,14 +105,14 @@ class MainModel {
 
     fun isTokenDB() {
         GlobalScope.launch(Dispatchers.IO) {
-            val response = db.getDBDao().getToken()
-            if (response != null) {
+            try {
+                val response = db.getDBDao().getToken()!!
                 Log.d(LOG_TAG, "MainModel - isTokenDB: $response")
                 TokenProvider.token = response
                 TokenProvider.cookieString = "id_user=${TokenProvider.token.userId}; code_user=${TokenProvider.token.token}"
                 isToken.postValue(true)
             }
-            else {
+            catch(e: Exception) {
                 isToken.postValue(false)
                 Log.d(LOG_TAG, "MainModel - isTokenDB: no token")
             }

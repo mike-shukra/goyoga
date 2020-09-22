@@ -36,5 +36,7 @@
     <string name="knee">Колено</string>
     <string name="loins">Поясница</string>
     <string name="neck">Шея</string>
+    <string name="field_title">Значение</string>
+    <string name="select_not_done">Последовательность ещё не собрана</string>
 
 </resources>

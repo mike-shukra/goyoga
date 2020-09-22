@@ -19,7 +19,7 @@ class ActionFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View? {
         actionViewModel = ViewModelProvider(this).get(ActionViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_notifications, container, false)
+        val root = inflater.inflate(R.layout.fragment_ations, container, false)
         val textView: TextView = root.findViewById(R.id.text_notifications)
         actionViewModel.text.observe(viewLifecycleOwner, {
             textView.text = it
