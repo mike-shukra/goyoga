@@ -21,7 +21,7 @@ interface DBDao {
     fun insertToken(token: Token): Long
 
     @Query("SELECT * FROM Token WHERE id = 0")
-    fun getToken(): Token
+    fun getToken(): Token?
 
     @Query("DELETE FROM Token")
     fun deleteToken(): Int

@@ -5,9 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.ui.login.LoginActivity
 
@@ -21,18 +25,27 @@ class SelectFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View? {
         selectViewModel = ViewModelProvider(this).get(SelectViewModel::class.java)
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        return inflater.inflate(R.layout.fragment_select, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val textView: TextView = view.findViewById(R.id.text_home)
-        selectViewModel.text.observe(viewLifecycleOwner, {
-            textView.text = it
-        })
-
+        val selectText = view.findViewById<TextView>(R.id.select_text)
+        val loading = view.findViewById<ProgressBar>(R.id.loading)
+        val rv: RecyclerView = view.findViewById(R.id.rvBookmarks)
+        val glm = GridLayoutManager(context, 2)
+        rv.layoutManager = glm
         selectViewModel.asanas.observe(viewLifecycleOwner, {
+            if (it.isNotEmpty()) {
+                selectText.visibility = View.GONE
+                loading.visibility = View.GONE
+            }
+            val adapter = Adapter(it, this.resources)
+            rv.adapter = adapter
+//            adapter.onItemClick = { pet ->
+//                args.putLong("baseId", pet.baseId)
+//                findNavController().navigate(R.id.nav_detail, args)
+//            }
         })
 
         selectViewModel.error.observe(viewLifecycleOwner, {
