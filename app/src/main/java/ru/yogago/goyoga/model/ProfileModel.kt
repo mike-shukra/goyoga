@@ -5,6 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import ru.yogago.goyoga.data.*
+import ru.yogago.goyoga.data.AppConstants.LOG_TAG
 import ru.yogago.goyoga.service.ApiFactory
 import ru.yogago.goyoga.service.DataBase
 import ru.yogago.goyoga.ui.profile.EditUserViewModel
@@ -13,11 +14,53 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class ProfileModel {
-    private val LOG_TAG: String = "myLog"
     private val dbDao = DataBase.db.getDBDao()
     private lateinit var editUserViewModel: EditUserViewModel
     private lateinit var profileViewModel: ProfileViewModel
     private val service = ApiFactory.API
+
+    fun create(level: String, knee: String, loins: String, neck: String) {
+        GlobalScope.launch(Dispatchers.IO) {
+            val data = getCreatedRemoteData(level, knee, loins, neck)
+            if (data.error == "no") {
+                Log.d(LOG_TAG, "ProfileModel - create - data: $data")
+            } else {
+                profileViewModel.error.postValue(data.error)
+            }
+        }
+    }
+
+    private suspend fun getCreatedRemoteData(level: String, knee: String, loins: String, neck: String): Data {
+        return suspendCoroutine {
+            GlobalScope.launch(Dispatchers.Main) {
+                val request = service.createAsync(
+                    level = level,
+                    knee = knee,
+                    loins = loins,
+                    neck =neck
+                )
+                try {
+                    val response = request.await()
+                    if(response.isSuccessful) {
+                        val data = response.body()!!
+                        Log.d(LOG_TAG, "MainModel - getRemoteData - data: $data")
+                        val asanas = data.asanas
+                        Log.d(LOG_TAG, "MainModel - getRemoteData - asanas: $asanas")
+                        val userData = data.userData
+                        Log.d(LOG_TAG, "MainModel - getRemoteData - userData: $userData")
+                        it.resume(data)
+                    } else {
+                        Log.d(LOG_TAG,"MainModel - getRemoteData error: " + response.errorBody().toString())
+                        it.resume(Data(error = response.errorBody().toString()))
+                    }
+                }
+                catch (e: Exception) {
+                    Log.d(LOG_TAG, "MainModel - getRemoteData - Exception: $e")
+                    it.resume(Data(error = e.toString()))
+                }
+            }
+        }
+    }
 
     fun updatePassword(password: String) {
         GlobalScope.launch(Dispatchers.IO) {
@@ -46,9 +89,8 @@ class ProfileModel {
         GlobalScope.launch(Dispatchers.IO) {
             val data = loadRemoteUser()
             if (data.error == "no") {
-                val saveUserToDB = saveUserToDB(data.userData)
-                Log.d(AppConstants.LOG_TAG, "MainModel - loadUserToProfile - saveUserToDB: $saveUserToDB")
-
+                val saveUserToDB = saveUserToDB(data.userData!!)
+                Log.d(LOG_TAG, "MainModel - loadUserToProfile - saveUserToDB: $saveUserToDB")
             } else {
                 profileViewModel.error.postValue(data.error)
             }
@@ -61,7 +103,7 @@ class ProfileModel {
     private suspend fun saveUserToDB(user: UserData): Long {
         return suspendCoroutine {
             val response = dbDao.insertUser(user)
-            Log.d(AppConstants.LOG_TAG, "MainModel - saveUserToDB response: $response")
+            Log.d(LOG_TAG, "MainModel - saveUserToDB response: $response")
             it.resume(response)
         }
     }
@@ -69,7 +111,7 @@ class ProfileModel {
     private suspend fun loadUserFromDB(): UserData {
         return suspendCoroutine {
             val user = dbDao.loadUser()
-            Log.d(AppConstants.LOG_TAG, "MainModel - loadUserFromDB user: $user")
+            Log.d(LOG_TAG, "MainModel - loadUserFromDB user: $user")
             it.resume(user)
         }
     }
@@ -107,9 +149,15 @@ class ProfileModel {
                         val data = response.body()!!
                         Log.d(LOG_TAG, "ProfileModel - loadRemoteUser  data: $data")
                         it.resume(data)
-                    } else {Log.d(LOG_TAG,"ProfileModel - loadRemoteUser  error: " + response.errorBody().toString())}
+                    } else {
+                        Log.d(LOG_TAG,"ProfileModel - loadRemoteUser  error: " + response.errorBody().toString())
+                        it.resume(Data(error = response.errorBody().toString()))
+                    }
                 }
-                catch (e: Exception) {Log.d(LOG_TAG, "ProfileModel - loadRemoteUser - Exception: $e")}
+                catch (e: Exception) {
+                    Log.d(LOG_TAG, "ProfileModel - loadRemoteUser - Exception: $e")
+                    it.resume(Data(error = e.toString()))
+                }
             }
         }
     }

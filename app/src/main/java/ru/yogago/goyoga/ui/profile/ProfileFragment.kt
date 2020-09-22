@@ -3,7 +3,6 @@ package ru.yogago.goyoga.ui.profile
 import android.app.Application
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,32 +19,39 @@ import ru.yogago.goyoga.ui.login.LoginViewModelFactory
 
 class ProfileFragment : Fragment() {
 
-    private val LOG_TAG: String = "myLog"
     private lateinit var profileViewModel: ProfileViewModel
     private lateinit var loginViewModel: LoginViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Log.d(LOG_TAG, "ProfileFragment - onCreateView")
-        val args = Bundle()
+        return inflater.inflate(R.layout.fragment_profile, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
         val application: Application = this.requireActivity().application
         loginViewModel = ViewModelProvider(this, LoginViewModelFactory(application) ).get(LoginViewModel::class.java)
         loginViewModel.setModel()
-        val root = inflater.inflate(R.layout.fragment_profile, container, false)
 
-        val profileLogOutButton: Button = root.findViewById(R.id.profileLogOutButton)
-        val profileDeleteButton: Button = root.findViewById(R.id.profileDeleteButton)
-        val profileEditButton: Button = root.findViewById(R.id.profileEditButton)
-        val profileUserName: TextView = root.findViewById(R.id.profileUserName)
-        val profileUserEmail: TextView = root.findViewById(R.id.profileUserEmail)
-        val createButton = root.findViewById<Button>(R.id.createButton)
-        val levelSpinner = root.findViewById<Spinner>(R.id.levelSpinner)
-        val checkBoxKnee = root.findViewById<CheckBox>(R.id.checkBoxKnee)
-        val checkBoxNeck = root.findViewById<CheckBox>(R.id.checkBoxNeck)
-        val checkBoxLoins = root.findViewById<CheckBox>(R.id.checkBoxLoins)
+        val profileLogOutButton: Button = view.findViewById(R.id.profileLogOutButton)
+        val profileDeleteButton: Button = view.findViewById(R.id.profileDeleteButton)
+        val profileEditButton: Button = view.findViewById(R.id.profileEditButton)
+        val profileUserName: TextView = view.findViewById(R.id.profileUserName)
+        val profileUserEmail: TextView = view.findViewById(R.id.profileUserEmail)
+        val createButton = view.findViewById<Button>(R.id.createButton)
+        val levelSpinner = view.findViewById<Spinner>(R.id.levelSpinner)
+        val checkBoxKnee = view.findViewById<CheckBox>(R.id.checkBoxKnee)
+        val checkBoxNeck = view.findViewById<CheckBox>(R.id.checkBoxNeck)
+        val checkBoxLoins = view.findViewById<CheckBox>(R.id.checkBoxLoins)
 
         createButton.setOnClickListener {
-
+            profileViewModel.create(
+                levelSpinner.selectedItemId.toString(),
+                checkBoxKnee.isChecked,
+                checkBoxLoins.isChecked,
+                checkBoxNeck.isChecked
+            )
+            findNavController().navigate(R.id.nav_select)
         }
 
         profileLogOutButton.setOnClickListener {
@@ -82,6 +88,11 @@ class ProfileFragment : Fragment() {
 
         })
         profileViewModel.error.observe(viewLifecycleOwner, {
+            Toast.makeText(
+                context,
+                it,
+                Toast.LENGTH_LONG
+            ).show()
             if (it == "Не авторизовано") {
                 val intent = Intent(this.activity, LoginActivity::class.java)
                 startActivity(intent)
@@ -92,7 +103,5 @@ class ProfileFragment : Fragment() {
         profileViewModel.setModel()
         profileViewModel.loadUserData()
 
-        return root
     }
-
 }

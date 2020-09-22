@@ -12,7 +12,7 @@ import ru.yogago.goyoga.data.UserData
 import ru.yogago.goyoga.service.ApiFactory
 import ru.yogago.goyoga.service.DataBase
 import ru.yogago.goyoga.service.TokenProvider
-import ru.yogago.goyoga.ui.home.SelectViewModel
+import ru.yogago.goyoga.ui.select.SelectViewModel
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -28,10 +28,11 @@ class MainModel {
     fun loadData() {
         GlobalScope.launch(Dispatchers.IO) {
             val data = getRemoteData()
-            if (data?.error == "no") {
-                val updateDataDB = updateDataDB(data.asanas, data.userData)
+            if (data.error == "no") {
+                val updateDataDB = updateDataDB(data.asanas!!, data.userData!!)
+                Log.d(LOG_TAG, "MainModel - loadData - updateDataDB: $updateDataDB")
             } else {
-                selectViewModel.error.postValue(data?.error)
+                selectViewModel.error.postValue(data.error)
             }
             val asanas = loadAsanasFromDB()
             selectViewModel.asanas.postValue(asanas)
@@ -39,32 +40,18 @@ class MainModel {
         }
     }
 
-    fun create() {
-        GlobalScope.launch(Dispatchers.IO) {
-            val data = getCreatedRemoteData()
-            if (data?.error == "no") {
-                val saveAsanasToDB = saveAsanasToDB(data.asanas)
-                Log.d(LOG_TAG, "MainModel - loadData - saveAsanasToDB: $saveAsanasToDB")
-
-            } else {
-                selectViewModel.error.postValue(data?.error)
-            }
-            val asanas = loadAsanasFromDB()
-            selectViewModel.asanas.postValue(asanas)
-
-        }
-    }
     private suspend fun updateDataDB(asanas: List<Asana>, userData: UserData): Boolean{
         return suspendCoroutine {
             GlobalScope.launch(Dispatchers.IO) {
                 val saveAsanasToDB = saveAsanasToDB(asanas)
-                Log.d(LOG_TAG, "MainModel - loadData - saveAsanasToDB: $saveAsanasToDB")
+                Log.d(LOG_TAG, "MainModel - updateDataDB - saveAsanasToDB: $saveAsanasToDB")
                 val saveUserToDB = saveUserToDB(userData)
-                Log.d(LOG_TAG, "MainModel - loadData - saveUserToDB: $saveUserToDB")
+                Log.d(LOG_TAG, "MainModel - updateDataDB - saveUserToDB: $saveUserToDB")
                 it.resume(true)
             }
         }
     }
+
     private suspend fun saveAsanasToDB(items: List<Asana>): List<Long> {
         return suspendCoroutine {
             val response = dbDao.insertAsanas(items)
@@ -89,7 +76,7 @@ class MainModel {
         }
     }
 
-    private suspend fun getRemoteData(): Data? {
+    private suspend fun getRemoteData(): Data {
         return suspendCoroutine {
             GlobalScope.launch(Dispatchers.Main) {
                 val request = service.getDataAsync()
@@ -105,47 +92,12 @@ class MainModel {
                         it.resume(data)
                     } else {
                         Log.d(LOG_TAG,"MainModel - getRemoteData error: " + response.errorBody().toString())
-                        val error = response.errorBody().toString()
-                        selectViewModel.error.postValue(error)
-                        it.resume(null)
+                        it.resume(Data(error = response.errorBody().toString()))
                     }
                 }
                 catch (e: Exception) {
                     Log.d(LOG_TAG, "MainModel - getRemoteData - Exception: $e")
-                    val error = e.toString()
-                    selectViewModel.error.postValue(error)
-                    it.resume(null)
-                }
-            }
-        }
-    }
-
-    private suspend fun getCreatedRemoteData(): Data? {
-        return suspendCoroutine {
-            GlobalScope.launch(Dispatchers.Main) {
-                val request = service.getDataAsync()
-                try {
-                    val response = request.await()
-                    if(response.isSuccessful) {
-                        val data = response.body()!!
-                        Log.d(LOG_TAG, "MainModel - getRemoteData - data: $data")
-                        val asanas = data.asanas
-                        Log.d(LOG_TAG, "MainModel - getRemoteData - asanas: $asanas")
-                        val userData = data.userData
-                        Log.d(LOG_TAG, "MainModel - getRemoteData - userData: $userData")
-                        it.resume(data)
-                    } else {
-                        Log.d(LOG_TAG,"MainModel - getRemoteData error: " + response.errorBody().toString())
-                        val error = response.errorBody().toString()
-                        selectViewModel.error.postValue(error)
-                        it.resume(null)
-                    }
-                }
-                catch (e: Exception) {
-                    Log.d(LOG_TAG, "MainModel - getRemoteData - Exception: $e")
-                    val error = e.toString()
-                    selectViewModel.error.postValue(error)
-                    it.resume(null)
+                    it.resume(Data(error = e.toString()))
                 }
             }
         }
