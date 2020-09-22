@@ -9,7 +9,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.yogago.goyoga.R
@@ -30,22 +29,22 @@ class SelectFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val selectText = view.findViewById<TextView>(R.id.select_text)
+        val time = view.findViewById<TextView>(R.id.time)
+        val count = view.findViewById<TextView>(R.id.count)
         val loading = view.findViewById<ProgressBar>(R.id.loading)
-        val rv: RecyclerView = view.findViewById(R.id.rvBookmarks)
+        val rvAsanas: RecyclerView = view.findViewById(R.id.rvAsanas)
         val glm = GridLayoutManager(context, 2)
-        rv.layoutManager = glm
+        rvAsanas.layoutManager = glm
+
+        selectViewModel.userData.observe(viewLifecycleOwner, {
+            time.text = (it.allTime!! / 60).toString()
+            count.text = it.allCount.toString()
+        })
+
         selectViewModel.asanas.observe(viewLifecycleOwner, {
-            if (it.isNotEmpty()) {
-                selectText.visibility = View.GONE
-                loading.visibility = View.GONE
-            }
+            loading.visibility = View.GONE
             val adapter = Adapter(it, this.resources)
-            rv.adapter = adapter
-//            adapter.onItemClick = { pet ->
-//                args.putLong("baseId", pet.baseId)
-//                findNavController().navigate(R.id.nav_detail, args)
-//            }
+            rvAsanas.adapter = adapter
         })
 
         selectViewModel.error.observe(viewLifecycleOwner, {

@@ -43,6 +43,8 @@ class ProfileFragment : Fragment() {
         val checkBoxKnee = view.findViewById<CheckBox>(R.id.checkBoxKnee)
         val checkBoxNeck = view.findViewById<CheckBox>(R.id.checkBoxNeck)
         val checkBoxLoins = view.findViewById<CheckBox>(R.id.checkBoxLoins)
+        val loading = view.findViewById<ProgressBar>(R.id.loading)
+
 
         createButton.setOnClickListener {
             profileViewModel.create(
@@ -85,6 +87,8 @@ class ProfileFragment : Fragment() {
             checkBoxKnee.isChecked = it.dangerknee == 1
             checkBoxNeck.isChecked = it.dangerneck == 1
             checkBoxLoins.isChecked = it.dangerloins == 1
+
+            loading.visibility = View.GONE
 
         })
         profileViewModel.error.observe(viewLifecycleOwner, {

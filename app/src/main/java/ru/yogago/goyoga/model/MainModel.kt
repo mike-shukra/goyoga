@@ -35,7 +35,11 @@ class MainModel {
                 selectViewModel.error.postValue(data.error)
             }
             val asanas = loadAsanasFromDB()
-            selectViewModel.asanas.postValue(asanas)
+            val userData = loadDataFromDB()
+            selectViewModel.asanas.postValue(asanas.filter {
+                it.side != "second"
+            })
+            selectViewModel.userData.postValue(userData)
 
         }
     }
@@ -70,9 +74,17 @@ class MainModel {
 
     private suspend fun loadAsanasFromDB(): List<Asana> {
         return suspendCoroutine {
-            val asanas = dbDao.getAll()
+            val asanas = dbDao.getAsanas()
             Log.d(LOG_TAG, "MainModel - loadAsanasFromDB: $asanas")
             it.resume(asanas)
+        }
+    }
+
+    private suspend fun loadDataFromDB(): UserData {
+        return suspendCoroutine {
+            val userData = dbDao.getUserData()
+            Log.d(LOG_TAG, "MainModel - loadDataFromDB: $userData")
+            it.resume(userData)
         }
     }
 
