@@ -1,4 +1,4 @@
-package ru.yogago.goyoga.ui.notifications
+package ru.yogago.goyoga.ui.action
 
 import android.os.Bundle
 import android.view.LayoutInflater

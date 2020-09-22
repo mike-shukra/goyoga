@@ -6,13 +6,13 @@
 
     <fragment
         android:id="@+id/nav_select"
-        android:name="ru.yogago.goyoga.ui.home.SelectFragment"
+        android:name="ru.yogago.goyoga.ui.select.SelectFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_action"
-        android:name="ru.yogago.goyoga.ui.notifications.ActionFragment"
+        android:name="ru.yogago.goyoga.ui.action.ActionFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
 

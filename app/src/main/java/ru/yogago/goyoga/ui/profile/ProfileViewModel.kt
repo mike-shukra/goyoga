@@ -19,4 +19,13 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     fun loadUserData() {
         model.loadUserToProfile()
     }
+
+    fun create(level: String, knee: Boolean, loins: Boolean, neck: Boolean) {
+        model.create(
+            level = level,
+            knee = if (knee) 1.toString() else 0.toString(),
+            loins = if (loins) 1.toString() else 0.toString(),
+            neck = if (neck) 1.toString() else 0.toString()
+        )
+    }
 }

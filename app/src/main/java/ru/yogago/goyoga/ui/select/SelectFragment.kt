@@ -1,4 +1,4 @@
-package ru.yogago.goyoga.ui.home
+package ru.yogago.goyoga.ui.select
 
 import android.content.Intent
 import android.os.Bundle

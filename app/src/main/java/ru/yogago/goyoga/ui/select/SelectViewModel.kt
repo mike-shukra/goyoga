@@ -1,4 +1,4 @@
-package ru.yogago.goyoga.ui.home
+package ru.yogago.goyoga.ui.select
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
