@@ -19,7 +19,6 @@ import kotlin.coroutines.suspendCoroutine
 class MainModel {
     private val dbDao = DataBase.db.getDBDao()
     private val service = ApiFactory.API
-    private val db = DataBase.db
     private lateinit var selectViewModel: SelectViewModel
     val error: MutableLiveData<String> = MutableLiveData()
     val isTimeout: MutableLiveData<Boolean> = MutableLiveData()
@@ -118,7 +117,7 @@ class MainModel {
     fun isTokenDB() {
         GlobalScope.launch(Dispatchers.IO) {
             try {
-                val response = db.getDBDao().getToken()!!
+                val response = dbDao.getToken()!!
                 Log.d(LOG_TAG, "MainModel - isTokenDB: $response")
                 TokenProvider.token = response
                 TokenProvider.cookieString = "id_user=${TokenProvider.token.userId}; code_user=${TokenProvider.token.token}"

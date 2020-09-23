@@ -139,13 +139,15 @@
                 <Spinner
                     android:id="@+id/levelSpinner"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="54dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp"
                     android:background="@color/colorPrimaryLite"
                     android:spinnerMode="dialog"
-                    android:layout_marginTop="16dp"
-                    android:textSize="16sp">
+                    android:textSize="18sp">
 
                 </Spinner>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -160,6 +162,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     android:orientation="vertical">
+
                     <CheckBox
                         android:id="@+id/checkBoxKnee"
                         android:layout_width="match_parent"
