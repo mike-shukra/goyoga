@@ -78,7 +78,7 @@ class ProfileFragment : Fragment() {
             val selectedIndex = SelectedIndexArray(selectedIndex = AppConstants.levels.indexOf(it.level), arr = AppConstants.levels)
             val adapter = ArrayAdapter(
                 this.requireContext(),
-                android.R.layout.simple_spinner_dropdown_item,
+                R.layout.spinner,
                 selectedIndex.arr as Array<out String>
             )
             levelSpinner.adapter = adapter
