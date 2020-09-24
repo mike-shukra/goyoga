@@ -29,6 +29,9 @@ interface DBDao {
     @Query("DELETE FROM Token")
     fun deleteToken(): Int
 
+    @Query("DELETE FROM Asana")
+    fun deleteAsanas(): Int
+
     @Query("DELETE FROM UserData")
     fun deleteUser(): Int
 

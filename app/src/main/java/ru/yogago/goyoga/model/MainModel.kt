@@ -57,6 +57,8 @@ class MainModel {
 
     private suspend fun saveAsanasToDB(items: List<Asana>): List<Long> {
         return suspendCoroutine {
+            val responseDelete = dbDao.deleteAsanas()
+            Log.d(LOG_TAG, "MainModel - saveAsanasToDB responseDelete: $responseDelete")
             val response = dbDao.insertAsanas(items)
             Log.d(LOG_TAG, "MainModel - saveAsanasToDB response: $response")
             it.resume(response)
