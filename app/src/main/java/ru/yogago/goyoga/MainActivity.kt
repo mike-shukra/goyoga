@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.hide()
         DataBase.createDataBase(this)
         isAuth = savedInstanceState?.getBoolean("isAuth") ?: false
-        if (!isAuth){
+        if (!isAuth) {
             val model = MainModel()
             model.error.observe(this, { error ->
                 Log.d(LOG_TAG, "MainActivity - error: $error")
