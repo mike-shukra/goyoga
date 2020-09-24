@@ -79,7 +79,7 @@ class ProfileModel {
 
     fun updateUserInfo(user: UserData){
         GlobalScope.launch(Dispatchers.IO) {
-            val response = dbDao.insertUser(user)
+            val response = dbDao.insertUserData(user)
             Log.d(LOG_TAG, "ProfileModel - updateUserInfo response: $response")
             updateUserRemote(user)
         }
@@ -102,7 +102,7 @@ class ProfileModel {
 
     private suspend fun saveUserToDB(user: UserData): Long {
         return suspendCoroutine {
-            val response = dbDao.insertUser(user)
+            val response = dbDao.insertUserData(user)
             Log.d(LOG_TAG, "MainModel - saveUserToDB response: $response")
             it.resume(response)
         }
@@ -110,7 +110,7 @@ class ProfileModel {
 
     private suspend fun loadUserFromDB(): UserData {
         return suspendCoroutine {
-            val user = dbDao.loadUser()
+            val user = dbDao.loadUserData()
             Log.d(LOG_TAG, "MainModel - loadUserFromDB user: $user")
             it.resume(user)
         }
@@ -118,7 +118,7 @@ class ProfileModel {
 
     fun loadUserToEditUser() {
         GlobalScope.launch(Dispatchers.IO) {
-            val response = dbDao.loadUser()
+            val response = dbDao.loadUserData()
             Log.d(LOG_TAG, "ProfileModel - loadUserToEditUser user $response")
             editUserViewModel.setUserToVM(response)
         }

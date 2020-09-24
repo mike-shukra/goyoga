@@ -2,16 +2,18 @@
 
     <!-- Define the background properties like color etc -->
     <item android:id="@android:id/background">
-        <shape>
-            <solid android:color="@color/colorPrimaryMiddle" />
+        <shape android:shape="rectangle">
+            <solid android:color="@color/colorPrimaryDark" />
+            <corners android:radius="8dp" />
         </shape>
     </item>
 
     <!-- Define the progress properties like start color, end color etc -->
     <item android:id="@android:id/progress">
         <clip>
-            <shape>
+            <shape android:shape="rectangle">
                 <solid android:color="@color/colorAccentTwo" />
+                <corners android:radius="8dp" />
             </shape>
         </clip>
     </item>
