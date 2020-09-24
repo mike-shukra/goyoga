@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.squareup.picasso.Picasso
 import ru.yogago.goyoga.R
-import ru.yogago.goyoga.data.ActionState
 import ru.yogago.goyoga.data.AppConstants
 
 
@@ -104,6 +103,6 @@ class ActionFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        actionViewModel.saveActionStateToDB()
+        actionViewModel.saveActionState()
     }
 }
