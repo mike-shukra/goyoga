@@ -31,12 +31,11 @@ class ActionViewModel : ViewModel() {
         }
     }
 
-    fun playAsanas(count: Int){
+    fun playAsanas(){
         GlobalScope.launch(Dispatchers.IO) {
             asanas.forEach{
                 asana.postValue(it)
                 Thread.sleep(it.times.toLong()*1000)
-                progressAll.postValue((100 / count * it.id).toInt())
             }
         }
     }

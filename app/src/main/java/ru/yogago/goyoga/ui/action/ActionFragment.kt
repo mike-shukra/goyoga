@@ -1,31 +1,32 @@
 package ru.yogago.goyoga.ui.action
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.*
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.ToggleButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
+
 
 class ActionFragment : Fragment() {
 
     private lateinit var actionViewModel: ActionViewModel
+    private var isPlay: Boolean = false
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         actionViewModel = ViewModelProvider(this).get(ActionViewModel::class.java)
         return inflater.inflate(R.layout.fragment_ations, container, false)
@@ -44,13 +45,15 @@ class ActionFragment : Fragment() {
         val buttonStart = view.findViewById<ToggleButton>(R.id.buttonStart)
 
         val anim = AnimationUtils.loadAnimation(context, R.anim.button_anim);
-
-        var countTime = 0
+        lateinit var animatorAll: ObjectAnimator
+        lateinit var animatorItem: ObjectAnimator
 
         buttonStart.setOnCheckedChangeListener { compoundButton, b ->
             compoundButton.startAnimation(anim)
             actionViewModel.isPlay = b
-            actionViewModel.playAsanas(countTime)
+            this.isPlay = b
+            actionViewModel.playAsanas()
+            animatorAll.start()
         }
 
         actionViewModel.progressAll.observe(viewLifecycleOwner, {
@@ -59,13 +62,17 @@ class ActionFragment : Fragment() {
 
         actionViewModel.userData.observe(viewLifecycleOwner, {
             count.text = it.allCount.toString()
-            countTime = it.allCount!!
+            animatorAll = ObjectAnimator.ofInt(progressBarAll, "progress", 0, 100)
+            animatorAll.duration = it.allTime!!*1000.toLong()
+
         })
 
         actionViewModel.asana.observe(viewLifecycleOwner, { asana ->
-            GlobalScope.launch(Dispatchers.IO) {
-                animateProgressItem(asana.times, progressBarItem)
-            }
+
+            animatorItem = ObjectAnimator.ofInt(progressBarItem, "progress", 0, 100)
+            animatorItem.duration = asana.times*1000.toLong()
+            if (isPlay) animatorItem.start()
+
             title.text = asana.name
             description.text = asana.symmetric
             it.text = asana.id.toString()
@@ -86,15 +93,6 @@ class ActionFragment : Fragment() {
 
         actionViewModel.loadData()
 
-    }
-    private fun animateProgressItem(t: Int, progressBarItem: ProgressBar){
-        var time = t*10
-        while (time > 1) {
-            Thread.sleep(100)
-            time -= 1
-            val progress: Int = (100 / time)
-            progressBarItem.setProgress(progress, true)
-        }
     }
 
 }
