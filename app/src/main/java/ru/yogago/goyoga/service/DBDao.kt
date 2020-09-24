@@ -11,14 +11,20 @@ interface DBDao {
     @Query("SELECT * FROM userdata")
     fun getUserData(): UserData
 
+    @Query("SELECT * FROM actionstate")
+    fun getActionState(): ActionState
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAsanas(pets: List<Asana>): List<Long>
 
     @Query("SELECT * FROM userData")
-    fun loadUser(): UserData
+    fun loadUserData(): UserData
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertUser(user: UserData): Long
+    fun insertUserData(user: UserData): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertActionState(actionState: ActionState): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertToken(token: Token): Long
@@ -29,10 +35,13 @@ interface DBDao {
     @Query("DELETE FROM Token")
     fun deleteToken(): Int
 
+    @Query("DELETE FROM ActionState")
+    fun deleteActionState(): Int
+
     @Query("DELETE FROM Asana")
     fun deleteAsanas(): Int
 
     @Query("DELETE FROM UserData")
-    fun deleteUser(): Int
+    fun deleteUserData(): Int
 
 }

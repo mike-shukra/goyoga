@@ -59,6 +59,8 @@ class MainModel {
         return suspendCoroutine {
             val responseDelete = dbDao.deleteAsanas()
             Log.d(LOG_TAG, "MainModel - saveAsanasToDB responseDelete: $responseDelete")
+            val responseDeleteActionState = dbDao.deleteActionState()
+            Log.d(LOG_TAG, "MainModel - saveAsanasToDB responseDeleteActionState: $responseDeleteActionState")
             val response = dbDao.insertAsanas(items)
             Log.d(LOG_TAG, "MainModel - saveAsanasToDB response: $response")
             it.resume(response)
@@ -67,7 +69,7 @@ class MainModel {
 
     private suspend fun saveUserToDB(user: UserData): Long {
         return suspendCoroutine {
-            val response = dbDao.insertUser(user)
+            val response = dbDao.insertUserData(user)
             Log.d(LOG_TAG, "MainModel - saveUserToDB response: $response")
             it.resume(response)
         }

@@ -33,7 +33,7 @@ class LoginModel {
         GlobalScope.launch(Dispatchers.IO) {
             val responseDeleteToken = db.getDBDao().deleteToken()
             Log.d(LOG_TAG, "LoginModel - LogOut - responseDeleteToken: $responseDeleteToken")
-            val responseDeleteUser = db.getDBDao().deleteUser()
+            val responseDeleteUser = db.getDBDao().deleteUserData()
             Log.d(LOG_TAG, "LoginModel - LogOut - responseDeleteUser: $responseDeleteUser")
         }
         GlobalScope.launch(Dispatchers.IO) {
@@ -54,7 +54,7 @@ class LoginModel {
             val response = request.await()
             Log.d(LOG_TAG, "LoginModel - deleteUser: " + response.body())
             val responseDeleteToken = db.getDBDao().deleteToken()
-            val responseDeleteUser = db.getDBDao().deleteUser()
+            val responseDeleteUser = db.getDBDao().deleteUserData()
             Log.d(LOG_TAG, "LoginModel - deleteUser - responseDeleteToken: $responseDeleteToken")
             Log.d(LOG_TAG, "LoginModel - deleteUser - responseDeleteUser: $responseDeleteUser")
         }
