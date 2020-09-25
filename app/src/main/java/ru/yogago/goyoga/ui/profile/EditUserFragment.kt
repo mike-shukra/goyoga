@@ -1,7 +1,6 @@
 package ru.yogago.goyoga.ui.profile
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import ru.yogago.goyoga.R
-import ru.yogago.goyoga.data.AppConstants.LOG_TAG
 import ru.yogago.goyoga.data.UserData
 import ru.yogago.goyoga.ui.login.afterTextChanged
 
@@ -27,11 +25,12 @@ class EditUserFragment : Fragment() {
         viewModel.setModel().loadUser()
 
         val root = inflater.inflate(R.layout.edit_user_fragment, container, false)
-        val editUserFragmentPersonName = root.findViewById(R.id.editUserFragmentPersonName) as TextView
+        val editUserFragmentPersonName = root.findViewById<EditText>(R.id.editUserFragmentPersonName)
         val editUserFragmentSaveButton: Button = root.findViewById(R.id.editUserFragmentSaveButton)
-        val editUserFragmentPassword = root.findViewById(R.id.editUserFragmentPassword) as EditText
-        val editUserFragmentPasswordReplay = root.findViewById(R.id.editUserFragmentPasswordReplay) as EditText
+        val editUserFragmentPassword = root.findViewById<EditText>(R.id.editUserFragmentPassword)
+        val editUserFragmentPasswordReplay = root.findViewById<EditText>(R.id.editUserFragmentPasswordReplay)
         val editUserFragmentSavePassButton: Button = root.findViewById(R.id.editUserFragmentSavePassButton)
+        val name = editUserFragmentPersonName as TextView
 
         viewModel.isUpdate.observe(viewLifecycleOwner, {
             if (it) findNavController().navigate(R.id.nav_profile)
@@ -39,14 +38,21 @@ class EditUserFragment : Fragment() {
 
         viewModel.user.observe(viewLifecycleOwner, {
             user = it
-            editUserFragmentPersonName.text = it.first_name
+            name.text = it.first_name
+        })
+
+        viewModel.nameFormState.observe(viewLifecycleOwner, Observer {
+            val nameState = it ?: return@Observer
+            editUserFragmentSaveButton.isEnabled = nameState.isDataValid
+            if (nameState.usernameError != null) {
+                editUserFragmentPersonName.error = getString(nameState.usernameError)
+            }
         })
 
         viewModel.passwordFormState.observe(viewLifecycleOwner, Observer {
             val passwordState = it ?: return@Observer
 
             editUserFragmentSavePassButton.isEnabled = passwordState.isDataValid
-            Log.d(LOG_TAG, "registerSavePassButton.isEnabled: " + passwordState.isDataValid)
 
             if (passwordState.passwordError != null) {
                 editUserFragmentPassword.error = getString(passwordState.passwordError)
@@ -61,6 +67,16 @@ class EditUserFragment : Fragment() {
             viewModel.updatePassword(password)
         }
 
+        editUserFragmentSaveButton.setOnClickListener {
+            user.first_name =  editUserFragmentPersonName.text.toString()
+            viewModel.updateUserName(user)
+        }
+
+        editUserFragmentPersonName.afterTextChanged {
+            viewModel.nameDataChanged(
+                name = editUserFragmentPersonName.text.toString())
+        }
+
         editUserFragmentPasswordReplay.afterTextChanged {
             viewModel.passwordDataChanged(
                 password = editUserFragmentPassword.text.toString(),
@@ -71,11 +87,6 @@ class EditUserFragment : Fragment() {
             viewModel.passwordDataChanged(
                 password = editUserFragmentPassword.text.toString(),
                 passwordReplay = editUserFragmentPasswordReplay.text.toString())
-        }
-
-        editUserFragmentSaveButton.setOnClickListener {
-            user.first_name =  editUserFragmentPersonName.text.toString()
-            viewModel.updateUserInfo(user)
         }
 
         return root

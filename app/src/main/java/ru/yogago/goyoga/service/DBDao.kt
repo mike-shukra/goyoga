@@ -44,4 +44,7 @@ interface DBDao {
     @Query("DELETE FROM UserData")
     fun deleteUserData(): Int
 
+    @Query("UPDATE userdata SET first_name = :name WHERE id = :id")
+    fun insertUserName(name: String, id: Long): Int
+
 }

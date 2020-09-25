@@ -12,6 +12,7 @@ class EditUserViewModel(application: Application) : AndroidViewModel(application
 
     private val model = ProfileModel()
     val passwordFormState: MutableLiveData<LoginFormState> = MutableLiveData()
+    val nameFormState: MutableLiveData<LoginFormState> = MutableLiveData()
     val user: MutableLiveData<UserData> = MutableLiveData()
     val isUpdate: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -19,8 +20,8 @@ class EditUserViewModel(application: Application) : AndroidViewModel(application
         this.user.postValue(user)
     }
 
-    fun updateUserInfo(user: UserData) {
-        model.updateUserInfo(user)
+    fun updateUserName(userData: UserData) {
+        model.updateUserName(userData)
     }
 
     fun setModel(): EditUserViewModel {
@@ -30,6 +31,20 @@ class EditUserViewModel(application: Application) : AndroidViewModel(application
 
     fun loadUser() {
         model.loadUserToEditUser()
+    }
+
+    private fun isNameValid(password: String): Boolean {
+        return password.length > 3
+    }
+
+    fun nameDataChanged(name: String) {
+        if (!isNameValid(name)) {
+            nameFormState.value =
+                LoginFormState(usernameError = R.string.invalid_name)
+        } else {
+            nameFormState.value =
+                LoginFormState(isDataValid = true)
+        }
     }
 
     private fun isPasswordValid(password: String): Boolean {
