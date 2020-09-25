@@ -75,7 +75,8 @@ class ProfileFragment : Fragment() {
             profileUserName.text = it.first_name
             profileUserEmail.text = it.email
 
-            val selectedIndex = SelectedIndexArray(selectedIndex = AppConstants.levels.indexOf(it.level), arr = AppConstants.levels)
+            val levels = resources.getStringArray(R.array.levels)
+            val selectedIndex = SelectedIndexArray(selectedIndex = levels.indexOf(it.level), arr = levels)
             val adapter = ArrayAdapter(
                 this.requireContext(),
                 R.layout.spinner,
