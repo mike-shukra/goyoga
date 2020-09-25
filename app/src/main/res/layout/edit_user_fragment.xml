@@ -81,6 +81,7 @@
                     android:padding="16dp"
                     android:paddingStart="32dp"
                     android:paddingEnd="32dp"
+                    android:enabled="false"
                     android:text="@string/save"
                     android:textColor="@color/colorWhiteLite" />
 

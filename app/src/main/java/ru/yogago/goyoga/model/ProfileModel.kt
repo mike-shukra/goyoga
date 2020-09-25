@@ -77,11 +77,11 @@ class ProfileModel {
         }
     }
 
-    fun updateUserInfo(user: UserData){
+    fun updateUserName(userData: UserData){
         GlobalScope.launch(Dispatchers.IO) {
-            val response = dbDao.insertUserData(user)
+            val response = dbDao.insertUserName(userData.first_name, userData.id)
             Log.d(LOG_TAG, "ProfileModel - updateUserInfo response: $response")
-            updateUserRemote(user)
+            updateUserNameRemote(userData)
         }
     }
 
@@ -124,9 +124,9 @@ class ProfileModel {
         }
     }
 
-    private fun updateUserRemote(user: UserData){
+    private fun updateUserNameRemote(user: UserData){
         GlobalScope.launch(Dispatchers.IO) {
-            val petRequest = service.updateUserAsync(user)
+            val petRequest = service.updateUserNameAsync(user.first_name)
             try {
                 val response = petRequest.await()
                 if(response.isSuccessful) {
