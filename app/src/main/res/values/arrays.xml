@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="levels">
+        <item>Not specified</item>
+        <item>Preparatory</item>
+        <item>Elementary</item>
+        <item>Beginner</item>
+        <item>Basic</item>
+    </string-array>
+</resources>

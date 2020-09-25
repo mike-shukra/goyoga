@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <array name="levels">
+    <string-array name="levels">
         <item>Не указан</item>
         <item>Подготовительный</item>
-        <item>Начальный 1</item>
-        <item>Начальный 2</item>
+        <item>Простой</item>
+        <item>Начальный</item>
         <item>Основной</item>
-    </array>
+    </string-array>
 </resources>
