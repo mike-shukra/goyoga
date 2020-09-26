@@ -15,11 +15,11 @@ object TokenProvider {
     lateinit var error: String
     var cookieString: String = "false"
 
-    suspend fun getToken(login: String, passwd: String) : Token{
+    suspend fun getToken(login: String, password: String) : Token{
         return suspendCoroutine {
             val service = ApiFactory.API
             GlobalScope.launch(Dispatchers.Main) {
-                val tokenResponse = service.authAsync(login, passwd)
+                val tokenResponse = service.authAsync(login, password)
                 try {
                     val response = tokenResponse.await()
                     if (response.isSuccessful) {

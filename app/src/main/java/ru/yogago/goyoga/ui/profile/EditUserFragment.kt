@@ -44,8 +44,8 @@ class EditUserFragment : Fragment() {
         viewModel.nameFormState.observe(viewLifecycleOwner, Observer {
             val nameState = it ?: return@Observer
             editUserFragmentSaveButton.isEnabled = nameState.isDataValid
-            if (nameState.usernameError != null) {
-                editUserFragmentPersonName.error = getString(nameState.usernameError)
+            if (nameState.loginError != null) {
+                editUserFragmentPersonName.error = getString(nameState.loginError)
             }
         })
 

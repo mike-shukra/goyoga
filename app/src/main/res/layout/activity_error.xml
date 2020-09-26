@@ -39,7 +39,7 @@
             android:textColor="@color/colorRedTwo" />
 
         <TextView
-            android:id="@+id/loginMassage"
+            android:id="@+id/loginMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="24dp"

@@ -17,7 +17,6 @@ class LoginDataSource {
                 return Result.Success(
                     LoggedInUser(
                         token.userId!!,
-                        token.first_name!!,
                         token
                     )
                 )

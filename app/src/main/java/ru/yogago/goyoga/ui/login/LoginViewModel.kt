@@ -33,7 +33,7 @@ class LoginViewModel(private val loginRepository: LoginRepository, application: 
             val result = loginRepository.login(username, password)
             if (result is Result.Success) {
                 _loginResult.postValue(LoginResult(
-                    success = LoggedInUserView(displayName = result.data.first_name)
+                    success = ""
                 ))
                 TokenProvider.token = result.data.token
             } else {
@@ -59,7 +59,7 @@ class LoginViewModel(private val loginRepository: LoginRepository, application: 
     fun loginDataChanged(username: String, password: String) {
         if (!isUserNameValid(username)) {
             _loginForm.value =
-                LoginFormState(usernameError = R.string.invalid_username)
+                LoginFormState(loginError = R.string.invalid_username)
         } else if (!isPasswordValid(password)) {
             _loginForm.value =
                 LoginFormState(passwordError = R.string.invalid_password)

@@ -8,21 +8,26 @@ import ru.yogago.goyoga.data.*
 
 interface Api{
 
-    @GET("Action/data")
+    @GET("Api/data")
     fun getDataAsync(): Deferred<Response<Data>>
 
+    @FormUrlEncoded
     @POST("Api/register")
-    fun registerUserAsync(@Body registrationBody: RegistrationBody): Deferred<Response<RegistrationResponse>>
+    fun registerUserAsync(
+        @Field("login") login: String,
+        @Field("mail") email: String,
+        @Field("passwd") password: String
+    ): Deferred<Response<Message>>
 
     @FormUrlEncoded
-    @POST("Login/app")
+    @POST("Api/login")
     fun authAsync(
         @Field("login") login: String,
-        @Field("passwd") passwd: String
+        @Field("passwd") password: String
     ): Deferred<Response<Token>>
 
     @FormUrlEncoded
-    @POST("Select/runData")
+    @POST("Api/create")
     fun createAsync(
         @Field("level") level: String,
         @Field("knee") knee: String,
@@ -30,18 +35,18 @@ interface Api{
         @Field("neck") neck: String
     ): Deferred<Response<Data>>
 
-    @DELETE("sign_out")
+    @POST("Api/out")
     fun logOutAsync(): Deferred<Response<Message>>
 
-    @DELETE("user")
+    @POST("Api/deleteUser")
     fun deleteUserAsync(): Deferred<Response<Message>>
 
     @FormUrlEncoded
-    @POST("EditUser/password")
+    @POST("Api/password")
     fun updatePasswordAsync(@Field("password") password: String): Deferred<Response<Token>>
 
     @FormUrlEncoded
-    @POST("EditUser/name")
+    @POST("Api/name")
     fun updateUserNameAsync(@Field("login") name: String): Deferred<Response<Message>>
 
 }
