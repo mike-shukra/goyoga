@@ -9,7 +9,6 @@ data class Token(
     val id: Long = 0,
     val token: String = "no",
     val userId: Long? = null,
-    val first_name: String? = null,
     val message: String? = null,
     val error: String? = null
 )

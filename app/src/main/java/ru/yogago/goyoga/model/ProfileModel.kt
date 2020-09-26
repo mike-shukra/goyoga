@@ -71,6 +71,7 @@ class ProfileModel {
                     val token = response.body()!!
                     LoginModel().saveTokenDB(token)
                     Log.d(LOG_TAG, "ProfileModel - updatePassword response.body(): $token")
+                    editUserViewModel.isUpdate.postValue(true)
                 } else {Log.d(LOG_TAG,"ProfileModel - updatePassword  error: " + response.errorBody().toString())}
             }
             catch (e: Exception) {Log.d(LOG_TAG, "ProfileModel - updatePassword - Exception: $e")}

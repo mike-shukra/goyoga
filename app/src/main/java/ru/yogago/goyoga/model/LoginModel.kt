@@ -35,6 +35,10 @@ class LoginModel {
             Log.d(LOG_TAG, "LoginModel - LogOut - responseDeleteToken: $responseDeleteToken")
             val responseDeleteUser = db.getDBDao().deleteUserData()
             Log.d(LOG_TAG, "LoginModel - LogOut - responseDeleteUser: $responseDeleteUser")
+            val responseDeleteAsanas = db.getDBDao().deleteAsanas()
+            Log.d(LOG_TAG, "LoginModel - LogOut - responseDeleteAsanas: $responseDeleteAsanas")
+            val responseActionState = db.getDBDao().deleteActionState()
+            Log.d(LOG_TAG, "LoginModel - LogOut - responseActionState: $responseActionState")
         }
         GlobalScope.launch(Dispatchers.IO) {
             val request = service.logOutAsync()
@@ -62,23 +66,21 @@ class LoginModel {
 
     fun registerRemote(registrationBody: RegistrationBody) {
         GlobalScope.launch(Dispatchers.IO) {
-            val request = service.registerUserAsync(registrationBody)
+            val request = service.registerUserAsync(registrationBody.login, registrationBody.email, registrationBody.password)
             try {
                 val response = request.await()
-                if (response.body()!!.error == null) {
-                    val token = response.body()!!.token!!
-                    saveTokenDB(token)
-                    TokenProvider.token = token
-                    registerViewModel.isToken.postValue(true)
-                    Log.d(LOG_TAG,"LoginModel - registerRemote response: " + response.body())
+                val message = response.body()!!
+                if (message.error == null) {
+                    Log.d(LOG_TAG, "LoginModel - registerRemote message: $message")
+                    registerViewModel.isRegister.postValue(message.result)
                 }
                 else {
-                    registerViewModel.registerError.postValue("Ошибка: " + response.body()!!.error)
+                    registerViewModel.registerError.postValue(message.error)
                 }
             }
             catch (e: Exception){
                 Log.d(LOG_TAG, "LoginModel - registerRemote Exception: $e")
-                registerViewModel.registerError.postValue("Ошибка: $e")
+                registerViewModel.registerError.postValue(e.toString())
             }
         }
     }

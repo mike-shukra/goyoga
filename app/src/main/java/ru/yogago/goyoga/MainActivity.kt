@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
                 val loginError = findViewById<TextView>(R.id.loginError)
                 loginError.text = error
                 model.isTimeout.observe(this, {
-                    val loginMassage: TextView = findViewById<EditText>(R.id.loginMassage)
+                    val loginMassage: TextView = findViewById<EditText>(R.id.loginMessage)
                     if (it) loginMassage.text = getString(R.string.timeOutMessage)
                 })
                 repeatButton.setOnClickListener {

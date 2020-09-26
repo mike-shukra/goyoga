@@ -31,11 +31,19 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         val loginError: TextView = findViewById<EditText>(R.id.loginError)
+        val loginMessage: TextView = findViewById<EditText>(R.id.loginMessage)
         val username = findViewById<EditText>(R.id.username)
         val password = findViewById<EditText>(R.id.password)
         val login = findViewById<Button>(R.id.login)
         val reg = findViewById<Button>(R.id.reg)
         val loading = findViewById<ProgressBar>(R.id.loading)
+
+        val message = intent.getStringExtra("message")
+
+        if (message != null) {
+            loginMessage.visibility = View.VISIBLE
+            loginMessage.text = message
+        }
 
         reg.setOnClickListener {
             val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
@@ -54,8 +62,8 @@ class LoginActivity : AppCompatActivity() {
             // disable login button unless both username / password is valid
             login.isEnabled = loginState.isDataValid
 
-            if (loginState.usernameError != null) {
-                username.error = getString(loginState.usernameError)
+            if (loginState.loginError != null) {
+                username.error = getString(loginState.loginError)
             }
             if (loginState.passwordError != null) {
                 password.error = getString(loginState.passwordError)
@@ -108,13 +116,11 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
-    private fun updateUiWithUser(model: LoggedInUserView) {
+    private fun updateUiWithUser(model: String) {
         val welcome = getString(R.string.welcome)
-        val displayName = model.displayName
-        // TODO : initiate successful logged in experience
         Toast.makeText(
             applicationContext,
-            "$welcome $displayName",
+            "$welcome $model",
             Toast.LENGTH_LONG
         ).show()
     }

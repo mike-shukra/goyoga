@@ -40,7 +40,7 @@ class EditUserViewModel(application: Application) : AndroidViewModel(application
     fun nameDataChanged(name: String) {
         if (!isNameValid(name)) {
             nameFormState.value =
-                LoginFormState(usernameError = R.string.invalid_name)
+                LoginFormState(loginError = R.string.invalid_name)
         } else {
             nameFormState.value =
                 LoginFormState(isDataValid = true)

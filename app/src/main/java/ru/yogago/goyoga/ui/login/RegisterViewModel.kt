@@ -17,6 +17,7 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
     val loginFormState: LiveData<LoginFormState> = _loginForm
 
     val isToken: MutableLiveData<Boolean> = MutableLiveData()
+    val isRegister: MutableLiveData<Boolean> = MutableLiveData()
     val registerError: MutableLiveData<String> = MutableLiveData()
 
     fun setModel(): RegisterViewModel {
@@ -28,10 +29,13 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
         model.registerRemote(registrationBody)
     }
 
-    fun loginDataChanged(username: String, password: String, passwordReplay: String) {
-        if (!isUserNameValid(username)) {
+    fun loginDataChanged(login: String, email: String, password: String, passwordReplay: String) {
+        if (!isNameValid(login)) {
             _loginForm.value =
-                LoginFormState(usernameError = R.string.invalid_username)
+                LoginFormState(loginError = R.string.invalid_name)
+        } else if (!isEmailValid(email)) {
+            _loginForm.value =
+                LoginFormState(emailError = R.string.invalid_email)
         } else if (!isPasswordValid(password)) {
             _loginForm.value =
                 LoginFormState(passwordError = R.string.invalid_password)
@@ -44,7 +48,11 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    private fun isUserNameValid(username: String): Boolean {
+    private fun isNameValid(password: String): Boolean {
+        return password.length > 3
+    }
+
+    private fun isEmailValid(username: String): Boolean {
         return if (username.contains('@')) {
             Patterns.EMAIL_ADDRESS.matcher(username).matches()
         } else {

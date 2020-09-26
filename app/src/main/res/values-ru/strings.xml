@@ -44,5 +44,7 @@
     <string name="start">Старт</string>
     <string name="from">из</string>
     <string name="invalid_name">Имя должно быть от четырёх символов</string>
+    <string name="invalid_email">Не корректный email</string>
+    <string name="registration_true">Заявка отправлена. Проверьте почту. Для подтверждения регистрации, перейдите по ссылке в письме.</string>
 
 </resources>

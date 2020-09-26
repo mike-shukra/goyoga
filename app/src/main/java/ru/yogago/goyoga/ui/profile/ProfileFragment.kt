@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import ru.yogago.goyoga.R
-import ru.yogago.goyoga.data.AppConstants
 import ru.yogago.goyoga.data.SelectedIndexArray
 import ru.yogago.goyoga.ui.login.LoginActivity
 import ru.yogago.goyoga.ui.login.LoginViewModel
