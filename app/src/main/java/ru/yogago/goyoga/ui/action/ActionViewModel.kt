@@ -16,48 +16,45 @@ class ActionViewModel : ViewModel(), CoroutineScope {
     private val job = SupervisorJob()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
-    val actionState: ActionState = ActionState()
+    var actionState = ActionState()
     val userData: MutableLiveData<UserData> = MutableLiveData()
     val asana: MutableLiveData<Asana> = MutableLiveData()
+    val isFinish: MutableLiveData<Boolean> = MutableLiveData()
     private val dbDao = DataBase.db.getDBDao()
     private lateinit var asanas: List<Asana>
 
     fun loadData() = launch {
-            userData.postValue(loadDataFromDB())
-            val actionStateDB = loadActionStateFromDB()
-            actionState.isPay = actionStateDB.isPay
-            actionState.isFinish = actionStateDB.isFinish
-            actionState.currentId = actionStateDB.currentId
-            actionState.animatorItemCurrentPlayTime = actionStateDB.animatorItemCurrentPlayTime
-            actionState.animatorAllCurrentPlayTime = actionStateDB.animatorAllCurrentPlayTime
-            asanas = loadAsanasFromDB()
-            playAsanas(actionState.currentId)
-            asana.postValue(asanas[actionState.currentId-1])
+        actionState = loadActionStateFromDB()
+        userData.postValue(loadDataFromDB())
+        asanas = loadAsanasFromDB()
+        playAsanas(actionState.currentId)
+        asana.postValue(asanas[actionState.currentId-1])
     }
 
     private fun playAsanas(current: Int) = launch {
-            var i = current-1
-            while (i < asanas.size) {
-                // var time = asanas[i].times*10
-                var time = asanas[i].times
+        var i = current-1
+        while (i < asanas.size) {
+            // var time = asanas[i].times*10
+            var time = asanas[i].times
+            pauseIfIsPause()
+            asana.postValue(asanas[i])
+            while(time > 0) {
                 pauseIfIsPause()
-                asana.postValue(asanas[i])
-                while(time > 0) {
-                    pauseIfIsPause()
-                    delay(100)
-                    time--
-                }
-                i++
-                actionState.currentId = i+1
-                Log.d(LOG_TAG, "ActionViewModel - playAsanas actionState.currentId: ${actionState.currentId}")
+                delay(100)
+                time--
             }
-            actionState.isFinish = true
-            actionState.isPay = false
-            actionState.currentId = 1
-            actionState.animatorAllCurrentPlayTime = 0
-            actionState.animatorItemCurrentPlayTime = 0
-            saveActionState()
-            Log.d(LOG_TAG, "ActionViewModel - playAsanas isFinish: ${actionState.isFinish}")
+            i++
+            actionState.currentId = i+1
+            Log.d(LOG_TAG, "ActionViewModel - playAsanas actionState.currentId: ${actionState.currentId}")
+        }
+        isFinish.postValue(true)
+        actionState.isFinish = true
+        actionState.isPay = false
+        actionState.currentId = 1
+        actionState.animatorAllCurrentPlayTime = 0
+        actionState.animatorItemCurrentPlayTime = 0
+        saveActionState()
+        Log.d(LOG_TAG, "ActionViewModel - playAsanas isFinish: ${actionState.isFinish}")
     }
 
     private suspend fun pauseIfIsPause(){

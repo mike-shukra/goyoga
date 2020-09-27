@@ -111,8 +111,6 @@ class ProfileFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        profileViewModel.cancelBackgroundWork()
-        loginViewModel.cancelBackgroundWork()
     }
 
 }
