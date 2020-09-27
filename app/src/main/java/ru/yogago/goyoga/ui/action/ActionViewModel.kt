@@ -10,8 +10,6 @@ import ru.yogago.goyoga.data.Asana
 import ru.yogago.goyoga.data.UserData
 import ru.yogago.goyoga.service.DataBase
 import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 class ActionViewModel : ViewModel(), CoroutineScope {
 
@@ -22,7 +20,7 @@ class ActionViewModel : ViewModel(), CoroutineScope {
     val userData: MutableLiveData<UserData> = MutableLiveData()
     val asana: MutableLiveData<Asana> = MutableLiveData()
     private val dbDao = DataBase.db.getDBDao()
-    lateinit var asanas: List<Asana>
+    private lateinit var asanas: List<Asana>
 
     fun loadData() = launch {
             userData.postValue(loadDataFromDB())
@@ -46,7 +44,7 @@ class ActionViewModel : ViewModel(), CoroutineScope {
                 asana.postValue(asanas[i])
                 while(time > 0) {
                     pauseIfIsPause()
-                    sleep(100)
+                    delay(100)
                     time--
                 }
                 i++
@@ -62,16 +60,10 @@ class ActionViewModel : ViewModel(), CoroutineScope {
             Log.d(LOG_TAG, "ActionViewModel - playAsanas isFinish: ${actionState.isFinish}")
     }
 
-    private suspend fun sleep(time: Long){
-        withContext(Dispatchers.IO) {
-            Thread.sleep(time)
-        }
-    }
-
     private suspend fun pauseIfIsPause(){
         while (true){
             if (!actionState.isPay) {
-                sleep(100)
+                delay(100)
             }
             else break
         }

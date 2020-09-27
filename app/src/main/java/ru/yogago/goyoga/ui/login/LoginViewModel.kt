@@ -2,12 +2,11 @@ package ru.yogago.goyoga.ui.login
 
 import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.AndroidViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants.LOG_TAG

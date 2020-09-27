@@ -32,7 +32,7 @@ class ActionFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         actionViewModel = ViewModelProvider(this).get(ActionViewModel::class.java)
-        return inflater.inflate(R.layout.fragment_ations, container, false)
+        return inflater.inflate(R.layout.fragment_action, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,9 +48,9 @@ class ActionFragment : Fragment() {
         val description: TextView = view.findViewById(R.id.description)
         val buttonStart = view.findViewById<ToggleButton>(R.id.buttonStart)
 
-        val animFadeOut = AnimationUtils.loadAnimation(context, R.anim.alpha_out);
-        val animFadeIn = AnimationUtils.loadAnimation(context, R.anim.alpha_in);
-        val animForButtonStart = AnimationUtils.loadAnimation(context, R.anim.button_anim);
+        val animFadeOut = AnimationUtils.loadAnimation(context, R.anim.alpha_out)
+        val animFadeIn = AnimationUtils.loadAnimation(context, R.anim.alpha_in)
+        val animForButtonStart = AnimationUtils.loadAnimation(context, R.anim.button_anim)
         val animatorForProgressAll = ObjectAnimator.ofInt(progressBarAll, "progress", 1, 1000)
         val animatorForProgressItem = ObjectAnimator.ofInt(progressBarItem, "progress", 1, 1000)
 
@@ -98,7 +98,7 @@ class ActionFragment : Fragment() {
             currentTextView.text = asana.id.toString()
 
             val patch = AppConstants.PHOTO_URL + asana.photo
-            Log.d(AppConstants.LOG_TAG, patch)
+            Log.d(LOG_TAG, patch)
             val picasso = Picasso.get()
             picasso.setIndicatorsEnabled(false)
             picasso
