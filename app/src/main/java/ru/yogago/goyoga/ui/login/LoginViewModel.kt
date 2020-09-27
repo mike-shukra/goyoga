@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.AndroidViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants.LOG_TAG
@@ -83,5 +84,12 @@ class LoginViewModel(private val loginRepository: LoginRepository, application: 
         model.setViewModel(this)
         return this
     }
+
+    fun cancelBackgroundWork() {
+        model.cancelBackgroundWork()
+        Log.d(LOG_TAG, "ActionViewModel - cancelBackgroundWork")
+    }
+
+
 
 }

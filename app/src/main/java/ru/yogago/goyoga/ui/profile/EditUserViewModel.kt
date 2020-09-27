@@ -72,4 +72,9 @@ class EditUserViewModel(application: Application) : AndroidViewModel(application
     fun updatePassword(password: String) {
         model.updatePassword(password)
     }
+
+    fun cancelBackgroundWork() {
+        model.cancelBackgroundWork()
+    }
+
 }

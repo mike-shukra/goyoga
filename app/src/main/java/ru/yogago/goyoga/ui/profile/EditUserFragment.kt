@@ -91,4 +91,9 @@ class EditUserFragment : Fragment() {
 
         return root
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.cancelBackgroundWork()
+    }
 }

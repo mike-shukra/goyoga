@@ -75,7 +75,7 @@ class ProfileFragment : Fragment() {
             profileUserEmail.text = it.email
 
             val levels = resources.getStringArray(R.array.levels)
-            val selectedIndex = SelectedIndexArray(selectedIndex = it.level!!.toInt(), arr = levels)
+            val selectedIndex = SelectedIndexArray(selectedIndex = it.level!!, arr = levels)
             val adapter = ArrayAdapter(
                 this.requireContext(),
                 R.layout.spinner,
@@ -108,4 +108,11 @@ class ProfileFragment : Fragment() {
         profileViewModel.loadUserData()
 
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        profileViewModel.cancelBackgroundWork()
+        loginViewModel.cancelBackgroundWork()
+    }
+
 }
