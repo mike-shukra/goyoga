@@ -1,26 +1,27 @@
 package ru.yogago.goyoga.model
 
 import android.util.Log
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import ru.yogago.goyoga.data.*
 import ru.yogago.goyoga.data.AppConstants.LOG_TAG
 import ru.yogago.goyoga.service.ApiFactory
 import ru.yogago.goyoga.service.DataBase
 import ru.yogago.goyoga.ui.profile.EditUserViewModel
 import ru.yogago.goyoga.ui.profile.ProfileViewModel
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
+import kotlin.coroutines.CoroutineContext
 
-class ProfileModel {
+class ProfileModel: CoroutineScope {
+
+    private val job = SupervisorJob()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO + job
     private val dbDao = DataBase.db.getDBDao()
     private lateinit var editUserViewModel: EditUserViewModel
     private lateinit var profileViewModel: ProfileViewModel
     private val service = ApiFactory.API
 
     fun create(level: String, knee: String, loins: String, neck: String) {
-        GlobalScope.launch(Dispatchers.IO) {
+        launch {
             val data = getCreatedRemoteData(level, knee, loins, neck)
             if (data.error == "no") {
                 Log.d(LOG_TAG, "ProfileModel - create - data: $data")
@@ -31,39 +32,37 @@ class ProfileModel {
     }
 
     private suspend fun getCreatedRemoteData(level: String, knee: String, loins: String, neck: String): Data {
-        return suspendCoroutine {
-            GlobalScope.launch(Dispatchers.Main) {
-                val request = service.createAsync(
-                    level = level,
-                    knee = knee,
-                    loins = loins,
-                    neck =neck
-                )
-                try {
-                    val response = request.await()
-                    if(response.isSuccessful) {
-                        val data = response.body()!!
-                        Log.d(LOG_TAG, "MainModel - getRemoteData - data: $data")
-                        val asanas = data.asanas
-                        Log.d(LOG_TAG, "MainModel - getRemoteData - asanas: $asanas")
-                        val userData = data.userData
-                        Log.d(LOG_TAG, "MainModel - getRemoteData - userData: $userData")
-                        it.resume(data)
-                    } else {
-                        Log.d(LOG_TAG,"MainModel - getRemoteData error: " + response.errorBody().toString())
-                        it.resume(Data(error = response.errorBody().toString()))
-                    }
+        return withContext(coroutineContext) {
+            val request = service.createAsync(
+                level = level,
+                knee = knee,
+                loins = loins,
+                neck =neck
+            )
+            try {
+                val response = request.await()
+                if(response.isSuccessful) {
+                    val data = response.body()!!
+                    Log.d(LOG_TAG, "MainModel - getRemoteData - data: $data")
+                    val asanas = data.asanas
+                    Log.d(LOG_TAG, "MainModel - getRemoteData - asanas: $asanas")
+                    val userData = data.userData
+                    Log.d(LOG_TAG, "MainModel - getRemoteData - userData: $userData")
+                    return@withContext data
+                } else {
+                    Log.d(LOG_TAG,"MainModel - getRemoteData error: " + response.errorBody().toString())
+                    return@withContext Data(error = response.errorBody().toString())
                 }
-                catch (e: Exception) {
-                    Log.d(LOG_TAG, "MainModel - getRemoteData - Exception: $e")
-                    it.resume(Data(error = e.toString()))
-                }
+            }
+            catch (e: Exception) {
+                Log.d(LOG_TAG, "MainModel - getRemoteData - Exception: $e")
+                return@withContext Data(error = e.toString())
             }
         }
     }
 
     fun updatePassword(password: String) {
-        GlobalScope.launch(Dispatchers.IO) {
+        launch {
             val request = service.updatePasswordAsync(password)
             try {
                 val response = request.await()
@@ -79,7 +78,7 @@ class ProfileModel {
     }
 
     fun updateUserName(userData: UserData){
-        GlobalScope.launch(Dispatchers.IO) {
+        launch {
             val response = dbDao.insertUserName(userData.first_name, userData.id)
             Log.d(LOG_TAG, "ProfileModel - updateUserInfo response: $response")
             updateUserNameRemote(userData)
@@ -87,7 +86,7 @@ class ProfileModel {
     }
 
     fun loadUserToProfile() {
-        GlobalScope.launch(Dispatchers.IO) {
+        launch {
             val data = loadRemoteUser()
             if (data.error == "no") {
                 val saveUserToDB = saveUserToDB(data.userData!!)
@@ -102,23 +101,23 @@ class ProfileModel {
     }
 
     private suspend fun saveUserToDB(user: UserData): Long {
-        return suspendCoroutine {
+        return withContext(coroutineContext) {
             val response = dbDao.insertUserData(user)
             Log.d(LOG_TAG, "MainModel - saveUserToDB response: $response")
-            it.resume(response)
+            return@withContext response
         }
     }
 
     private suspend fun loadUserFromDB(): UserData {
-        return suspendCoroutine {
+        return withContext(coroutineContext) {
             val user = dbDao.loadUserData()
             Log.d(LOG_TAG, "MainModel - loadUserFromDB user: $user")
-            it.resume(user)
+            return@withContext user
         }
     }
 
     fun loadUserToEditUser() {
-        GlobalScope.launch(Dispatchers.IO) {
+        launch {
             val response = dbDao.loadUserData()
             Log.d(LOG_TAG, "ProfileModel - loadUserToEditUser user $response")
             editUserViewModel.setUserToVM(response)
@@ -126,7 +125,7 @@ class ProfileModel {
     }
 
     private fun updateUserNameRemote(user: UserData){
-        GlobalScope.launch(Dispatchers.IO) {
+        launch {
             val petRequest = service.updateUserNameAsync(user.first_name)
             try {
                 val response = petRequest.await()
@@ -141,24 +140,22 @@ class ProfileModel {
     }
 
     private suspend fun loadRemoteUser(): Data {
-        return suspendCoroutine {
-            GlobalScope.launch(Dispatchers.IO) {
-                val petRequest = service.getDataAsync()
-                try {
-                    val response = petRequest.await()
-                    if(response.isSuccessful) {
-                        val data = response.body()!!
-                        Log.d(LOG_TAG, "ProfileModel - loadRemoteUser  data: $data")
-                        it.resume(data)
-                    } else {
-                        Log.d(LOG_TAG,"ProfileModel - loadRemoteUser  error: " + response.errorBody().toString())
-                        it.resume(Data(error = response.errorBody().toString()))
-                    }
+        return withContext(coroutineContext) {
+            val petRequest = service.getDataAsync()
+            try {
+                val response = petRequest.await()
+                if(response.isSuccessful) {
+                    val data = response.body()!!
+                    Log.d(LOG_TAG, "ProfileModel - loadRemoteUser  data: $data")
+                    return@withContext data
+                } else {
+                    Log.d(LOG_TAG,"ProfileModel - loadRemoteUser  error: " + response.errorBody().toString())
+                    return@withContext Data(error = response.errorBody().toString())
                 }
-                catch (e: Exception) {
-                    Log.d(LOG_TAG, "ProfileModel - loadRemoteUser - Exception: $e")
-                    it.resume(Data(error = e.toString()))
-                }
+            }
+            catch (e: Exception) {
+                Log.d(LOG_TAG, "ProfileModel - loadRemoteUser - Exception: $e")
+                return@withContext Data(error = e.toString())
             }
         }
     }
@@ -171,6 +168,11 @@ class ProfileModel {
     fun setProfileViewModel(m: ProfileViewModel) : ProfileModel {
         this.profileViewModel = m
         return this
+    }
+
+    fun cancelBackgroundWork() {
+        coroutineContext.cancelChildren()
+        Log.d(LOG_TAG, "ActionViewModel - cancelBackgroundWork")
     }
 
 }

@@ -1,21 +1,25 @@
 package ru.yogago.goyoga.model
 
 import android.util.Log
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import ru.yogago.goyoga.data.AppConstants.LOG_TAG
 import ru.yogago.goyoga.data.RegistrationBody
 import ru.yogago.goyoga.data.Token
 import ru.yogago.goyoga.service.ApiFactory
 import ru.yogago.goyoga.service.AppDatabase
 import ru.yogago.goyoga.service.DataBase
-import ru.yogago.goyoga.service.TokenProvider
 import ru.yogago.goyoga.ui.login.LoginViewModel
 import ru.yogago.goyoga.ui.login.RegisterViewModel
 import java.lang.Exception
+import kotlin.coroutines.CoroutineContext
 
-class LoginModel {
+class LoginModel: CoroutineScope {
+
+    private val job = SupervisorJob()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO + job
+
+
     private val db: AppDatabase = DataBase.db
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var registerViewModel: RegisterViewModel
@@ -30,7 +34,7 @@ class LoginModel {
     }
 
     fun logOut() {
-        GlobalScope.launch(Dispatchers.IO) {
+        launch {
             val responseDeleteToken = db.getDBDao().deleteToken()
             Log.d(LOG_TAG, "LoginModel - LogOut - responseDeleteToken: $responseDeleteToken")
             val responseDeleteUser = db.getDBDao().deleteUserData()
@@ -39,8 +43,7 @@ class LoginModel {
             Log.d(LOG_TAG, "LoginModel - LogOut - responseDeleteAsanas: $responseDeleteAsanas")
             val responseActionState = db.getDBDao().deleteActionState()
             Log.d(LOG_TAG, "LoginModel - LogOut - responseActionState: $responseActionState")
-        }
-        GlobalScope.launch(Dispatchers.IO) {
+
             val request = service.logOutAsync()
             try {
                 val response = request.await()
@@ -53,19 +56,23 @@ class LoginModel {
     }
 
     fun deleteUser() {
-        GlobalScope.launch(Dispatchers.IO) {
+        launch {
             val request = service.deleteUserAsync()
             val response = request.await()
             Log.d(LOG_TAG, "LoginModel - deleteUser: " + response.body())
             val responseDeleteToken = db.getDBDao().deleteToken()
-            val responseDeleteUser = db.getDBDao().deleteUserData()
             Log.d(LOG_TAG, "LoginModel - deleteUser - responseDeleteToken: $responseDeleteToken")
+            val responseDeleteUser = db.getDBDao().deleteUserData()
             Log.d(LOG_TAG, "LoginModel - deleteUser - responseDeleteUser: $responseDeleteUser")
+            val responseDeleteAsanas = db.getDBDao().deleteAsanas()
+            Log.d(LOG_TAG, "LoginModel - deleteUser - responseDeleteAsanas: $responseDeleteAsanas")
+            val responseActionState = db.getDBDao().deleteActionState()
+            Log.d(LOG_TAG, "LoginModel - deleteUser - responseActionState: $responseActionState")
         }
     }
 
     fun registerRemote(registrationBody: RegistrationBody) {
-        GlobalScope.launch(Dispatchers.IO) {
+        launch {
             val request = service.registerUserAsync(registrationBody.login, registrationBody.email, registrationBody.password)
             try {
                 val response = request.await()
@@ -96,4 +103,11 @@ class LoginModel {
         Log.d(LOG_TAG, "this.viewModel: " + this.registerViewModel)
         return this
     }
+
+    fun cancelBackgroundWork() {
+        coroutineContext.cancelChildren()
+        Log.d(LOG_TAG, "ActionViewModel - cancelBackgroundWork")
+    }
+
+
 }

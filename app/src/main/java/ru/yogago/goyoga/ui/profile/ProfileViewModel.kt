@@ -1,7 +1,10 @@
 package ru.yogago.goyoga.ui.profile
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.*
+import kotlinx.coroutines.cancelChildren
+import ru.yogago.goyoga.data.AppConstants
 import ru.yogago.goyoga.data.UserData
 import ru.yogago.goyoga.model.ProfileModel
 
@@ -28,4 +31,10 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             neck = if (neck) 1.toString() else 0.toString()
         )
     }
+
+    fun cancelBackgroundWork() {
+        model.cancelBackgroundWork()
+        Log.d(AppConstants.LOG_TAG, "ActionViewModel - cancelBackgroundWork")
+    }
+
 }

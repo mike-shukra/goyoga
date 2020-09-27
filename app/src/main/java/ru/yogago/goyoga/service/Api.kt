@@ -23,7 +23,12 @@ interface Api{
     @POST("Api/login")
     fun authAsync(
         @Field("login") login: String,
-        @Field("passwd") password: String
+        @Field("passwd") password: String,
+        @Field("level") level: String,
+        @Field("knee") knee: String,
+        @Field("loins") loins: String,
+        @Field("neck") neck: String
+
     ): Deferred<Response<Token>>
 
     @FormUrlEncoded

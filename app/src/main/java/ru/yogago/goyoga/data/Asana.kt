@@ -7,6 +7,9 @@ import androidx.room.PrimaryKey
 data class Asana (
     @PrimaryKey val id: Long,
     val name: String,
+    val eng: String,
+    val description: String,
+    val description_en: String,
     val photo: String,
     val symmetric: String,
     val side: String,

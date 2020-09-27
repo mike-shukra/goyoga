@@ -58,7 +58,7 @@
                         android:layout_margin="8dp"
                         android:text="@string/_00"
                         android:textAlignment="textStart"
-                        android:textColor="@color/colorWhiteMiddle"
+                        android:textColor="@color/colorWhiteLite"
                         android:textSize="12sp" />
 
                     <TextView
@@ -68,7 +68,7 @@
                         android:layout_marginBottom="8dp"
                         android:text="@string/from"
                         android:textAlignment="textStart"
-                        android:textColor="@color/colorWhiteMiddle"
+                        android:textColor="@color/colorWhiteLite"
                         android:textSize="12sp" />
 
                     <TextView
@@ -78,7 +78,7 @@
                         android:layout_margin="8dp"
                         android:text="@string/_00"
                         android:textAlignment="textStart"
-                        android:textColor="@color/colorWhiteMiddle"
+                        android:textColor="@color/colorWhiteLite"
                         android:textSize="12sp" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>

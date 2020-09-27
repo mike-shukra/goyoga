@@ -116,4 +116,9 @@ class RegisterActivity : AppCompatActivity() {
             registerViewModel.register(registrationBody)
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        registerViewModel.cancelBackgroundWork()
+    }
 }

@@ -9,22 +9,22 @@ import ru.yogago.goyoga.data.AppConstants.LOG_TAG
 import ru.yogago.goyoga.data.Asana
 import ru.yogago.goyoga.data.UserData
 import ru.yogago.goyoga.service.DataBase
+import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class ActionViewModel : ViewModel() {
+class ActionViewModel : ViewModel(), CoroutineScope {
 
+    private val job = SupervisorJob()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO + job
     val actionState: ActionState = ActionState()
     val userData: MutableLiveData<UserData> = MutableLiveData()
     val asana: MutableLiveData<Asana> = MutableLiveData()
-    var job: Job? = null
     private val dbDao = DataBase.db.getDBDao()
     lateinit var asanas: List<Asana>
 
-    fun loadData() {
-        Log.d(LOG_TAG, "ActionViewModel - loadData")
-
-        GlobalScope.launch(Dispatchers.IO) {
+    fun loadData() = launch {
             userData.postValue(loadDataFromDB())
             val actionStateDB = loadActionStateFromDB()
             actionState.isPay = actionStateDB.isPay
@@ -33,13 +33,11 @@ class ActionViewModel : ViewModel() {
             actionState.animatorItemCurrentPlayTime = actionStateDB.animatorItemCurrentPlayTime
             actionState.animatorAllCurrentPlayTime = actionStateDB.animatorAllCurrentPlayTime
             asanas = loadAsanasFromDB()
-            if (job == null) playAsanas(actionState.currentId)
-//            asana.postValue(asanas[actionState.currentId-1])
-        }
+            playAsanas(actionState.currentId)
+            asana.postValue(asanas[actionState.currentId-1])
     }
 
-    private fun playAsanas(current: Int){
-        job = GlobalScope.launch(Dispatchers.IO) {
+    private fun playAsanas(current: Int) = launch {
             var i = current-1
             while (i < asanas.size) {
                 // var time = asanas[i].times*10
@@ -48,7 +46,7 @@ class ActionViewModel : ViewModel() {
                 asana.postValue(asanas[i])
                 while(time > 0) {
                     pauseIfIsPause()
-                    Thread.sleep(100)
+                    sleep(100)
                     time--
                 }
                 i++
@@ -62,50 +60,57 @@ class ActionViewModel : ViewModel() {
             actionState.animatorItemCurrentPlayTime = 0
             saveActionState()
             Log.d(LOG_TAG, "ActionViewModel - playAsanas isFinish: ${actionState.isFinish}")
+    }
+
+    private suspend fun sleep(time: Long){
+        withContext(Dispatchers.IO) {
+            Thread.sleep(time)
         }
     }
 
-    private fun pauseIfIsPause(){
+    private suspend fun pauseIfIsPause(){
         while (true){
             if (!actionState.isPay) {
-                Thread.sleep(100)
+                sleep(100)
             }
             else break
         }
     }
 
     private suspend fun loadAsanasFromDB(): List<Asana> {
-        return suspendCoroutine {
+        return withContext(coroutineContext) {
             val asanas = dbDao.getAsanas()
             Log.d(LOG_TAG, "ActionViewModel - loadAsanasFromDB: $asanas")
-            it.resume(asanas)
+            return@withContext asanas
         }
     }
 
     private suspend fun loadDataFromDB(): UserData {
-        return suspendCoroutine {
+        return withContext(coroutineContext) {
             val userData = dbDao.getUserData()
             Log.d(LOG_TAG, "ActionViewModel - loadDataFromDB userData: $userData")
-            it.resume(userData)
+            return@withContext userData
         }
     }
 
     private suspend fun loadActionStateFromDB(): ActionState {
-        return suspendCoroutine {
+        return withContext(coroutineContext) {
             var actionState: ActionState? = dbDao.getActionState()
             Log.d(LOG_TAG, "ActionViewModel - loadActionStateFromDB actionState: $actionState")
             if (actionState == null) actionState = ActionState()
-            it.resume(actionState)
+            return@withContext actionState
         }
     }
 
-    fun saveActionState() {
-        GlobalScope.launch(Dispatchers.IO) {
-            Log.d(LOG_TAG, "ActionViewModel - saveActionStateToDB actionState: $actionState")
-            val result = dbDao.insertActionState(actionState)
-            Log.d(LOG_TAG, "ActionViewModel - saveActionStateToDB result: $result")
-        }
+    fun saveActionState() = launch {
+        Log.d(LOG_TAG, "ActionViewModel - saveActionStateToDB actionState: $actionState")
+        val result = dbDao.insertActionState(actionState)
+        Log.d(LOG_TAG, "ActionViewModel - saveActionStateToDB result: $result")
     }
 
+    fun cancelBackgroundWork() {
+        coroutineContext.cancelChildren()
+        Log.d(LOG_TAG, "ActionViewModel - cancelBackgroundWork")
+    }
 
 }

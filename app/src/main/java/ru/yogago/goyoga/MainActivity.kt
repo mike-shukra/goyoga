@@ -68,6 +68,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_profile, R.id.nav_select, R.id.nav_action))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
     }
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {

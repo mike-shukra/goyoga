@@ -1,7 +1,10 @@
 package ru.yogago.goyoga.ui.select
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.cancelChildren
+import ru.yogago.goyoga.data.AppConstants
 import ru.yogago.goyoga.data.Asana
 import ru.yogago.goyoga.data.UserData
 import ru.yogago.goyoga.model.MainModel
@@ -23,4 +26,8 @@ class SelectViewModel : ViewModel() {
         model.loadData()
     }
 
+    fun cancelBackgroundWork() {
+        model.cancelBackgroundWork()
+        Log.d(AppConstants.LOG_TAG, "ActionViewModel - cancelBackgroundWork")
+    }
 }

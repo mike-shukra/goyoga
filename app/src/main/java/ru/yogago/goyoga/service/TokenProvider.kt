@@ -19,7 +19,7 @@ object TokenProvider {
         return suspendCoroutine {
             val service = ApiFactory.API
             GlobalScope.launch(Dispatchers.Main) {
-                val tokenResponse = service.authAsync(login, password)
+                val tokenResponse = service.authAsync(login, password, 0.toString(), 0.toString(), 0.toString(), 0.toString())
                 try {
                     val response = tokenResponse.await()
                     if (response.isSuccessful) {

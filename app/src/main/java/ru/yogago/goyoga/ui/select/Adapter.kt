@@ -13,6 +13,7 @@ import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants.LOG_TAG
 import ru.yogago.goyoga.data.AppConstants.PHOTO_URL
 import ru.yogago.goyoga.data.Asana
+import java.util.*
 
 private const val TYPE_FIST_SIDE = 0
 private const val TYPE_SECOND_SIDE = 1
@@ -21,6 +22,8 @@ private const val TYPE_SYMMETRIC = 2
 class Adapter(private val items: List<Asana>, private val resources: Resources): RecyclerView.Adapter<Adapter.ItemViewHolder?>() {
 
     var onItemClick: ((Asana) -> Unit)? = null
+    private val isRussianLanguage: Boolean = Locale.getDefault().language == "ru"
+
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ItemViewHolder {
         lateinit var v: View
@@ -54,7 +57,7 @@ class Adapter(private val items: List<Asana>, private val resources: Resources):
 //            TYPE_SECOND_SIDE -> itemViewHolder.fieldsName.text = ""
 //        }
 
-        itemViewHolder.fieldsName.text = items[position].name
+        itemViewHolder.fieldsName.text = if (isRussianLanguage) items[position].name else items[position].eng
         val patch = PHOTO_URL + items[position].photo
         Log.d(LOG_TAG, patch)
         val picasso = Picasso.get()

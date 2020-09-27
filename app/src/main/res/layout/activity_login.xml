@@ -15,6 +15,7 @@
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,23 +24,24 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
             android:gravity="center"
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="108dp"
                 android:layout_height="108dp"
-                app:cardCornerRadius="56dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="16dp"
+                android:background="@color/colorPrimary"
+                app:cardCornerRadius="56dp">
 
                 <ImageView
                     android:layout_width="156dp"
                     android:layout_height="156dp"
                     android:layout_gravity="center"
                     android:adjustViewBounds="true"
-                    android:contentDescription="@string/user_pict"
-                    android:scaleType="fitCenter"
+                    android:contentDescription="@string/logo_pict"
                     android:src="@drawable/icon_logo" />
 
             </androidx.cardview.widget.CardView>
@@ -79,7 +81,7 @@
                 android:hint="@string/name_login"
                 android:importantForAutofill="no"
                 android:inputType="text"
-                android:selectAllOnFocus="true"/>
+                android:selectAllOnFocus="true" />
 
             <EditText
                 android:id="@+id/password"
@@ -93,7 +95,7 @@
                 android:imeOptions="actionDone"
                 android:importantForAutofill="no"
                 android:inputType="textPassword"
-                android:selectAllOnFocus="true"/>
+                android:selectAllOnFocus="true" />
 
             <Button
                 android:id="@+id/login"
