@@ -16,6 +16,7 @@ import android.widget.ToggleButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.isActive
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants
 import ru.yogago.goyoga.data.AppConstants.LOG_TAG
@@ -49,7 +50,6 @@ class ActionFragment : Fragment() {
         val buttonStart = view.findViewById<ToggleButton>(R.id.buttonStart)
 
         val animFadeOut = AnimationUtils.loadAnimation(context, R.anim.alpha_out)
-        val animFadeIn = AnimationUtils.loadAnimation(context, R.anim.alpha_in)
         val animForButtonStart = AnimationUtils.loadAnimation(context, R.anim.button_anim)
         val animatorForProgressAll = ObjectAnimator.ofInt(progressBarAll, "progress", 1, 1000)
         val animatorForProgressItem = ObjectAnimator.ofInt(progressBarItem, "progress", 1, 1000)
@@ -59,7 +59,6 @@ class ActionFragment : Fragment() {
             .build()
         val mSp = sp.load(this.context, R.raw.metronomsound02, 1)
 
-        buttonStart.isChecked = actionViewModel.actionState.isPay
 
         buttonStart.setOnCheckedChangeListener { compoundButton, b ->
             compoundButton.startAnimation(animForButtonStart)
@@ -79,7 +78,12 @@ class ActionFragment : Fragment() {
 
         }
 
+        actionViewModel.isFinish.observe(viewLifecycleOwner, {
+            buttonStart.isChecked = !it
+        })
+
         actionViewModel.userData.observe(viewLifecycleOwner, {
+            buttonStart.isChecked = actionViewModel.actionState.isPay
             countTextView.text = it.allCount.toString()
             animatorForProgressAll.duration = it.allTime!! * 1000.toLong()
             currentTextView.text = actionViewModel.actionState.currentId.toString()
