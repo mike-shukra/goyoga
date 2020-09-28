@@ -27,11 +27,11 @@ class ActionViewModel : ViewModel(), CoroutineScope {
         actionState = loadActionStateFromDB()
         userData.postValue(loadDataFromDB())
         asanas = loadAsanasFromDB()
-        playAsanas(actionState.currentId)
         asana.postValue(asanas[actionState.currentId-1])
+        playAsanas(actionState.currentId)
     }
 
-    private fun playAsanas(current: Int) = launch {
+    private suspend fun playAsanas(current: Int) {
         var i = current-1
         while (i < asanas.size) {
             // var time = asanas[i].times*10
@@ -53,6 +53,7 @@ class ActionViewModel : ViewModel(), CoroutineScope {
         actionState.currentId = 1
         actionState.animatorAllCurrentPlayTime = 0
         actionState.animatorItemCurrentPlayTime = 0
+        playAsanas(actionState.currentId)
         saveActionState()
         Log.d(LOG_TAG, "ActionViewModel - playAsanas isFinish: ${actionState.isFinish}")
     }
@@ -92,7 +93,6 @@ class ActionViewModel : ViewModel(), CoroutineScope {
     }
 
     fun saveActionState() = launch {
-        Log.d(LOG_TAG, "ActionViewModel - saveActionStateToDB actionState: $actionState")
         val result = dbDao.insertActionState(actionState)
         Log.d(LOG_TAG, "ActionViewModel - saveActionStateToDB result: $result")
     }
