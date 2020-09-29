@@ -27,10 +27,10 @@ class ActionViewModel : ViewModel(), CoroutineScope {
     fun loadData() = launch {
         actionState = loadActionStateFromDB()
         Log.d(LOG_TAG, "ActionViewModel - loadData actionState: $actionState")
-        userData.postValue(loadDataFromDB())
         asanas = loadAsanasFromDB()
         Log.d(LOG_TAG, "ActionViewModel - loadData asanas hashCode: ${asanas.hashCode()}")
         Log.d(LOG_TAG, "ActionViewModel - loadData asanas size: ${asanas.size}")
+        userData.postValue(loadDataFromDB())
         asana.postValue(asanas[actionState.currentId-1])
         playAsanas(actionState.currentId)
     }
@@ -47,15 +47,13 @@ class ActionViewModel : ViewModel(), CoroutineScope {
                 time--
             }
             i++
-            saveActionState()
             actionState.currentId = i+1
+            saveActionState()
             Log.d(LOG_TAG, "ActionViewModel - playAsanas actionState.currentId: ${actionState.currentId}")
         }
         isFinish.postValue(true)
         isPlay = false
         actionState.currentId = 1
-        actionState.animatorAllCurrentPlayTime = 0
-        actionState.animatorItemCurrentPlayTime = 0
         saveActionState()
         playAsanas(1)
     }

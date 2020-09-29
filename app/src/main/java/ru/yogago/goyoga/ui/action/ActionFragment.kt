@@ -15,6 +15,7 @@ import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager.widget.ViewPager
 import com.squareup.picasso.Picasso
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants
@@ -25,6 +26,8 @@ class ActionFragment : Fragment() {
 
     private lateinit var actionViewModel: ActionViewModel
     private val isRussianLanguage: Boolean = java.util.Locale.getDefault().language == "ru"
+    private var animatorItemCurrentTime: Long = 0
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,6 +42,8 @@ class ActionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d(LOG_TAG, "ActionFragment - onViewCreated")
 
+//        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
         val image = view.findViewById<ImageView>(R.id.image)
         val progressBarAll = view.findViewById<ProgressBar>(R.id.progressBarAll)
         val progressBarItem = view.findViewById<ProgressBar>(R.id.progressBarItem)
@@ -47,6 +52,7 @@ class ActionFragment : Fragment() {
         val currentTextView = view.findViewById<TextView>(R.id.current)
         val description: TextView = view.findViewById(R.id.description)
         val buttonStart = view.findViewById<ToggleButton>(R.id.buttonStart)
+        val buttonSound = view.findViewById<ToggleButton>(R.id.buttonSound)
 
         val animFadeOut = AnimationUtils.loadAnimation(context, R.anim.alpha_out)
         val animForButtonStart = AnimationUtils.loadAnimation(context, R.anim.button_anim)
@@ -59,25 +65,30 @@ class ActionFragment : Fragment() {
 
         var allCount = 0
 
+        buttonSound.setOnCheckedChangeListener { compoundButton, b ->
+            compoundButton.startAnimation(animForButtonStart)
+        }
+
+        val pager = view.findViewById(R.id.pager) as ViewPager
+
 
         buttonStart.setOnCheckedChangeListener { compoundButton, b ->
             compoundButton.startAnimation(animForButtonStart)
             actionViewModel.isPlay = b
             if (b) {
-                animatorForProgressItem.currentPlayTime = actionViewModel.actionState.animatorItemCurrentPlayTime
+                animatorForProgressItem.currentPlayTime = animatorItemCurrentTime
                 animatorForProgressItem.start()
             }
             if (!b) {
-                actionViewModel.actionState.animatorItemCurrentPlayTime = animatorForProgressItem.currentPlayTime
+                animatorItemCurrentTime = animatorForProgressItem.currentPlayTime
                 animatorForProgressItem.cancel()
             }
 
         }
 
         actionViewModel.isFinish.observe(viewLifecycleOwner, {
-            progressBarAll.setProgress(1000,true)
+            progressBarAll.setProgress(1000, true)
             buttonStart.isChecked = !it
-            actionViewModel.cancelBackgroundWork()
         })
 
         actionViewModel.userData.observe(viewLifecycleOwner, {
@@ -87,8 +98,8 @@ class ActionFragment : Fragment() {
         })
 
         actionViewModel.asana.observe(viewLifecycleOwner, { asana ->
-            sp.play(mSp, 1F, 1F, 1, 0, 1F)
-            progressBarAll.setProgress(1000 / allCount * asana.id.toInt(),true)
+            if (!buttonSound.isChecked) sp.play(mSp, 1F, 1F, 1, 0, 1F)
+            progressBarAll.setProgress(1000 / allCount * asana.id.toInt(), true)
 
             animatorForProgressItem.duration = asana.times * 1000.toLong()
             animatorForProgressItem.interpolator = DecelerateInterpolator()
@@ -114,6 +125,11 @@ class ActionFragment : Fragment() {
 
         actionViewModel.loadData()
 
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putLong("animatorItemCurrentTime", animatorItemCurrentTime)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroy() {
