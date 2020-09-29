@@ -16,7 +16,6 @@ import android.widget.ToggleButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.isActive
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants
 import ru.yogago.goyoga.data.AppConstants.LOG_TAG
@@ -51,7 +50,6 @@ class ActionFragment : Fragment() {
 
         val animFadeOut = AnimationUtils.loadAnimation(context, R.anim.alpha_out)
         val animForButtonStart = AnimationUtils.loadAnimation(context, R.anim.button_anim)
-        val animatorForProgressAll = ObjectAnimator.ofInt(progressBarAll, "progress", 1, 1000)
         val animatorForProgressItem = ObjectAnimator.ofInt(progressBarItem, "progress", 1, 1000)
 
         val sp = SoundPool.Builder()
@@ -59,19 +57,17 @@ class ActionFragment : Fragment() {
             .build()
         val mSp = sp.load(this.context, R.raw.metronomsound02, 1)
 
+        var allCount = 0
+
 
         buttonStart.setOnCheckedChangeListener { compoundButton, b ->
             compoundButton.startAnimation(animForButtonStart)
-            actionViewModel.actionState.isPay = b
+            actionViewModel.isPlay = b
             if (b) {
-                animatorForProgressAll.currentPlayTime = actionViewModel.actionState.animatorAllCurrentPlayTime
-                animatorForProgressAll.start()
                 animatorForProgressItem.currentPlayTime = actionViewModel.actionState.animatorItemCurrentPlayTime
                 animatorForProgressItem.start()
             }
             if (!b) {
-                actionViewModel.actionState.animatorAllCurrentPlayTime = animatorForProgressAll.currentPlayTime
-                animatorForProgressAll.cancel()
                 actionViewModel.actionState.animatorItemCurrentPlayTime = animatorForProgressItem.currentPlayTime
                 animatorForProgressItem.cancel()
             }
@@ -79,23 +75,24 @@ class ActionFragment : Fragment() {
         }
 
         actionViewModel.isFinish.observe(viewLifecycleOwner, {
+            progressBarAll.setProgress(1000,true)
             buttonStart.isChecked = !it
+            actionViewModel.cancelBackgroundWork()
         })
 
         actionViewModel.userData.observe(viewLifecycleOwner, {
-            buttonStart.isChecked = actionViewModel.actionState.isPay
+            allCount = it.allCount
             countTextView.text = it.allCount.toString()
-            animatorForProgressAll.duration = it.allTime!! * 1000.toLong()
             currentTextView.text = actionViewModel.actionState.currentId.toString()
         })
 
         actionViewModel.asana.observe(viewLifecycleOwner, { asana ->
             sp.play(mSp, 1F, 1F, 1, 0, 1F)
+            progressBarAll.setProgress(1000 / allCount * asana.id.toInt(),true)
 
-//            image.startAnimation(animFadeOut)
             animatorForProgressItem.duration = asana.times * 1000.toLong()
             animatorForProgressItem.interpolator = DecelerateInterpolator()
-            if (actionViewModel.actionState.isPay) animatorForProgressItem.start()
+            if (actionViewModel.isPlay) animatorForProgressItem.start()
 
             title.text = if (isRussianLanguage) asana.name else asana.eng
             description.text = if (isRussianLanguage) asana.description else asana.description_en
@@ -119,9 +116,9 @@ class ActionFragment : Fragment() {
 
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroy() {
+        Log.d(LOG_TAG, "ActionFragment - onDestroy this: ${this.hashCode()}")
         actionViewModel.cancelBackgroundWork()
-        actionViewModel.saveActionState()
+        super.onDestroy()
     }
 }
