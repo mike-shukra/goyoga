@@ -1,8 +1,10 @@
 package ru.yogago.goyoga
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -68,6 +70,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_profile, R.id.nav_select, R.id.nav_action))
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        if(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
+            navView.visibility = View.GONE
 
     }
 

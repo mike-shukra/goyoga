@@ -16,6 +16,7 @@ class ActionViewModel : ViewModel(), CoroutineScope {
     private val job = SupervisorJob()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
+    var isPlay: Boolean = false
     var actionState = ActionState()
     val userData: MutableLiveData<UserData> = MutableLiveData()
     val asana: MutableLiveData<Asana> = MutableLiveData()
@@ -25,8 +26,11 @@ class ActionViewModel : ViewModel(), CoroutineScope {
 
     fun loadData() = launch {
         actionState = loadActionStateFromDB()
+        Log.d(LOG_TAG, "ActionViewModel - loadData actionState: $actionState")
         userData.postValue(loadDataFromDB())
         asanas = loadAsanasFromDB()
+        Log.d(LOG_TAG, "ActionViewModel - loadData asanas hashCode: ${asanas.hashCode()}")
+        Log.d(LOG_TAG, "ActionViewModel - loadData asanas size: ${asanas.size}")
         asana.postValue(asanas[actionState.currentId-1])
         playAsanas(actionState.currentId)
     }
@@ -34,7 +38,6 @@ class ActionViewModel : ViewModel(), CoroutineScope {
     private suspend fun playAsanas(current: Int) {
         var i = current-1
         while (i < asanas.size) {
-            // var time = asanas[i].times*10
             var time = asanas[i].times
             pauseIfIsPause()
             asana.postValue(asanas[i])
@@ -44,62 +47,53 @@ class ActionViewModel : ViewModel(), CoroutineScope {
                 time--
             }
             i++
+            saveActionState()
             actionState.currentId = i+1
             Log.d(LOG_TAG, "ActionViewModel - playAsanas actionState.currentId: ${actionState.currentId}")
         }
         isFinish.postValue(true)
-        actionState.isFinish = true
-        actionState.isPay = false
+        isPlay = false
         actionState.currentId = 1
         actionState.animatorAllCurrentPlayTime = 0
         actionState.animatorItemCurrentPlayTime = 0
-        playAsanas(actionState.currentId)
         saveActionState()
-        Log.d(LOG_TAG, "ActionViewModel - playAsanas isFinish: ${actionState.isFinish}")
+        playAsanas(1)
     }
 
     private suspend fun pauseIfIsPause(){
-        while (true){
-            if (!actionState.isPay) {
-                delay(100)
-            }
+        while (true)
+            if (!isPlay) delay(100)
             else break
-        }
     }
 
-    private suspend fun loadAsanasFromDB(): List<Asana> {
-        return withContext(coroutineContext) {
-            val asanas = dbDao.getAsanas()
-            Log.d(LOG_TAG, "ActionViewModel - loadAsanasFromDB: $asanas")
-            return@withContext asanas
-        }
+    private fun loadAsanasFromDB(): List<Asana> {
+        val asanas = dbDao.getAsanas()
+        Log.d(LOG_TAG, "ActionViewModel - loadAsanasFromDB: $asanas")
+        return asanas
     }
 
-    private suspend fun loadDataFromDB(): UserData {
-        return withContext(coroutineContext) {
-            val userData = dbDao.getUserData()
-            Log.d(LOG_TAG, "ActionViewModel - loadDataFromDB userData: $userData")
-            return@withContext userData
-        }
+    private fun loadDataFromDB(): UserData {
+        val userData = dbDao.getUserData()
+        Log.d(LOG_TAG, "ActionViewModel - loadDataFromDB userData: $userData")
+        return userData
     }
 
-    private suspend fun loadActionStateFromDB(): ActionState {
-        return withContext(coroutineContext) {
-            var actionState: ActionState? = dbDao.getActionState()
-            Log.d(LOG_TAG, "ActionViewModel - loadActionStateFromDB actionState: $actionState")
-            if (actionState == null) actionState = ActionState()
-            return@withContext actionState
-        }
+    private fun loadActionStateFromDB(): ActionState {
+        var actionState: ActionState? = dbDao.getActionState()
+        Log.d(LOG_TAG, "ActionViewModel - loadActionStateFromDB actionState: $actionState")
+        if (actionState == null) actionState = ActionState()
+        return actionState
     }
 
-    fun saveActionState() = launch {
+    private fun saveActionState() {
         val result = dbDao.insertActionState(actionState)
         Log.d(LOG_TAG, "ActionViewModel - saveActionStateToDB result: $result")
     }
 
     fun cancelBackgroundWork() {
+        isPlay = false
         coroutineContext.cancelChildren()
-        Log.d(LOG_TAG, "ActionViewModel - cancelBackgroundWork")
+        Log.d(LOG_TAG, "ActionViewModel - cancelBackgroundWork this: ${this.hashCode()}")
     }
 
 }

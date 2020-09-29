@@ -37,7 +37,7 @@ class SelectFragment : Fragment() {
         rvAsanas.layoutManager = glm
 
         selectViewModel.userData.observe(viewLifecycleOwner, {
-            time.text = (it.allTime!! / 60).toString()
+            time.text = (it.allTime / 60).toString()
             count.text = it.allCount.toString()
         })
 

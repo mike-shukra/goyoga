@@ -24,42 +24,45 @@ class ProfileModel: CoroutineScope {
         launch {
             val data = getCreatedRemoteData(level, knee, loins, neck)
             if (data.error == "no") {
+                val responseDeleteActionState = dbDao.deleteActionState()
+                Log.d(LOG_TAG, "ProfileModel - create responseDeleteActionState: $responseDeleteActionState")
                 Log.d(LOG_TAG, "ProfileModel - create - data: $data")
             } else {
+                Log.d(LOG_TAG, "ProfileModel - create - error: ${data.error}")
                 profileViewModel.error.postValue(data.error)
             }
         }
     }
 
     private suspend fun getCreatedRemoteData(level: String, knee: String, loins: String, neck: String): Data {
-        return withContext(coroutineContext) {
-            val request = service.createAsync(
-                level = level,
-                knee = knee,
-                loins = loins,
-                neck =neck
-            )
-            try {
-                val response = request.await()
-                if(response.isSuccessful) {
-                    val data = response.body()!!
-                    Log.d(LOG_TAG, "MainModel - getRemoteData - data: $data")
-                    val asanas = data.asanas
-                    Log.d(LOG_TAG, "MainModel - getRemoteData - asanas: $asanas")
-                    val userData = data.userData
-                    Log.d(LOG_TAG, "MainModel - getRemoteData - userData: $userData")
-                    return@withContext data
-                } else {
-                    Log.d(LOG_TAG,"MainModel - getRemoteData error: " + response.errorBody().toString())
-                    return@withContext Data(error = response.errorBody().toString())
-                }
-            }
-            catch (e: Exception) {
-                Log.d(LOG_TAG, "MainModel - getRemoteData - Exception: $e")
-                return@withContext Data(error = e.toString())
+        val request = service.createAsync(
+            level = level,
+            knee = knee,
+            loins = loins,
+            neck =neck
+        )
+        try {
+            val response = request.await()
+            return if(response.isSuccessful) {
+                val data = response.body()!!
+                Log.d(LOG_TAG, "ProfileModel - getRemoteData - data: $data")
+                val asanas = data.asanas
+                Log.d(LOG_TAG, "ProfileModel - getRemoteData - asanas: $asanas")
+                val userData = data.userData
+                Log.d(LOG_TAG, "ProfileModel - getRemoteData - userData: $userData")
+                data
+            } else {
+                Log.d(LOG_TAG,"ProfileModel - getRemoteData error: " + response.errorBody().toString())
+                Data(error = response.errorBody().toString())
             }
         }
+        catch (e: Exception) {
+            Log.d(LOG_TAG, "ProfileModel - getRemoteData - Exception: $e")
+            return Data(error = e.toString())
+        }
     }
+
+
 
     fun updatePassword(password: String) {
         launch {
@@ -79,7 +82,7 @@ class ProfileModel: CoroutineScope {
 
     fun updateUserName(userData: UserData){
         launch {
-            val response = dbDao.insertUserName(userData.first_name, userData.id)
+            val response = dbDao.insertUserName(userData.first_name!!, userData.id)
             Log.d(LOG_TAG, "ProfileModel - updateUserInfo response: $response")
             updateUserNameRemote(userData)
         }
@@ -90,7 +93,7 @@ class ProfileModel: CoroutineScope {
             val data = loadRemoteUser()
             if (data.error == "no") {
                 val saveUserToDB = saveUserToDB(data.userData!!)
-                Log.d(LOG_TAG, "MainModel - loadUserToProfile - saveUserToDB: $saveUserToDB")
+                Log.d(LOG_TAG, "ProfileModel - loadUserToProfile - saveUserToDB: $saveUserToDB")
             } else {
                 profileViewModel.error.postValue(data.error)
             }
@@ -100,20 +103,16 @@ class ProfileModel: CoroutineScope {
         }
     }
 
-    private suspend fun saveUserToDB(user: UserData): Long {
-        return withContext(coroutineContext) {
-            val response = dbDao.insertUserData(user)
-            Log.d(LOG_TAG, "MainModel - saveUserToDB response: $response")
-            return@withContext response
-        }
+    private fun saveUserToDB(user: UserData): Long {
+        val response = dbDao.insertUserData(user)
+        Log.d(LOG_TAG, "ProfileModel - saveUserToDB response: $response")
+        return response
     }
 
-    private suspend fun loadUserFromDB(): UserData {
-        return withContext(coroutineContext) {
-            val user = dbDao.loadUserData()
-            Log.d(LOG_TAG, "MainModel - loadUserFromDB user: $user")
-            return@withContext user
-        }
+    private fun loadUserFromDB(): UserData {
+        val user = dbDao.loadUserData()
+        Log.d(LOG_TAG, "ProfileModel - loadUserFromDB user: $user")
+        return user
     }
 
     fun loadUserToEditUser() {
@@ -126,7 +125,7 @@ class ProfileModel: CoroutineScope {
 
     private fun updateUserNameRemote(user: UserData){
         launch {
-            val petRequest = service.updateUserNameAsync(user.first_name)
+            val petRequest = service.updateUserNameAsync(user.first_name!!)
             try {
                 val response = petRequest.await()
                 if(response.isSuccessful) {
@@ -140,23 +139,20 @@ class ProfileModel: CoroutineScope {
     }
 
     private suspend fun loadRemoteUser(): Data {
-        return withContext(coroutineContext) {
-            val petRequest = service.getDataAsync()
-            try {
-                val response = petRequest.await()
-                if(response.isSuccessful) {
-                    val data = response.body()!!
-                    Log.d(LOG_TAG, "ProfileModel - loadRemoteUser  data: $data")
-                    return@withContext data
-                } else {
-                    Log.d(LOG_TAG,"ProfileModel - loadRemoteUser  error: " + response.errorBody().toString())
-                    return@withContext Data(error = response.errorBody().toString())
-                }
+        val petRequest = service.getDataAsync()
+        return try {
+            val response = petRequest.await()
+            if(response.isSuccessful) {
+                val data = response.body()!!
+                Log.d(LOG_TAG, "ProfileModel - loadRemoteUser  data: $data")
+                data
+            } else {
+                Log.d(LOG_TAG,"ProfileModel - loadRemoteUser  error: " + response.errorBody().toString())
+                Data(error = response.errorBody().toString())
             }
-            catch (e: Exception) {
-                Log.d(LOG_TAG, "ProfileModel - loadRemoteUser - Exception: $e")
-                return@withContext Data(error = e.toString())
-            }
+        } catch (e: Exception) {
+            Log.d(LOG_TAG, "ProfileModel - loadRemoteUser - Exception: $e")
+            Data(error = e.toString())
         }
     }
 

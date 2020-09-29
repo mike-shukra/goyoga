@@ -44,74 +44,61 @@ class MainModel: CoroutineScope {
         }
     }
 
-    private suspend fun updateDataDB(asanas: List<Asana>, userData: UserData): Boolean {
-        return withContext(coroutineContext) {
-            val saveAsanasToDB = saveAsanasToDB(asanas)
-            Log.d(LOG_TAG, "MainModel - updateDataDB - saveAsanasToDB: $saveAsanasToDB")
-            val saveUserToDB = saveUserToDB(userData)
-            Log.d(LOG_TAG, "MainModel - updateDataDB - saveUserToDB: $saveUserToDB")
-            return@withContext true
-        }
+    private fun updateDataDB(asanas: List<Asana>, userData: UserData): Boolean {
+        val saveAsanasToDB = saveAsanasToDB(asanas)
+        Log.d(LOG_TAG, "MainModel - updateDataDB - saveAsanasToDB: $saveAsanasToDB")
+        val saveUserToDB = saveUserToDB(userData)
+        Log.d(LOG_TAG, "MainModel - updateDataDB - saveUserToDB: $saveUserToDB")
+        return true
     }
 
-    private suspend fun saveAsanasToDB(items: List<Asana>): List<Long> {
-        return withContext(coroutineContext) {
-            val responseDelete = dbDao.deleteAsanas()
-            Log.d(LOG_TAG, "MainModel - saveAsanasToDB responseDelete: $responseDelete")
-            val responseDeleteActionState = dbDao.deleteActionState()
-            Log.d(LOG_TAG, "MainModel - saveAsanasToDB responseDeleteActionState: $responseDeleteActionState")
-            val response = dbDao.insertAsanas(items)
-            Log.d(LOG_TAG, "MainModel - saveAsanasToDB response: $response")
-            return@withContext response
-        }
+    private fun saveAsanasToDB(items: List<Asana>): List<Long> {
+        val responseDelete = dbDao.deleteAsanas()
+        Log.d(LOG_TAG, "MainModel - saveAsanasToDB responseDelete: $responseDelete")
+        val response = dbDao.insertAsanas(items)
+        Log.d(LOG_TAG, "MainModel - saveAsanasToDB response: $response")
+        return response
     }
 
-    private suspend fun saveUserToDB(user: UserData): Long {
-        return withContext(coroutineContext) {
-            val response = dbDao.insertUserData(user)
-            Log.d(LOG_TAG, "MainModel - saveUserToDB response: $response")
-            return@withContext response
-        }
+    private fun saveUserToDB(user: UserData): Long {
+        val response = dbDao.insertUserData(user)
+        Log.d(LOG_TAG, "MainModel - saveUserToDB response: $response")
+        return response
     }
 
-    private suspend fun loadAsanasFromDB(): List<Asana> {
-        return withContext(coroutineContext) {
-            val asanas = dbDao.getAsanas()
-            Log.d(LOG_TAG, "MainModel - loadAsanasFromDB: $asanas")
-            return@withContext asanas
-        }
+    private fun loadAsanasFromDB(): List<Asana> {
+        val asanas = dbDao.getAsanas()
+        Log.d(LOG_TAG, "MainModel - loadAsanasFromDB: $asanas")
+        return asanas
     }
 
-    private suspend fun loadDataFromDB(): UserData {
-        return withContext(coroutineContext) {
-            val userData = dbDao.getUserData()
-            Log.d(LOG_TAG, "MainModel - loadDataFromDB: $userData")
-            return@withContext userData
-        }
+    private fun loadDataFromDB(): UserData {
+        val userData = dbDao.getUserData()
+        Log.d(LOG_TAG, "MainModel - loadDataFromDB: $userData")
+        return userData
     }
 
     private suspend fun getRemoteData(): Data {
-        return withContext(coroutineContext) {
-            val request = service.getDataAsync()
-            try {
-                val response = request.await()
-                if(response.isSuccessful) {
-                    val data = response.body()!!
-                    Log.d(LOG_TAG, "MainModel - getRemoteData - data: $data")
-                    val asanas = data.asanas
-                    Log.d(LOG_TAG, "MainModel - getRemoteData - asanas: $asanas")
-                    val userData = data.userData
-                    Log.d(LOG_TAG, "MainModel - getRemoteData - userData: $userData")
-                    return@withContext data
-                } else {
-                    Log.d(LOG_TAG,"MainModel - getRemoteData error: " + response.errorBody().toString())
-                    return@withContext Data(error = response.errorBody().toString())
-                }
+
+        val request = service.getDataAsync()
+        try {
+            val response = request.await()
+            return if(response.isSuccessful) {
+                val data = response.body()!!
+                Log.d(LOG_TAG, "MainModel - getRemoteData - data: $data")
+                val asanas = data.asanas
+                Log.d(LOG_TAG, "MainModel - getRemoteData - asanas: $asanas")
+                val userData = data.userData
+                Log.d(LOG_TAG, "MainModel - getRemoteData - userData: $userData")
+                data
+            } else {
+                Log.d(LOG_TAG,"MainModel - getRemoteData error: " + response.errorBody().toString())
+                Data(error = response.errorBody().toString())
             }
-            catch (e: Exception) {
-                Log.d(LOG_TAG, "MainModel - getRemoteData - Exception: $e")
-                return@withContext  Data(error = e.toString())
-            }
+        }
+        catch (e: Exception) {
+            Log.d(LOG_TAG, "MainModel - getRemoteData - Exception: $e")
+            return  Data(error = e.toString())
         }
     }
 

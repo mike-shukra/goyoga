@@ -27,7 +27,7 @@ class LoginModel: CoroutineScope {
 
     fun saveTokenDB(token: Token) {
         Log.d(LOG_TAG, "LoginModel - saveTokenDB token: $token")
-        GlobalScope.launch(Dispatchers.IO) {
+        launch {
             val response = db.getDBDao().insertToken(token)
             Log.d(LOG_TAG, "LoginModel - saveTokenDB response: $response")
         }
