@@ -46,5 +46,6 @@
     <string name="invalid_email">Invalid e-mail</string>
     <string name="registration_true">The application has been sent. Check your mail. To confirm registration, follow the link in the letter.</string>
     <string name="logo_pict">logo</string>
+    <string name="sound">sound</string>
 
 </resources>

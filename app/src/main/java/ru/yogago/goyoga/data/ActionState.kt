@@ -7,7 +7,4 @@ import androidx.room.PrimaryKey
 data class ActionState(
     @PrimaryKey val id: Long = 0,
     var currentId: Int = 1,
-    var animatorItemCurrentPlayTime: Long = 0,
-    var animatorAllCurrentPlayTime: Long = 0
-
 )
