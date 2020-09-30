@@ -6,111 +6,157 @@
     android:layout_height="match_parent"
     tools:context=".ui.profile.ProfileFragment">
 
+    <!--    android:translationY="-92dp"-->
+
     <LinearLayout
+        android:id="@+id/mainLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/colorPrimary"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+
+        <LinearLayout
+            android:id="@+id/profileBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryDark"
-            android:orientation="horizontal"
-            android:padding="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:orientation="vertical"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/profileWrapper"
+                android:layout_width="match_parent"
+                android:layout_height="84dp"
+                android:background="@color/colorPrimaryDark"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:id="@+id/profileUserName"
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/profileUserName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:maxWidth="160dp"
+                        android:maxLines="1"
+                        android:text="@string/profile_field_name"
+                        android:textColor="@color/colorWhiteMiddle" />
+
+                    <TextView
+                        android:id="@+id/profileUserEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:maxWidth="160dp"
+                        android:maxLines="1"
+                        android:text="@string/profile_field_email"
+                        android:textColor="@color/colorWhiteMiddle" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <Button
+                        android:id="@+id/profileDeleteButton"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/button_background"
+                        android:drawableTop="@drawable/ic_baseline_delete_forever_24"
+                        android:padding="16dp"
+                        android:textColor="@color/colorWhiteLite"
+                        tools:ignore="ButtonStyle" />
+
+                    <Button
+                        android:id="@+id/profileEditButton"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/button_background"
+                        android:drawableTop="@drawable/ic_baseline_edit_24"
+                        android:padding="16dp"
+                        android:textColor="@color/colorWhiteLite"
+                        tools:ignore="ButtonStyle" />
+
+                    <Button
+                        android:id="@+id/profileLogOutButton"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/button_background"
+                        android:drawableTop="@drawable/ic_baseline_exit_to_app_24"
+                        android:padding="16dp"
+                        android:textColor="@color/colorWhiteLite"
+                        tools:ignore="ButtonStyle" />
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <FrameLayout
+                android:id="@+id/profileButtonBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:background="@color/colorPrimaryDark">
+
+                </FrameLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:maxWidth="160dp"
-                    android:maxLines="1"
-                    android:text="@string/profile_field_name"
-                    android:textColor="@color/colorWhiteMiddle" />
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/profileUserEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:maxWidth="160dp"
-                    android:maxLines="1"
-                    android:text="@string/profile_field_email"
-                    android:textColor="@color/colorWhiteMiddle" />
+                    <ToggleButton
+                        android:id="@+id/buttonMainTransition"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:background="@drawable/round_background"
+                        android:drawableTop="@drawable/ic_baseline_keyboard_arrow_down_24"
+                        android:paddingTop="8dp"
+                        android:textColor="@color/colorWhiteLite"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="parent"
+                        tools:ignore="ButtonStyle" />
+                </LinearLayout>
 
-            </LinearLayout>
+            </FrameLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
 
-                <Button
-                    android:id="@+id/profileDeleteButton"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/button_background"
-                    android:drawableTop="@drawable/ic_baseline_delete_forever_24"
-                    android:padding="16dp"
-                    android:textColor="@color/colorWhiteLite"
-                    tools:ignore="ButtonStyle" />
-
-                <Button
-                    android:id="@+id/profileEditButton"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/button_background"
-                    android:drawableTop="@drawable/ic_baseline_edit_24"
-                    android:padding="16dp"
-                    android:textColor="@color/colorWhiteLite"
-                    tools:ignore="ButtonStyle" />
-
-                <Button
-                    android:id="@+id/profileLogOutButton"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/button_background"
-                    android:drawableTop="@drawable/ic_baseline_exit_to_app_24"
-                    android:padding="16dp"
-                    android:textColor="@color/colorWhiteLite"
-                    tools:ignore="ButtonStyle" />
-            </LinearLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -126,7 +172,7 @@
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="32dp"
-                    android:layout_marginBottom="16dp"/>
+                    android:layout_marginBottom="16dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -167,32 +213,34 @@
                         android:id="@+id/checkBoxKnee"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/knee"
-                        android:layoutDirection="rtl"
                         android:layout_marginTop="16dp"
+                        android:layoutDirection="rtl"
+                        android:text="@string/knee"
                         android:textSize="18sp" />
 
                     <CheckBox
                         android:id="@+id/checkBoxNeck"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/loins"
-                        android:layoutDirection="rtl"
                         android:layout_marginTop="16dp"
+                        android:layoutDirection="rtl"
+                        android:text="@string/loins"
                         android:textSize="18sp" />
 
                     <CheckBox
                         android:id="@+id/checkBoxLoins"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/neck"
                         android:layout_marginTop="16dp"
                         android:layoutDirection="rtl"
+                        android:text="@string/neck"
                         android:textSize="18sp" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingBottom="16dp"
                     android:orientation="horizontal">
 
                     <Space

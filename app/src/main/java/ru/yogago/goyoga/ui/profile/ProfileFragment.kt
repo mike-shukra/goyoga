@@ -1,27 +1,41 @@
 package ru.yogago.goyoga.ui.profile
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.LayoutTransition
 import android.app.Application
 import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.transition.Slide
+import androidx.transition.Transition
+import androidx.transition.TransitionManager
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.SelectedIndexArray
 import ru.yogago.goyoga.ui.login.LoginActivity
 import ru.yogago.goyoga.ui.login.LoginViewModel
 import ru.yogago.goyoga.ui.login.LoginViewModelFactory
 
+
 class ProfileFragment : Fragment() {
 
     private lateinit var profileViewModel: ProfileViewModel
     private lateinit var loginViewModel: LoginViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
@@ -29,7 +43,9 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
         val application: Application = this.requireActivity().application
-        loginViewModel = ViewModelProvider(this, LoginViewModelFactory(application) ).get(LoginViewModel::class.java)
+        loginViewModel = ViewModelProvider(this, LoginViewModelFactory(application)).get(
+            LoginViewModel::class.java
+        )
         loginViewModel.setModel()
 
         val profileLogOutButton: Button = view.findViewById(R.id.profileLogOutButton)
@@ -43,8 +59,45 @@ class ProfileFragment : Fragment() {
         val checkBoxNeck = view.findViewById<CheckBox>(R.id.checkBoxNeck)
         val checkBoxLoins = view.findViewById<CheckBox>(R.id.checkBoxLoins)
         val loading = view.findViewById<ProgressBar>(R.id.loading)
+        val mainLayout = view.findViewById<LinearLayout>(R.id.mainLayout)
+        val profileWrapper: ConstraintLayout = view.findViewById(R.id.profileWrapper)
+        val profileBox: LinearLayout = view.findViewById(R.id.profileBox)
+        val profileButtonBox: FrameLayout = view.findViewById(R.id.profileButtonBox)
+        val buttonMainTransition = view.findViewById<ToggleButton>(R.id.buttonMainTransition)
+
+        val rotateAnimation = AnimationUtils.loadAnimation(context, R.anim.rotate)
+        val flipAnimation = AnimationUtils.loadAnimation(context, R.anim.flip)
+        val flipAnimationBack = AnimationUtils.loadAnimation(context, R.anim.flip_back)
+        val animProfileWrapperDown = AnimationUtils.loadAnimation(
+            context,
+            R.anim.profile_wrapper_down
+        )
+        val animProfileWrapperUp = AnimationUtils.loadAnimation(context, R.anim.profile_wrapper_up)
+
+        profileWrapper.visibility = View.GONE
+
+        buttonMainTransition.setOnCheckedChangeListener { compoundButton, b ->
+            if (b) {
+                compoundButton.rotation += 180F
+//                compoundButton.startAnimation(flipAnimation)
+                profileBox.animate()
+                    .translationY(profileWrapper.height.toFloat())
+                    .setDuration(300)
+                    .setListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            super.onAnimationEnd(animation)
+                            profileWrapper.visibility = View.VISIBLE
+                        }
+                    })
+            }
+            else {
+                compoundButton.rotation -= 180F
+//                compoundButton.startAnimation(flipAnimationBack)
+                profileWrapper.visibility = View.GONE
 
 
+            }
+        }
         createButton.setOnClickListener {
             profileViewModel.create(
                 levelSpinner.selectedItemId.toString(),
@@ -108,5 +161,11 @@ class ProfileFragment : Fragment() {
         profileViewModel.loadUserData()
 
     }
-
+    private fun toggle(parent: ViewGroup, view: View, isShow: Boolean) {
+        val transition: Transition = Slide(Gravity.BOTTOM)
+        transition.duration = 200
+        transition.addTarget(R.id.image)
+        TransitionManager.beginDelayedTransition(parent, transition)
+        view.visibility = if (isShow) View.VISIBLE else View.GONE
+    }
 }
