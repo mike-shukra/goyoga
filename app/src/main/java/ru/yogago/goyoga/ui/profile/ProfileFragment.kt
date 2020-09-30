@@ -71,8 +71,8 @@ class ProfileFragment : Fragment() {
             findNavController().navigate(R.id.nav_editUser)
         }
         profileViewModel.user.observe(viewLifecycleOwner, {
-            profileUserName.text = it.first_name
-            profileUserEmail.text = it.email
+            profileUserName.text = it?.first_name
+            profileUserEmail.text = it?.email
 
             val levels = resources.getStringArray(R.array.levels)
             val selectedIndex = SelectedIndexArray(selectedIndex = it.level, arr = levels)

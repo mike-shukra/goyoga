@@ -97,7 +97,9 @@ class ProfileModel: CoroutineScope {
             } else {
                 profileViewModel.error.postValue(data.error)
             }
-            val user = loadUserFromDB()
+            var user = loadUserFromDB()
+            Log.d(LOG_TAG, "ProfileModel - loadUserToProfile - loadUserFromDB user: $user")
+            if (user == null) user = UserData(0)
             profileViewModel.user.postValue(user)
 
         }
