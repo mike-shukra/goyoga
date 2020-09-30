@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-
+        if (isLandSpace()) navView.visibility = View.GONE
 
     }
 
@@ -85,4 +85,13 @@ class MainActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         isAuth = savedInstanceState.getBoolean("isAuth")
     }
+
+    private fun isLandSpace(): Boolean {
+        return when (resources.configuration.orientation) {
+            Configuration.ORIENTATION_PORTRAIT -> false
+            Configuration.ORIENTATION_LANDSCAPE -> true
+            else -> false
+        }
+    }
+
 }

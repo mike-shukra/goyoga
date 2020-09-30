@@ -1,6 +1,7 @@
 package ru.yogago.goyoga.ui.action
 
 import android.animation.ObjectAnimator
+import android.content.res.Configuration
 import android.media.SoundPool
 import android.os.Bundle
 import android.util.Log
@@ -15,7 +16,6 @@ import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.viewpager.widget.ViewPager
 import com.squareup.picasso.Picasso
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants
@@ -43,6 +43,8 @@ class ActionFragment : Fragment() {
         Log.d(LOG_TAG, "ActionFragment - onViewCreated")
 
 //        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+
 
         val image = view.findViewById<ImageView>(R.id.image)
         val progressBarAll = view.findViewById<ProgressBar>(R.id.progressBarAll)
@@ -137,4 +139,5 @@ class ActionFragment : Fragment() {
         actionViewModel.cancelBackgroundWork()
         super.onDestroy()
     }
+
 }
