@@ -69,7 +69,7 @@ class ActionFragment : Fragment() {
             compoundButton.startAnimation(animForButtonStart)
         }
 
-        val pager = view.findViewById(R.id.pager) as ViewPager
+//        val pager = view.findViewById(R.id.pager) as ViewPager
 
 
         buttonStart.setOnCheckedChangeListener { compoundButton, b ->

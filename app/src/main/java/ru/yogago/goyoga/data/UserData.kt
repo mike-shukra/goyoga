@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity
 data class UserData (
     @PrimaryKey val id: Long,
-    val email: String?,
+    val email: String? = null,
     var first_name: String? = null,
     val now: Int = 1,
     val allTime: Int = 0,
@@ -15,5 +15,5 @@ data class UserData (
     val dangerknee: Int = 0,
     val dangerloins: Int = 0,
     val dangerneck: Int = 0,
-    val date: String = ""
+    val date: String? = null
 )
