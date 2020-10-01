@@ -20,6 +20,13 @@ interface Api{
     ): Deferred<Response<Message>>
 
     @FormUrlEncoded
+    @POST("Api/registerApp")
+    fun registerAnonymousUserAsync(
+        @Field("login") login: String,
+        @Field("appToken") appToken: String,
+    ): Deferred<Response<Message>>
+
+    @FormUrlEncoded
     @POST("Api/login")
     fun authAsync(
         @Field("login") login: String,

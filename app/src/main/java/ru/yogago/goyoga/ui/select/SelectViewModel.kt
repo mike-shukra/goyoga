@@ -27,6 +27,6 @@ class SelectViewModel : ViewModel() {
 
     fun cancelBackgroundWork() {
         model.cancelBackgroundWork()
-        Log.d(AppConstants.LOG_TAG, "ActionViewModel - cancelBackgroundWork")
+        Log.d(AppConstants.LOG_TAG, "SelectViewModel - cancelBackgroundWork")
     }
 }

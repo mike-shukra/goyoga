@@ -1,4 +1,4 @@
-package ru.yogago.goyoga.ui.login
+package ru.yogago.goyoga.data
 
 /**
  * Authentication result : success (user details) or error message.

@@ -15,12 +15,10 @@
     <string name="action_sign_in">Login</string>
     <string name="action_sign_in_short">Login</string>
     <string name="save">Save</string>
-    <string name="name">Name:</string>
+    <string name="login_title">Login:</string>
     <string name="registrationHead">Registration</string>
     <string name="registration">Registration</string>
-    <string name="timeOutMessage">The server fell asleep, wait 10 seconds and try again.</string>
     <string name="repeat">Repeat</string>
-    <string name="name_login">Name</string>
     <string name="profile_field_name">Name</string>
     <string name="profile_field_email">email</string>
     <string name="edit">Edit</string>
@@ -47,5 +45,7 @@
     <string name="registration_true">The application has been sent. Check your mail. To confirm registration, follow the link in the letter.</string>
     <string name="logo_pict">logo</string>
     <string name="sound">sound</string>
+    <string name="no_internet">Internet is not available!\nCheck the connection.</string>
+    <string name="name_login">Login</string>
 
 </resources>

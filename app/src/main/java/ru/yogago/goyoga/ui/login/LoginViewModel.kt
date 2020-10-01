@@ -5,17 +5,23 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants.LOG_TAG
+import ru.yogago.goyoga.data.LoginFormState
+import ru.yogago.goyoga.data.LoginResult
 import ru.yogago.goyoga.model.LoginModel
 import ru.yogago.goyoga.service.TokenProvider
 import ru.yogago.goyoga.service.login.LoginRepository
 import ru.yogago.goyoga.service.login.Result
+import kotlin.coroutines.CoroutineContext
 
-class LoginViewModel(private val loginRepository: LoginRepository, application: Application) : AndroidViewModel(application) {
+class LoginViewModel(private val loginRepository: LoginRepository, application: Application) : AndroidViewModel(application),
+    CoroutineScope {
+
+    private val job = SupervisorJob()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO + job
 
     private val model : LoginModel = LoginModel()
 
@@ -29,12 +35,14 @@ class LoginViewModel(private val loginRepository: LoginRepository, application: 
 
     fun login(username: String, password: String) {
         // can be launched in a separate asynchronous job
-        GlobalScope.launch(Dispatchers.IO) {
+        launch {
             val result = loginRepository.login(username, password)
             if (result is Result.Success) {
-                _loginResult.postValue(LoginResult(
+                _loginResult.postValue(
+                    LoginResult(
                     success = ""
-                ))
+                )
+                )
                 TokenProvider.token = result.data.token
             } else {
                 Log.d(LOG_TAG, "LoginViewModel Exception: " + TokenProvider.token.error)

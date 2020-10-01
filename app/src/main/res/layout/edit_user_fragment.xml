@@ -25,6 +25,14 @@
             android:paddingBottom="16dp">
 
             <TextView
+                android:id="@+id/error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:visibility="gone"
+                android:textColor="@color/colorRedTwo"/>
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
@@ -44,7 +52,7 @@
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:labelFor="@id/editUserFragmentPersonName"
-                    android:text="@string/name"
+                    android:text="@string/login_title"
                     android:textAlignment="textEnd"
                     android:textColor="@color/colorWhiteMiddle" />
 
