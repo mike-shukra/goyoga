@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -15,7 +14,6 @@
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,27 +22,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
             android:gravity="center"
             android:orientation="vertical">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="108dp"
-                android:layout_height="108dp"
-                android:layout_marginTop="16dp"
+            <ImageView
+                android:layout_width="156dp"
+                android:layout_height="156dp"
+                android:layout_gravity="center"
                 android:layout_marginBottom="16dp"
-                android:background="@color/colorPrimary"
-                app:cardCornerRadius="56dp">
-
-                <ImageView
-                    android:layout_width="156dp"
-                    android:layout_height="156dp"
-                    android:layout_gravity="center"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@string/logo_pict"
-                    android:src="@drawable/icon_logo" />
-
-            </androidx.cardview.widget.CardView>
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/logo_pict"
+                android:src="@drawable/icon_logo" />
 
             <ProgressBar
                 android:id="@+id/loading"

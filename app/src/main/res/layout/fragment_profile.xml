@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.profile.ProfileFragment">
+<!--    android:translationY="-84dp"-->
 
     <LinearLayout
         android:id="@+id/mainLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:translationY="-84dp"
         android:orientation="vertical"
+        android:translationY="-84dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,13 +29,9 @@
                 android:id="@+id/profileWrapper"
                 android:layout_width="match_parent"
                 android:layout_height="84dp"
-                android:background="@color/colorPrimaryDark"
+                android:background="@color/colorPrimary"
                 android:orientation="horizontal"
-                android:padding="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:padding="8dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -91,7 +89,7 @@
                         android:id="@+id/profileEditButton"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
                         android:background="@drawable/button_background"
                         android:drawableTop="@drawable/ic_baseline_edit_24"
@@ -103,7 +101,7 @@
                         android:id="@+id/profileLogOutButton"
                         android:layout_width="56dp"
                         android:layout_height="56dp"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginBottom="8dp"
@@ -122,43 +120,37 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="36dp"
-                    android:background="@color/colorPrimaryDark">
+                    android:layout_height="16dp"
+                    android:background="@color/colorPrimaryMiddle">
 
                 </FrameLayout>
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:layout_height="36dp"
+                    android:translationY="-8dp">
 
                     <FrameLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/round_background"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        <FrameLayout
-                            android:layout_width="56dp"
-                            android:layout_height="56dp"
-                            android:background="@drawable/round_background"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="parent"/>
-
-                        <ToggleButton
-                            android:id="@+id/buttonMainTransition"
-                            android:layout_width="56dp"
-                            android:layout_height="56dp"
-                            android:background="@drawable/round_background"
-                            android:drawableTop="@drawable/ic_baseline_keyboard_arrow_down_24"
-                            android:paddingTop="8dp"
-                            android:textColor="@color/colorWhiteLite"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="parent"
-                            tools:ignore="ButtonStyle" />
-                    </FrameLayout>
-                </LinearLayout>
+                    <ToggleButton
+                        android:id="@+id/buttonMainTransition"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@android:color/transparent"
+                        android:drawableTop="@drawable/ic_baseline_keyboard_arrow_down_24"
+                        android:paddingTop="4dp"
+                        android:textColor="@color/colorWhiteLite"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="ButtonStyle" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </FrameLayout>
 
@@ -167,7 +159,7 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -251,8 +243,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="16dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingBottom="16dp">
 
                     <Space
                         android:layout_width="0dp"

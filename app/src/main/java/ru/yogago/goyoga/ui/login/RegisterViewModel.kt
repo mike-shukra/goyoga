@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import ru.yogago.goyoga.R
+import ru.yogago.goyoga.data.LoginFormState
 import ru.yogago.goyoga.data.RegistrationBody
 import ru.yogago.goyoga.model.LoginModel
 

@@ -17,7 +17,7 @@ class ActionViewModel : ViewModel(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
     var isPlay: Boolean = false
-    var actionState = ActionState()
+    lateinit var actionState: ActionState
     val userData: MutableLiveData<UserData> = MutableLiveData()
     val asana: MutableLiveData<Asana> = MutableLiveData()
     val isFinish: MutableLiveData<Boolean> = MutableLiveData()
@@ -25,14 +25,18 @@ class ActionViewModel : ViewModel(), CoroutineScope {
     private lateinit var asanas: List<Asana>
 
     fun loadData() = launch {
-        actionState = loadActionStateFromDB()
+        val loadActionStateFromDB: ActionState? = loadActionStateFromDB()
+        actionState = if (loadActionStateFromDB != null) loadActionStateFromDB() else ActionState()
         Log.d(LOG_TAG, "ActionViewModel - loadData actionState: $actionState")
         asanas = loadAsanasFromDB()
         Log.d(LOG_TAG, "ActionViewModel - loadData asanas hashCode: ${asanas.hashCode()}")
         Log.d(LOG_TAG, "ActionViewModel - loadData asanas size: ${asanas.size}")
-        userData.postValue(loadDataFromDB())
-        asana.postValue(asanas[actionState.currentId-1])
-        playAsanas(actionState.currentId)
+        val data: UserData? = loadDataFromDB()
+        if (data != null) userData.postValue(loadDataFromDB())
+        if (asanas.isNotEmpty()) {
+            asana.postValue(asanas[actionState.currentId-1])
+            playAsanas(actionState.currentId)
+        }
     }
 
     private suspend fun playAsanas(current: Int) {

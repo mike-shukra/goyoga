@@ -68,7 +68,8 @@ class ProfileFragment : Fragment() {
 
         buttonMainTransition.setOnCheckedChangeListener { compoundButton, b ->
             if (b) {
-                compoundButton.rotation += 180F
+                compoundButton.pivotY = 55F
+                compoundButton.scaleY = -1.0F
                 compoundButton.startAnimation(flipAnimation)
                 mainLayout.animate()
                     .translationY(0F)
@@ -79,10 +80,9 @@ class ProfileFragment : Fragment() {
                             mainLayout.translationY = 0F
                         }
                     })
-
             }
             else {
-                compoundButton.rotation += 180F
+                compoundButton.scaleY = 1.0F
                 compoundButton.startAnimation(flipAnimation)
                 mainLayout.animate()
                     .translationY(-((profileWrapper.height).toFloat()))
@@ -93,9 +93,6 @@ class ProfileFragment : Fragment() {
                             mainLayout.translationY = -((profileWrapper.height).toFloat())
                         }
                     })
-
-
-
             }
         }
         createButton.setOnClickListener {
@@ -145,11 +142,9 @@ class ProfileFragment : Fragment() {
 
         })
         profileViewModel.error.observe(viewLifecycleOwner, {
-            Toast.makeText(
-                context,
-                it,
-                Toast.LENGTH_LONG
-            ).show()
+            var text = it
+            if (it.contains("UnknownHostException")) text = getString(R.string.no_internet)
+            Toast.makeText(context, text, Toast.LENGTH_LONG ).show()
             if (it == "Не авторизовано") {
                 val intent = Intent(this.activity, LoginActivity::class.java)
                 startActivity(intent)

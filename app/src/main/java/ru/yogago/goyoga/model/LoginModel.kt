@@ -18,8 +18,6 @@ class LoginModel: CoroutineScope {
     private val job = SupervisorJob()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
-
-
     private val db: AppDatabase = DataBase.db
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var registerViewModel: RegisterViewModel
@@ -58,8 +56,20 @@ class LoginModel: CoroutineScope {
     fun deleteUser() {
         launch {
             val request = service.deleteUserAsync()
-            val response = request.await()
-            Log.d(LOG_TAG, "LoginModel - deleteUser: " + response.body())
+            try {
+                val response = request.await()
+                val message = response.body()!!
+                if (message.error == null) {
+                    Log.d(LOG_TAG, "LoginModel - deleteUser message: $message")
+                }
+                else {
+                    loginViewModel.loginError.postValue(message.error)
+                }
+            } catch (e: Exception) {
+                Log.d(LOG_TAG, "LoginModel - deleteUser Exception: $e")
+                loginViewModel.loginError.postValue(e.toString())
+            }
+
             val responseDeleteToken = db.getDBDao().deleteToken()
             Log.d(LOG_TAG, "LoginModel - deleteUser - responseDeleteToken: $responseDeleteToken")
             val responseDeleteUser = db.getDBDao().deleteUserData()

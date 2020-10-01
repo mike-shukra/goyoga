@@ -18,13 +18,14 @@ import ru.yogago.goyoga.ui.login.afterTextChanged
 class EditUserFragment : Fragment() {
 
     private lateinit var viewModel: EditUserViewModel
-    private lateinit var user: UserData
+    private var user: UserData = UserData(0)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = ViewModelProvider(this).get(EditUserViewModel::class.java)
         viewModel.setModel().loadUser()
 
         val root = inflater.inflate(R.layout.edit_user_fragment, container, false)
+        val errorView = root.findViewById<TextView>(R.id.error)
         val editUserFragmentPersonName = root.findViewById<EditText>(R.id.editUserFragmentPersonName)
         val editUserFragmentSaveButton: Button = root.findViewById(R.id.editUserFragmentSaveButton)
         val editUserFragmentPassword = root.findViewById<EditText>(R.id.editUserFragmentPassword)
@@ -34,6 +35,11 @@ class EditUserFragment : Fragment() {
 
         viewModel.isUpdate.observe(viewLifecycleOwner, {
             if (it) findNavController().navigate(R.id.nav_profile)
+        })
+
+        viewModel.error.observe(viewLifecycleOwner, {
+            errorView.visibility = View.VISIBLE
+            errorView.text = it
         })
 
         viewModel.user.observe(viewLifecycleOwner, {

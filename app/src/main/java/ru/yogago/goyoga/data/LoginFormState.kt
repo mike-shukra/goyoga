@@ -1,4 +1,4 @@
-package ru.yogago.goyoga.ui.login
+package ru.yogago.goyoga.data
 
 /**
  * Data validation state of the login form.

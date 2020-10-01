@@ -7,11 +7,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.yogago.goyoga.data.AppConstants
 import ru.yogago.goyoga.data.UserData
-import ru.yogago.goyoga.model.ProfileModel
+import ru.yogago.goyoga.model.MainModel
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val model = ProfileModel()
+    private val model = MainModel()
     val user: MutableLiveData<UserData> = MutableLiveData()
     val error: MutableLiveData<String> = MutableLiveData()
 
@@ -21,7 +21,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun loadUserData() {
-        model.loadUserToProfile()
+        model.loadUserData()
     }
 
     fun create(level: String, knee: Boolean, loins: Boolean, neck: Boolean) {

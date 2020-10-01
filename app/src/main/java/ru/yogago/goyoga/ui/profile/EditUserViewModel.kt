@@ -5,16 +5,17 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.UserData
-import ru.yogago.goyoga.model.ProfileModel
-import ru.yogago.goyoga.ui.login.LoginFormState
+import ru.yogago.goyoga.model.MainModel
+import ru.yogago.goyoga.data.LoginFormState
 
 class EditUserViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val model = ProfileModel()
+    private val model = MainModel()
     val passwordFormState: MutableLiveData<LoginFormState> = MutableLiveData()
     val nameFormState: MutableLiveData<LoginFormState> = MutableLiveData()
     val user: MutableLiveData<UserData> = MutableLiveData()
     val isUpdate: MutableLiveData<Boolean> = MutableLiveData()
+    val error: MutableLiveData<String> = MutableLiveData()
 
     fun setUserToVM(user: UserData?) {
         this.user.postValue(user)

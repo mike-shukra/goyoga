@@ -15,12 +15,10 @@
     <string name="action_sign_in">Войти</string>
     <string name="action_sign_in_short">Вход</string>
     <string name="save">Сохранить</string>
-    <string name="name">Имя:</string>
+    <string name="login_title">Логин:</string>
     <string name="registrationHead">Регистрация</string>
     <string name="registration">Регистрация</string>
-    <string name="timeOutMessage">Сервер заснул, подождите секунд 10 и повторите попытку.</string>
     <string name="repeat">Повторить</string>
-    <string name="name_login">Имя</string>
     <string name="profile_field_name">Имя</string>
     <string name="profile_field_email">email</string>
     <string name="edit">Редактировать</string>
@@ -46,5 +44,8 @@
     <string name="invalid_email">Не корректный email</string>
     <string name="registration_true">Заявка отправлена. Проверьте почту. Для подтверждения регистрации, перейдите по ссылке в письме.</string>
     <string name="logo_pict">Логотип</string>
+    <string name="no_internet">Интернет недоступен!\nПроверьте соединение.</string>
+    <string name="sound">Звук</string>
+    <string name="name_login">Логин</string>
 
 </resources>
