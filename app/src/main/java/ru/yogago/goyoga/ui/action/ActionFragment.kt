@@ -1,7 +1,6 @@
 package ru.yogago.goyoga.ui.action
 
 import android.animation.ObjectAnimator
-import android.content.res.Configuration
 import android.media.SoundPool
 import android.os.Bundle
 import android.util.Log

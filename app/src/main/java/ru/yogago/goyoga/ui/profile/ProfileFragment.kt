@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter
 import android.app.Application
 import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +14,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.transition.Slide
-import androidx.transition.Transition
-import androidx.transition.TransitionManager
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.SelectedIndexArray
 import ru.yogago.goyoga.ui.login.LoginActivity
@@ -157,11 +153,11 @@ class ProfileFragment : Fragment() {
 
     }
 
-    private fun toggle(parent: ViewGroup, view: View, isShow: Boolean) {
-        val transition: Transition = Slide(Gravity.BOTTOM)
-        transition.duration = 200
-        transition.addTarget(R.id.image)
-        TransitionManager.beginDelayedTransition(parent, transition)
-        view.visibility = if (isShow) View.VISIBLE else View.GONE
-    }
+//    private fun toggle(parent: ViewGroup, view: View, isShow: Boolean) {
+//        val transition: Transition = Slide(Gravity.BOTTOM)
+//        transition.duration = 200
+//        transition.addTarget(R.id.image)
+//        TransitionManager.beginDelayedTransition(parent, transition)
+//        view.visibility = if (isShow) View.VISIBLE else View.GONE
+//    }
 }
