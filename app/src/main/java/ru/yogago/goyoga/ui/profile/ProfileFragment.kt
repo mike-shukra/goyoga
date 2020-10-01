@@ -2,7 +2,6 @@ package ru.yogago.goyoga.ui.profile
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.animation.LayoutTransition
 import android.app.Application
 import android.content.Intent
 import android.os.Bundle
@@ -65,35 +64,36 @@ class ProfileFragment : Fragment() {
         val profileButtonBox: FrameLayout = view.findViewById(R.id.profileButtonBox)
         val buttonMainTransition = view.findViewById<ToggleButton>(R.id.buttonMainTransition)
 
-        val rotateAnimation = AnimationUtils.loadAnimation(context, R.anim.rotate)
         val flipAnimation = AnimationUtils.loadAnimation(context, R.anim.flip)
-        val flipAnimationBack = AnimationUtils.loadAnimation(context, R.anim.flip_back)
-        val animProfileWrapperDown = AnimationUtils.loadAnimation(
-            context,
-            R.anim.profile_wrapper_down
-        )
-        val animProfileWrapperUp = AnimationUtils.loadAnimation(context, R.anim.profile_wrapper_up)
-
-        profileWrapper.visibility = View.GONE
 
         buttonMainTransition.setOnCheckedChangeListener { compoundButton, b ->
             if (b) {
                 compoundButton.rotation += 180F
-//                compoundButton.startAnimation(flipAnimation)
-                profileBox.animate()
-                    .translationY(profileWrapper.height.toFloat())
+                compoundButton.startAnimation(flipAnimation)
+                mainLayout.animate()
+                    .translationY(0F)
                     .setDuration(300)
                     .setListener(object : AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: Animator) {
                             super.onAnimationEnd(animation)
-                            profileWrapper.visibility = View.VISIBLE
+                            mainLayout.translationY = 0F
                         }
                     })
+
             }
             else {
-                compoundButton.rotation -= 180F
-//                compoundButton.startAnimation(flipAnimationBack)
-                profileWrapper.visibility = View.GONE
+                compoundButton.rotation += 180F
+                compoundButton.startAnimation(flipAnimation)
+                mainLayout.animate()
+                    .translationY(-((profileWrapper.height).toFloat()))
+                    .setDuration(300)
+                    .setListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            super.onAnimationEnd(animation)
+                            mainLayout.translationY = -((profileWrapper.height).toFloat())
+                        }
+                    })
+
 
 
             }
@@ -161,6 +161,7 @@ class ProfileFragment : Fragment() {
         profileViewModel.loadUserData()
 
     }
+
     private fun toggle(parent: ViewGroup, view: View, isShow: Boolean) {
         val transition: Transition = Slide(Gravity.BOTTOM)
         transition.duration = 200

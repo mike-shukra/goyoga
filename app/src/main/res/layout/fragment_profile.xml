@@ -6,18 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".ui.profile.ProfileFragment">
 
-    <!--    android:translationY="-92dp"-->
-
     <LinearLayout
         android:id="@+id/mainLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:translationY="-84dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
 
         <LinearLayout
             android:id="@+id/profileBox"
@@ -135,18 +133,31 @@
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <ToggleButton
-                        android:id="@+id/buttonMainTransition"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:background="@drawable/round_background"
-                        android:drawableTop="@drawable/ic_baseline_keyboard_arrow_down_24"
-                        android:paddingTop="8dp"
-                        android:textColor="@color/colorWhiteLite"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="parent"
-                        tools:ignore="ButtonStyle" />
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <FrameLayout
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:background="@drawable/round_background"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="parent"/>
+
+                        <ToggleButton
+                            android:id="@+id/buttonMainTransition"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:background="@drawable/round_background"
+                            android:drawableTop="@drawable/ic_baseline_keyboard_arrow_down_24"
+                            android:paddingTop="8dp"
+                            android:textColor="@color/colorWhiteLite"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="parent"
+                            tools:ignore="ButtonStyle" />
+                    </FrameLayout>
                 </LinearLayout>
 
             </FrameLayout>
