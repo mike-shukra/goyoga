@@ -11,6 +11,7 @@ import ru.yogago.goyoga.service.ApiFactory
 import ru.yogago.goyoga.service.DataBase
 import ru.yogago.goyoga.service.TokenProvider
 import ru.yogago.goyoga.ui.select.SelectViewModel
+import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 class MainModel: CoroutineScope {
@@ -22,7 +23,6 @@ class MainModel: CoroutineScope {
     private val service = ApiFactory.API
     private lateinit var selectViewModel: SelectViewModel
     val error: MutableLiveData<String> = MutableLiveData()
-    val isTimeout: MutableLiveData<Boolean> = MutableLiveData()
     val isToken: MutableLiveData<Boolean> = MutableLiveData()
 
     fun loadData() {
@@ -113,7 +113,10 @@ class MainModel: CoroutineScope {
             }
             catch(e: Exception) {
                 isToken.postValue(false)
-                Log.d(LOG_TAG, "MainModel - isTokenDB: no token")
+                Log.d(LOG_TAG, "MainModel - isTokenDB no token: $e")
+                val uniqueID: String = UUID.randomUUID().toString()
+                Log.d(LOG_TAG, "MainModel - uniqueID: $uniqueID")
+
             }
         }
     }
