@@ -5,16 +5,22 @@ import android.animation.AnimatorListenerAdapter
 import android.app.Application
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.PurchasesUpdatedListener
 import ru.yogago.goyoga.R
+import ru.yogago.goyoga.data.AppConstants.LOG_TAG
 import ru.yogago.goyoga.data.SelectedIndexArray
 import ru.yogago.goyoga.ui.login.LoginActivity
 import ru.yogago.goyoga.ui.login.LoginViewModel
@@ -61,6 +67,10 @@ class ProfileFragment : Fragment() {
         val buttonMainTransition = view.findViewById<ToggleButton>(R.id.buttonMainTransition)
 
         val flipAnimation = AnimationUtils.loadAnimation(context, R.anim.flip)
+
+        val lSwipeDetector = GestureDetectorCompat(context, MyGestureListener())
+
+//        profileBox.setOnTouchListener(View.OnTouchListener())
 
         buttonMainTransition.setOnCheckedChangeListener { compoundButton, b ->
             if (b) {
@@ -140,7 +150,7 @@ class ProfileFragment : Fragment() {
         profileViewModel.error.observe(viewLifecycleOwner, {
             var text = it
             if (it.contains("UnknownHostException")) text = getString(R.string.no_internet)
-            Toast.makeText(context, text, Toast.LENGTH_LONG ).show()
+            Toast.makeText(context, text, Toast.LENGTH_LONG).show()
             if (it == "Не авторизовано") {
                 val intent = Intent(this.activity, LoginActivity::class.java)
                 startActivity(intent)
@@ -150,6 +160,19 @@ class ProfileFragment : Fragment() {
 
         profileViewModel.setModel()
         profileViewModel.loadUserData()
+
+        val purchasesUpdatedListener =
+            PurchasesUpdatedListener { billingResult, purchases ->
+                // To be implemented in a later section.
+            }
+
+        var billingClient = context?.let {
+            BillingClient.newBuilder(it)
+                .setListener(purchasesUpdatedListener)
+                .enablePendingPurchases()
+                .build()
+            Log.d(LOG_TAG, "billingClient ")
+        }
 
     }
 

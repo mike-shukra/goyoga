@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
 
         if (isLandSpace()) navView.visibility = View.GONE
 
+
     }
 
     private fun isLandSpace(): Boolean {
