@@ -6,7 +6,7 @@ import retrofit2.http.*
 import ru.yogago.goyoga.data.*
 
 
-interface Api{
+interface Api {
 
     @GET("Api/data")
     fun getDataAsync(): Deferred<Response<Data>>

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GoYoga</string>
+    <string name="app_name">Do Yoga</string>
     <string name="title_home">Домой</string>
     <string name="title_notifications">Уведомления</string>
     <string name="welcome">Добро пожаловать</string>
@@ -44,7 +44,7 @@
     <string name="invalid_email">Не корректный email</string>
     <string name="registration_true">Заявка отправлена. Проверьте почту. Для подтверждения регистрации, перейдите по ссылке в письме.</string>
     <string name="logo_pict">Логотип</string>
-    <string name="no_internet">Интернет недоступен!\nПроверьте соединение.</string>
+    <string name="no_internet">Сеть недоступна!</string>
     <string name="sound">Звук</string>
     <string name="name_login">Логин</string>
 
