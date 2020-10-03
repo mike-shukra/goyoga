@@ -30,7 +30,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="@string/title_select"
+                android:text="@string/select_head"
                 android:textAlignment="viewStart"
                 android:textColor="@color/colorWhiteLite"
                 android:textSize="18sp"
@@ -96,6 +96,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvAsanas"
+        android:contentDescription="@string/asanas_card_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="4dp"
@@ -105,6 +106,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
         app:spanCount="2"
+        android:background="@color/colorPrimaryMiddle"
         tools:listitem="@layout/card_view_asana">
 
     </androidx.recyclerview.widget.RecyclerView>

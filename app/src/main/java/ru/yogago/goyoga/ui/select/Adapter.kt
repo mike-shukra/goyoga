@@ -58,6 +58,7 @@ class Adapter(private val items: List<Asana>, private val resources: Resources):
 //        }
 
         itemViewHolder.fieldsName.text = if (isRussianLanguage) items[position].name else items[position].eng
+        itemViewHolder.profilePetsUserPic.contentDescription = itemViewHolder.profilePetsUserPic.contentDescription.toString() + items[position].name
         val patch = PHOTO_URL + items[position].photo
         Log.d(LOG_TAG, patch)
         val picasso = Picasso.get()

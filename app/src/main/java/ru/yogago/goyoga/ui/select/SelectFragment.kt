@@ -9,6 +9,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.yogago.goyoga.R
@@ -45,6 +46,12 @@ class SelectFragment : Fragment() {
             loading.visibility = View.GONE
             val adapter = Adapter(it, this.resources)
             rvAsanas.adapter = adapter
+
+            adapter.onItemClick = { asana ->
+                val args = Bundle()
+                args.putLong("id", asana.id)
+                findNavController().navigate(R.id.nav_action, args)
+            }
         })
 
         selectViewModel.error.observe(viewLifecycleOwner, {

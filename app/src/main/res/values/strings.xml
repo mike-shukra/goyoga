@@ -7,7 +7,7 @@
     <string name="invalid_password">Password must be at least six characters</string>
     <string name="noValue">Not specified</string>
     <string name="invalid_password_replay">Passwords do not match</string>
-    <string name="user_pict">Image</string>
+    <string name="image_title">Image</string>
     <string name="e_mail">e-mail:</string>
     <string name="pass">Password:</string>
     <string name="replay">Repeat:</string>
@@ -23,11 +23,11 @@
     <string name="profile_field_email">email</string>
     <string name="edit">Edit</string>
     <string name="new_pass">Change password</string>
-    <string name="title_profile">Profile</string>
-    <string name="title_select">Selection</string>
-    <string name="title_action">Training</string>
+    <string name="title_profile">Profile page</string>
+    <string name="title_select">Selection page</string>
+    <string name="title_action">Training page</string>
     <string name="login">Login:</string>
-    <string name="level">Difficulty level</string>
+    <string name="level_head">Difficulty level</string>
     <string name="create">Create</string>
     <string name="dangers_head">Trouble</string>
     <string name="knee">Knee</string>
@@ -38,8 +38,9 @@
     <string name="min">min.</string>
     <string name="icon">icon</string>
     <string name="_00">00</string>
+    <string name="_01">01</string>
     <string name="start">Start</string>
-    <string name="from">of the</string>
+    <string name="of_the">of the</string>
     <string name="invalid_name">Name must be four characters or more</string>
     <string name="invalid_email">Invalid e-mail</string>
     <string name="registration_true">The application has been sent. Check your mail. To confirm registration, follow the link in the letter.</string>
@@ -47,5 +48,13 @@
     <string name="sound">sound</string>
     <string name="no_internet">Network unavailable!</string>
     <string name="name_login">Login</string>
+    <string name="difficulty_level">Difficulty level select</string>
+    <string name="asanas_card_list">Asana cards of the formed sequence</string>
+    <string name="email_field">Email field</string>
+    <string name="login_field">Login field</string>
+    <string name="password_field">Password field</string>
+    <string name="password_repeat_field">Password repeat field</string>
+    <string name="not_authorized">Not authorized</string>
+    <string name="select_head">Sequence</string>
 
 </resources>

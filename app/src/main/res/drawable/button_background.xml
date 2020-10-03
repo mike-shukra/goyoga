@@ -21,14 +21,14 @@
         android:state_focused="true"
         android:state_enabled="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/colorAccent" />
+            <solid android:color="@color/colorAccentDark" />
             <corners android:radius="32dp" />
         </shape>
     </item>
     <item
         android:state_enabled="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/colorAccent" />
+            <solid android:color="@color/colorAccentDark" />
             <corners android:radius="32dp" />
         </shape>
     </item>

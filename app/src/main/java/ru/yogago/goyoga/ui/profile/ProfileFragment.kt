@@ -7,7 +7,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
@@ -17,8 +16,7 @@ import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.PurchasesUpdatedListener
+import com.android.billingclient.api.*
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants.LOG_TAG
 import ru.yogago.goyoga.data.SelectedIndexArray
@@ -74,7 +72,7 @@ class ProfileFragment : Fragment() {
 
         buttonMainTransition.setOnCheckedChangeListener { compoundButton, b ->
             if (b) {
-                compoundButton.pivotY = 55F
+                compoundButton.pivotY = 65F
                 compoundButton.scaleY = -1.0F
                 compoundButton.startAnimation(flipAnimation)
                 mainLayout.animate()
@@ -150,31 +148,21 @@ class ProfileFragment : Fragment() {
         profileViewModel.error.observe(viewLifecycleOwner, {
             var text = it
             if (it.contains("UnknownHostException")) text = getString(R.string.no_internet)
-            Toast.makeText(context, text, Toast.LENGTH_LONG).show()
-            if (it == "Не авторизовано") {
+            if (it.contains("Не авторизовано")) {
+                text = getString(R.string.not_authorized)
                 val intent = Intent(this.activity, LoginActivity::class.java)
                 startActivity(intent)
                 this.activity?.finish()
             }
+            Toast.makeText(context, text, Toast.LENGTH_LONG).show()
         })
 
         profileViewModel.setModel()
         profileViewModel.loadUserData()
 
-        val purchasesUpdatedListener =
-            PurchasesUpdatedListener { billingResult, purchases ->
-                // To be implemented in a later section.
-            }
-
-        var billingClient = context?.let {
-            BillingClient.newBuilder(it)
-                .setListener(purchasesUpdatedListener)
-                .enablePendingPurchases()
-                .build()
-            Log.d(LOG_TAG, "billingClient ")
-        }
 
     }
+
 
 //    private fun toggle(parent: ViewGroup, view: View, isShow: Boolean) {
 //        val transition: Transition = Slide(Gravity.BOTTOM)

@@ -2,12 +2,9 @@ package ru.yogago.goyoga.model
 
 import android.util.Log
 import kotlinx.coroutines.*
+import ru.yogago.goyoga.data.*
 import ru.yogago.goyoga.data.AppConstants.APP_TOKEN
 import ru.yogago.goyoga.data.AppConstants.LOG_TAG
-import ru.yogago.goyoga.data.Asana
-import ru.yogago.goyoga.data.Data
-import ru.yogago.goyoga.data.Token
-import ru.yogago.goyoga.data.UserData
 import ru.yogago.goyoga.service.ApiFactory
 import ru.yogago.goyoga.service.DataBase
 import ru.yogago.goyoga.service.TokenProvider
@@ -133,6 +130,7 @@ class MainModel: CoroutineScope {
 
     fun create(level: String, knee: String, loins: String, neck: String) {
         launch {
+            val result = dbDao.insertActionState(ActionState(currentId = 1))
             val data = getCreatedRemoteData(level, knee, loins, neck)
             if (data.error == "no") {
                 val responseDeleteActionState = dbDao.deleteActionState()
