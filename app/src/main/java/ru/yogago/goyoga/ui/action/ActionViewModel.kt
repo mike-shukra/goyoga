@@ -23,10 +23,12 @@ class ActionViewModel : ViewModel(), CoroutineScope {
     val isFinish: MutableLiveData<Boolean> = MutableLiveData()
     private val dbDao = DataBase.db.getDBDao()
     private lateinit var asanas: List<Asana>
+    var id: Long = 0
 
     fun loadData() = launch {
-        val loadActionStateFromDB: ActionState? = loadActionStateFromDB()
-        actionState = if (loadActionStateFromDB != null) loadActionStateFromDB() else ActionState()
+        val loadActionState: ActionState? = if (id == 0L) loadActionStateFromDB()
+        else ActionState(currentId = id.toInt())
+        actionState = loadActionState!!
         Log.d(LOG_TAG, "ActionViewModel - loadData actionState: $actionState")
         asanas = loadAsanasFromDB()
         Log.d(LOG_TAG, "ActionViewModel - loadData asanas hashCode: ${asanas.hashCode()}")

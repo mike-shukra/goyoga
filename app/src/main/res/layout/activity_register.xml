@@ -75,10 +75,11 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:autofillHints="Default"
+                    android:contentDescription="@string/login_field"
                     android:ems="10"
                     android:inputType="textPersonName"
-                    android:textColor="@color/colorWhiteMiddle" />
+                    android:textColor="@color/colorWhiteMiddle"
+                    android:autofillHints="" />
 
             </LinearLayout>
 
@@ -103,10 +104,11 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:autofillHints=""
+                    android:contentDescription="@string/email_field"
                     android:ems="10"
                     android:inputType="textEmailAddress"
-                    android:textColor="@color/colorWhiteMiddle" />
+                    android:textColor="@color/colorWhiteMiddle"
+                    android:autofillHints="" />
 
             </LinearLayout>
 
@@ -136,10 +138,11 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:autofillHints=""
                     android:ems="10"
+                    android:contentDescription="@string/password_field"
                     android:inputType="textPassword"
-                    android:textColor="@color/colorWhiteMiddle" />
+                    android:textColor="@color/colorWhiteMiddle"
+                    android:autofillHints="" />
 
             </LinearLayout>
 
@@ -164,10 +167,11 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:autofillHints=""
                     android:ems="10"
+                    android:contentDescription="@string/password_repeat_field"
                     android:inputType="textPassword"
-                    android:textColor="@color/colorWhiteMiddle" />
+                    android:textColor="@color/colorWhiteMiddle"
+                    android:autofillHints="" />
 
             </LinearLayout>
 

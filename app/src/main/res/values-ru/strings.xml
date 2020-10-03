@@ -7,7 +7,7 @@
     <string name="invalid_password">Парль должен быть от шести символов</string>
     <string name="noValue">Не указано</string>
     <string name="invalid_password_replay">Пароли не совпадают</string>
-    <string name="user_pict">Картинка</string>
+    <string name="image_title">Картинка</string>
     <string name="e_mail">e-mail:</string>
     <string name="pass">Пароль:</string>
     <string name="replay">Повтор:</string>
@@ -23,11 +23,11 @@
     <string name="profile_field_email">email</string>
     <string name="edit">Редактировать</string>
     <string name="new_pass">Изменить пароль</string>
-    <string name="title_profile">Профиль</string>
-    <string name="title_select">Выборка</string>
-    <string name="title_action">Тренировка</string>
+    <string name="title_profile">Профиль лист</string>
+    <string name="title_select">Выборка лист</string>
+    <string name="title_action">Тренировка лист</string>
     <string name="login">Логин:</string>
-    <string name="level">Уровень сложности</string>
+    <string name="level_head">Уровень сложности</string>
     <string name="create">Сформировать</string>
     <string name="dangers_head">Имеются травмы</string>
     <string name="knee">Колено</string>
@@ -39,7 +39,7 @@
     <string name="icon">icon</string>
     <string name="_00">00</string>
     <string name="start">Старт</string>
-    <string name="from">из</string>
+    <string name="of_the">из</string>
     <string name="invalid_name">Имя должно быть от четырёх символов</string>
     <string name="invalid_email">Не корректный email</string>
     <string name="registration_true">Заявка отправлена. Проверьте почту. Для подтверждения регистрации, перейдите по ссылке в письме.</string>
@@ -47,5 +47,14 @@
     <string name="no_internet">Сеть недоступна!</string>
     <string name="sound">Звук</string>
     <string name="name_login">Логин</string>
+    <string name="difficulty_level">Уровень сложности выбор</string>
+    <string name="asanas_card_list">Карточки асан сформированной последовательности</string>
+    <string name="email_field">Поле для ввода email</string>
+    <string name="login_field">Поле для ввода логина</string>
+    <string name="password_field">Поле для ввода пароля</string>
+    <string name="password_repeat_field">Поле для ввода повтора пароля</string>
+    <string name="not_authorized">Не авторизовано</string>
+    <string name="select_head">Последовательность</string>
+    <string name="_01">01</string>
 
 </resources>

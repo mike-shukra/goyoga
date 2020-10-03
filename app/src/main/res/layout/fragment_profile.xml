@@ -120,19 +120,19 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="16dp"
+                    android:layout_height="24dp"
                     android:background="@color/colorPrimaryMiddle">
 
                 </FrameLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="36dp"
+                    android:layout_height="48dp"
                     android:translationY="-8dp">
 
                     <FrameLayout
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:background="@drawable/round_background"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -140,20 +140,20 @@
 
                     <ToggleButton
                         android:id="@+id/buttonMainTransition"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:background="@android:color/transparent"
                         android:drawableTop="@drawable/ic_baseline_keyboard_arrow_down_24"
-                        android:paddingTop="4dp"
+                        android:paddingTop="8dp"
                         android:textColor="@color/colorWhiteLite"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:ignore="ButtonStyle" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </FrameLayout>
-
 
         </LinearLayout>
 
@@ -181,7 +181,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="@string/level"
+                    android:text="@string/level_head"
                     android:textColor="@color/colorWhiteMiddle"
                     android:textSize="16sp" />
 
@@ -193,6 +193,7 @@
                     android:layout_marginTop="16dp"
                     android:background="@color/colorPrimaryLite"
                     android:spinnerMode="dialog"
+                    android:contentDescription="@string/difficulty_level"
                     android:textSize="18sp">
 
                 </Spinner>
@@ -215,7 +216,7 @@
                     <CheckBox
                         android:id="@+id/checkBoxKnee"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:layout_marginTop="16dp"
                         android:layoutDirection="rtl"
                         android:text="@string/knee"
@@ -224,7 +225,7 @@
                     <CheckBox
                         android:id="@+id/checkBoxNeck"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:layout_marginTop="16dp"
                         android:layoutDirection="rtl"
                         android:text="@string/loins"
@@ -233,7 +234,7 @@
                     <CheckBox
                         android:id="@+id/checkBoxLoins"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:layout_marginTop="16dp"
                         android:layoutDirection="rtl"
                         android:text="@string/neck"

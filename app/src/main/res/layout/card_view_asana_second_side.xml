@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="16dp"
-    android:layout_margin="4dp">
+    android:layout_margin="4dp"
+    app:cardBackgroundColor="@color/colorPrimary">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,7 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:contentDescription="@string/user_pict"
+                android:contentDescription="@string/image_title"
                 android:scaleType="centerCrop"
                 android:src="@drawable/placeholder"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -34,7 +35,7 @@
                 android:layout_height="24dp"
                 android:layout_alignParentStart="true"
                 android:layout_margin="8dp"
-                android:background="@drawable/button_background"
+                android:background="@drawable/round_background_accent"
                 android:contentDescription="@string/icon"
                 android:padding="4dp"
                 app:layout_constraintStart_toStartOf="parent"

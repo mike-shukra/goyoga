@@ -34,6 +34,11 @@ class ActionFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         actionViewModel = ViewModelProvider(this).get(ActionViewModel::class.java)
+
+        arguments?.let {
+            actionViewModel.id = it.getLong("id")
+        }
+
         return inflater.inflate(R.layout.fragment_action, container, false)
     }
 
@@ -42,8 +47,6 @@ class ActionFragment : Fragment() {
         Log.d(LOG_TAG, "ActionFragment - onViewCreated")
 
 //        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-
-
 
         val image = view.findViewById<ImageView>(R.id.image)
         val progressBarAll = view.findViewById<ProgressBar>(R.id.progressBarAll)
@@ -71,7 +74,6 @@ class ActionFragment : Fragment() {
         }
 
 //        val pager = view.findViewById(R.id.pager) as ViewPager
-
 
         buttonStart.setOnCheckedChangeListener { compoundButton, b ->
             compoundButton.startAnimation(animForButtonStart)
