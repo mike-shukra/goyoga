@@ -4,8 +4,10 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Application
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.os.StrictMode
+import android.os.StrictMode.VmPolicy
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,10 +18,10 @@ import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.android.billingclient.api.*
+import ru.yogago.goyoga.BuildConfig
 import ru.yogago.goyoga.R
-import ru.yogago.goyoga.data.AppConstants.LOG_TAG
 import ru.yogago.goyoga.data.SelectedIndexArray
+import ru.yogago.goyoga.service.MyBilling
 import ru.yogago.goyoga.ui.login.LoginActivity
 import ru.yogago.goyoga.ui.login.LoginViewModel
 import ru.yogago.goyoga.ui.login.LoginViewModelFactory
@@ -50,6 +52,7 @@ class ProfileFragment : Fragment() {
         val profileLogOutButton: Button = view.findViewById(R.id.profileLogOutButton)
         val profileDeleteButton: Button = view.findViewById(R.id.profileDeleteButton)
         val profileEditButton: Button = view.findViewById(R.id.profileEditButton)
+        val profileBillingButton: Button = view.findViewById(R.id.profileBillingButton)
         val profileUserName: TextView = view.findViewById(R.id.profileUserName)
         val profileUserEmail: TextView = view.findViewById(R.id.profileUserEmail)
         val createButton = view.findViewById<Button>(R.id.createButton)
@@ -69,6 +72,13 @@ class ProfileFragment : Fragment() {
         val lSwipeDetector = GestureDetectorCompat(context, MyGestureListener())
 
 //        profileBox.setOnTouchListener(View.OnTouchListener())
+
+        profileBillingButton.setOnClickListener {
+            activity?.let { fragmentActivity ->
+                val myBilling = MyBilling(fragmentActivity)
+                myBilling.launchBilling()
+            }
+        }
 
         buttonMainTransition.setOnCheckedChangeListener { compoundButton, b ->
             if (b) {
@@ -160,6 +170,14 @@ class ProfileFragment : Fragment() {
         profileViewModel.setModel()
         profileViewModel.loadUserData()
 
+        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            StrictMode.setVmPolicy(
+                VmPolicy.Builder()
+                    .detectNonSdkApiUsage()
+                    .penaltyLog()
+                    .build()
+            )
+        }
 
     }
 

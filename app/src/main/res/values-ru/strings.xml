@@ -56,5 +56,6 @@
     <string name="not_authorized">Не авторизовано</string>
     <string name="select_head">Последовательность</string>
     <string name="_01">01</string>
+    <string name="description_title">Описание</string>
 
 </resources>
