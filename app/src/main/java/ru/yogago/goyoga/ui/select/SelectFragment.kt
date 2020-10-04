@@ -65,9 +65,4 @@ class SelectFragment : Fragment() {
         selectViewModel.loadAsanas()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        selectViewModel.cancelBackgroundWork()
-    }
-
 }
