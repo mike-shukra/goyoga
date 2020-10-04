@@ -13,7 +13,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        android:translationY="-84dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -93,6 +92,18 @@
                         android:layout_marginTop="8dp"
                         android:background="@drawable/button_background"
                         android:drawableTop="@drawable/ic_baseline_edit_24"
+                        android:padding="16dp"
+                        android:textColor="@color/colorWhiteLite"
+                        tools:ignore="ButtonStyle" />
+
+                    <Button
+                        android:id="@+id/profileBillingButton"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/button_background"
+                        android:drawableTop="@drawable/ic_baseline_shopping_cart_24"
                         android:padding="16dp"
                         android:textColor="@color/colorWhiteLite"
                         tools:ignore="ButtonStyle" />
