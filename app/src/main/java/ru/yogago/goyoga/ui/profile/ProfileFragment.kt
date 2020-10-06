@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import ru.yogago.goyoga.BuildConfig
 import ru.yogago.goyoga.R
+import ru.yogago.goyoga.data.BillingState
 import ru.yogago.goyoga.data.SelectedIndexArray
 import ru.yogago.goyoga.model.MyBilling
 import ru.yogago.goyoga.ui.login.LoginActivity
@@ -60,14 +61,17 @@ class ProfileFragment : Fragment() {
         val checkBoxLoins = view.findViewById<CheckBox>(R.id.checkBoxLoins)
         val loading = view.findViewById<ProgressBar>(R.id.loading)
         val mainLayout = view.findViewById<LinearLayout>(R.id.mainLayout)
-        val profileWrapper: ConstraintLayout = view.findViewById(R.id.profileWrapper)
-        val profileBox: LinearLayout = view.findViewById(R.id.profileBox)
+        val topLayout = view.findViewById<LinearLayout>(R.id.topLayout)
+        val profileWrapper: LinearLayout = view.findViewById(R.id.profileWrapper)
         val profileButtonBox: FrameLayout = view.findViewById(R.id.profileButtonBox)
         val buttonMainTransition = view.findViewById<ToggleButton>(R.id.buttonMainTransition)
+        val advertisingBox = view.findViewById<LinearLayout>(R.id.advertising_box)
 
         val flipAnimation = AnimationUtils.loadAnimation(context, R.anim.flip)
 
         val lSwipeDetector = GestureDetectorCompat(context, MyGestureListener())
+
+        if (BillingState.isAds) advertisingBox.visibility = View.VISIBLE
 
 //        profileBox.setOnTouchListener(View.OnTouchListener())
 
@@ -77,29 +81,30 @@ class ProfileFragment : Fragment() {
 
         buttonMainTransition.setOnCheckedChangeListener { compoundButton, b ->
             if (b) {
-                compoundButton.pivotY = 65F
+                compoundButton.pivotY = 50F
                 compoundButton.scaleY = -1.0F
                 compoundButton.startAnimation(flipAnimation)
-                mainLayout.animate()
+                topLayout.animate()
                     .translationY(0F)
                     .setDuration(300)
                     .setListener(object : AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: Animator) {
                             super.onAnimationEnd(animation)
-                            mainLayout.translationY = 0F
+                            topLayout.translationY = 0F
                         }
                     })
             }
             else {
+                compoundButton.pivotY = 50F
                 compoundButton.scaleY = 1.0F
                 compoundButton.startAnimation(flipAnimation)
-                mainLayout.animate()
+                topLayout.animate()
                     .translationY(-((profileWrapper.height).toFloat()))
                     .setDuration(300)
                     .setListener(object : AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: Animator) {
                             super.onAnimationEnd(animation)
-                            mainLayout.translationY = -((profileWrapper.height).toFloat())
+                            topLayout.translationY = -((profileWrapper.height).toFloat())
                         }
                     })
             }

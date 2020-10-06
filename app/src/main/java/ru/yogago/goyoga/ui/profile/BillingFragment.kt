@@ -10,6 +10,7 @@ import android.widget.ListView
 import androidx.lifecycle.ViewModelProvider
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.BillingItem
+import ru.yogago.goyoga.model.BillingManager
 import ru.yogago.goyoga.model.MyBilling
 import java.util.ArrayList
 
@@ -38,9 +39,7 @@ class BillingFragment : Fragment() {
             }
         })
 
-        activity?.let { fragmentActivity ->
-            viewModel.setMyBilling(MyBilling(fragmentActivity))
-        }
+        viewModel.setMyBilling(MyBilling.newInstance(null))
 
         viewModel.loadBillings()
     }

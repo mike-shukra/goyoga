@@ -58,5 +58,6 @@
     <string name="_01">01</string>
     <string name="description_title">Описание</string>
     <string name="billing_head">Покупки</string>
+    <string name="advertising">РЕКЛАМА</string>
 
 </resources>

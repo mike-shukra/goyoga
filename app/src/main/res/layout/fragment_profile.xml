@@ -11,152 +11,11 @@
     <LinearLayout
         android:id="@+id/mainLayout"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:id="@+id/profileBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/profileWrapper"
-                android:layout_width="match_parent"
-                android:layout_height="84dp"
-                android:background="@color/colorPrimary"
-                android:orientation="horizontal"
-                android:padding="8dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:orientation="vertical"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <ImageView
-                        android:id="@+id/imageView"
-                        android:layout_width="66dp"
-                        android:layout_height="66dp"
-                        android:padding="0dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/ic_baseline_account_box_24" />
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <Button
-                        android:id="@+id/profileDeleteButton"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:background="@drawable/button_background"
-                        android:drawableTop="@drawable/ic_baseline_delete_forever_24"
-                        android:padding="16dp"
-                        android:textColor="@color/colorWhiteLite"
-                        tools:ignore="ButtonStyle" />
-
-                    <Button
-                        android:id="@+id/profileEditButton"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/button_background"
-                        android:drawableTop="@drawable/ic_baseline_edit_24"
-                        android:padding="16dp"
-                        android:textColor="@color/colorWhiteLite"
-                        tools:ignore="ButtonStyle" />
-
-                    <Button
-                        android:id="@+id/profileBillingButton"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/button_background"
-                        android:drawableTop="@drawable/ic_baseline_shopping_cart_24"
-                        android:padding="16dp"
-                        android:textColor="@color/colorWhiteLite"
-                        tools:ignore="ButtonStyle" />
-
-                    <Button
-                        android:id="@+id/profileLogOutButton"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:background="@drawable/button_background"
-                        android:drawableTop="@drawable/ic_baseline_exit_to_app_24"
-                        android:padding="16dp"
-                        android:textColor="@color/colorWhiteLite"
-                        tools:ignore="ButtonStyle" />
-                </LinearLayout>
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-            <FrameLayout
-                android:id="@+id/profileButtonBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="24dp"
-                    android:background="@color/colorPrimaryMiddle">
-
-                </FrameLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:translationY="-8dp">
-
-                    <FrameLayout
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="@drawable/round_background"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ToggleButton
-                        android:id="@+id/buttonMainTransition"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="@android:color/transparent"
-                        android:drawableTop="@drawable/ic_baseline_keyboard_arrow_down_24"
-                        android:paddingTop="8dp"
-                        android:textColor="@color/colorWhiteLite"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:ignore="ButtonStyle" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </FrameLayout>
-
-        </LinearLayout>
+        app:layout_constraintStart_toStartOf="parent">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -178,6 +37,22 @@
                     android:layout_marginEnd="32dp"
                     android:layout_marginBottom="16dp" />
 
+                <LinearLayout
+                    android:id="@+id/advertising_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorWhiteLite"
+                    android:gravity="center"
+                    android:padding="16dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/advertising"
+                        android:textColor="@color/colorPrimaryMiddle" />
+                </LinearLayout>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -193,8 +68,8 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="16dp"
                     android:background="@color/colorPrimaryLite"
-                    android:spinnerMode="dialog"
                     android:contentDescription="@string/difficulty_level"
+                    android:spinnerMode="dialog"
                     android:textSize="18sp">
 
                 </Spinner>
@@ -245,8 +120,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingBottom="16dp">
+                    android:orientation="horizontal">
 
                     <Space
                         android:layout_width="0dp"
@@ -273,6 +147,167 @@
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
+    </LinearLayout>
+<!--    android:translationY="-84dp"-->
+    <LinearLayout
+        android:id="@+id/topLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:translationY="-84dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/profileWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="84dp"
+            android:background="@color/colorPrimary"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="66dp"
+                    android:layout_height="66dp"
+                    android:contentDescription="TODO"
+                    android:padding="0dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_baseline_account_box_24" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <Button
+                    android:id="@+id/profileDeleteButton"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/button_background"
+                    android:drawableTop="@drawable/ic_baseline_delete_forever_24"
+                    android:padding="16dp"
+                    android:textColor="@color/colorWhiteLite"
+                    tools:ignore="ButtonStyle" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/profileEditButton"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/button_background"
+                    android:drawableTop="@drawable/ic_baseline_edit_24"
+                    android:padding="16dp"
+                    android:textColor="@color/colorWhiteLite"
+                    tools:ignore="ButtonStyle" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/profileBillingButton"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/button_background"
+                    android:drawableTop="@drawable/ic_baseline_shopping_cart_24"
+                    android:padding="16dp"
+                    android:textColor="@color/colorWhiteLite"
+                    tools:ignore="ButtonStyle" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/profileLogOutButton"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/button_background"
+                    android:drawableTop="@drawable/ic_baseline_exit_to_app_24"
+                    android:padding="16dp"
+                    android:textColor="@color/colorWhiteLite"
+                    tools:ignore="ButtonStyle" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/profileButtonBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:background="@color/colorPrimaryMiddle">
+
+            </FrameLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:translationY="-8dp">
+
+                <FrameLayout
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/round_background"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ToggleButton
+                    android:id="@+id/buttonMainTransition"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@android:color/transparent"
+                    android:drawableTop="@drawable/ic_baseline_keyboard_arrow_down_24"
+                    android:paddingTop="8dp"
+                    android:textColor="@color/colorWhiteLite"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ButtonStyle" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </FrameLayout>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

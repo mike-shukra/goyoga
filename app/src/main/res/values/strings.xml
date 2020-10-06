@@ -58,5 +58,6 @@
     <string name="select_head">Sequence</string>
     <string name="description_title">Description</string>
     <string name="billing_head">Billing</string>
+    <string name="advertising">Advertising</string>
 
 </resources>
