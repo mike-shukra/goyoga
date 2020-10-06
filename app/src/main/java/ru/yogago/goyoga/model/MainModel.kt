@@ -24,6 +24,7 @@ class MainModel: CoroutineScope {
     private lateinit var selectViewModel: SelectViewModel
     private lateinit var editUserViewModel: EditUserViewModel
     private lateinit var profileViewModel: ProfileViewModel
+    private val myBilling = MyBilling.newInstance(null)
 
     fun loadData() {
         launch {
@@ -203,6 +204,7 @@ class MainModel: CoroutineScope {
     }
 
     fun loadUserData() {
+        myBilling.queryPurchases()
         launch {
             if(!isTokenDB()) {
                 val uniqueID: String = UUID.randomUUID().toString()
