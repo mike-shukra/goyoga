@@ -35,32 +35,21 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
+                    android:layout_margin="4dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:orientation="vertical"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <TextView
-                        android:id="@+id/profileUserName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:maxWidth="160dp"
-                        android:maxLines="1"
-                        android:text="@string/profile_field_name"
-                        android:textColor="@color/colorWhiteMiddle" />
+                    <ImageView
+                        android:id="@+id/imageView"
+                        android:layout_width="66dp"
+                        android:layout_height="66dp"
+                        android:padding="0dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_baseline_account_box_24" />
 
-                    <TextView
-                        android:id="@+id/profileUserEmail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:maxWidth="160dp"
-                        android:maxLines="1"
-                        android:text="@string/profile_field_email"
-                        android:textColor="@color/colorWhiteMiddle" />
 
                 </LinearLayout>
 
@@ -122,6 +111,7 @@
                         android:textColor="@color/colorWhiteLite"
                         tools:ignore="ButtonStyle" />
                 </LinearLayout>
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
             <FrameLayout

@@ -1,4 +1,4 @@
-package ru.yogago.goyoga.service
+package ru.yogago.goyoga.model
 
 
 import android.app.Activity
@@ -6,7 +6,7 @@ import android.util.Log
 import com.android.billingclient.api.*
 import com.android.billingclient.api.BillingClient.BillingResponseCode
 import com.android.billingclient.api.BillingClient.FeatureType
-import ru.yogago.goyoga.service.BillingManager.Companion.formatPeriod
+import ru.yogago.goyoga.model.BillingManager.Companion.formatPeriod
 
 /**
  * When using this class:

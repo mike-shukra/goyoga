@@ -21,7 +21,7 @@ import androidx.navigation.fragment.findNavController
 import ru.yogago.goyoga.BuildConfig
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.SelectedIndexArray
-import ru.yogago.goyoga.service.MyBilling
+import ru.yogago.goyoga.model.MyBilling
 import ru.yogago.goyoga.ui.login.LoginActivity
 import ru.yogago.goyoga.ui.login.LoginViewModel
 import ru.yogago.goyoga.ui.login.LoginViewModelFactory
@@ -53,8 +53,6 @@ class ProfileFragment : Fragment() {
         val profileDeleteButton: Button = view.findViewById(R.id.profileDeleteButton)
         val profileEditButton: Button = view.findViewById(R.id.profileEditButton)
         val profileBillingButton: Button = view.findViewById(R.id.profileBillingButton)
-        val profileUserName: TextView = view.findViewById(R.id.profileUserName)
-        val profileUserEmail: TextView = view.findViewById(R.id.profileUserEmail)
         val createButton = view.findViewById<Button>(R.id.createButton)
         val levelSpinner = view.findViewById<Spinner>(R.id.levelSpinner)
         val checkBoxKnee = view.findViewById<CheckBox>(R.id.checkBoxKnee)
@@ -74,10 +72,7 @@ class ProfileFragment : Fragment() {
 //        profileBox.setOnTouchListener(View.OnTouchListener())
 
         profileBillingButton.setOnClickListener {
-            activity?.let { fragmentActivity ->
-                val myBilling = MyBilling(fragmentActivity)
-                myBilling.launchBilling()
-            }
+            findNavController().navigate(R.id.nav_billing)
         }
 
         buttonMainTransition.setOnCheckedChangeListener { compoundButton, b ->
@@ -135,9 +130,6 @@ class ProfileFragment : Fragment() {
             findNavController().navigate(R.id.nav_editUser)
         }
         profileViewModel.user.observe(viewLifecycleOwner, {
-            profileUserName.text = it?.first_name
-            profileUserEmail.text = it?.email
-
             val levels = resources.getStringArray(R.array.levels)
             val selectedIndex = SelectedIndexArray(selectedIndex = it.level, arr = levels)
             val adapter = ArrayAdapter(
@@ -170,23 +162,5 @@ class ProfileFragment : Fragment() {
         profileViewModel.setModel()
         profileViewModel.loadUserData()
 
-        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            StrictMode.setVmPolicy(
-                VmPolicy.Builder()
-                    .detectNonSdkApiUsage()
-                    .penaltyLog()
-                    .build()
-            )
-        }
-
     }
-
-
-//    private fun toggle(parent: ViewGroup, view: View, isShow: Boolean) {
-//        val transition: Transition = Slide(Gravity.BOTTOM)
-//        transition.duration = 200
-//        transition.addTarget(R.id.image)
-//        TransitionManager.beginDelayedTransition(parent, transition)
-//        view.visibility = if (isShow) View.VISIBLE else View.GONE
-//    }
 }
