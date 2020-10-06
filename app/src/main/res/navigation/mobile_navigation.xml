@@ -8,7 +8,11 @@
         android:id="@+id/nav_select"
         android:name="ru.yogago.goyoga.ui.select.SelectFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_select" />
+        tools:layout="@layout/fragment_select" >
+        <action
+            android:id="@+id/action_nav_select_to_nav_action"
+            app:destination="@id/nav_action" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_action"
@@ -24,6 +28,9 @@
         <action
             android:id="@+id/action_nav_profile_to_nav_editUser"
             app:destination="@id/nav_editUser" />
+        <action
+            android:id="@+id/action_nav_profile_to_billingFragment"
+            app:destination="@id/nav_billing" />
     </fragment>
 
     <fragment
@@ -46,5 +53,10 @@
         android:name="ru.yogago.goyoga.ui.login.RegisterActivity"
         android:label="activity_register"
         tools:layout="@layout/activity_register" />
+    <fragment
+        android:id="@+id/nav_billing"
+        android:name="ru.yogago.goyoga.ui.profile.BillingFragment"
+        android:label="billing_fragment"
+        tools:layout="@layout/billing_fragment" />
 
 </navigation>
