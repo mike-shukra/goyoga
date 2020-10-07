@@ -280,12 +280,12 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="56dp"
                 android:translationY="-8dp">
 
                 <FrameLayout
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
                     android:background="@drawable/round_background"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -293,12 +293,12 @@
 
                 <ToggleButton
                     android:id="@+id/buttonMainTransition"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="@android:color/transparent"
-                    android:drawableTop="@drawable/ic_baseline_keyboard_arrow_down_24"
-                    android:paddingTop="8dp"
-                    android:textColor="@color/colorWhiteLite"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/icon_arrow_down"
+                    android:textOff=""
+                    android:textOn=""
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
