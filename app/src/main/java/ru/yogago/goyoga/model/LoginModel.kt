@@ -24,11 +24,8 @@ class LoginModel: CoroutineScope {
     val service = ApiFactory.API
 
     fun saveTokenDB(token: Token) {
-        Log.d(LOG_TAG, "LoginModel - saveTokenDB token: $token")
-        launch {
-            val response = db.getDBDao().insertToken(token)
-            Log.d(LOG_TAG, "LoginModel - saveTokenDB response: $response")
-        }
+        val response = db.getDBDao().insertToken(token)
+        Log.d(LOG_TAG, "LoginModel - saveTokenDB response: $response")
     }
 
     fun logOut() {
