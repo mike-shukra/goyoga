@@ -22,7 +22,7 @@ class MainModel: CoroutineScope {
     private val service = ApiFactory.API
     private lateinit var selectViewModel: SelectViewModel
     private lateinit var profileViewModel: ProfileViewModel
-    private val myBilling = MyBilling.newInstance(null)
+    private lateinit var myBilling: MyBilling
 
     fun loadData() {
         launch {
@@ -224,14 +224,22 @@ class MainModel: CoroutineScope {
         return this
     }
 
+    fun setMyBilling(mB: MyBilling) {
+        this.myBilling = mB
+    }
+
     fun setProfileViewModel(m: ProfileViewModel) : MainModel {
         this.profileViewModel = m
         return this
     }
 
-    fun cancelBackgroundWork() {
-        coroutineContext.cancelChildren()
-        Log.d(LOG_TAG, "MainModel - cancelBackgroundWork")
+//    fun cancelBackgroundWork() {
+//        coroutineContext.cancelChildren()
+//        Log.d(LOG_TAG, "MainModel - cancelBackgroundWork")
+//    }
+
+    fun destroyBilling() {
+        myBilling.destroy()
     }
 
 }
