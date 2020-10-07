@@ -81,7 +81,6 @@ class ProfileFragment : Fragment() {
 
         buttonMainTransition.setOnCheckedChangeListener { compoundButton, b ->
             if (b) {
-                compoundButton.pivotY = 50F
                 compoundButton.scaleY = -1.0F
                 compoundButton.startAnimation(flipAnimation)
                 topLayout.animate()
@@ -95,7 +94,6 @@ class ProfileFragment : Fragment() {
                     })
             }
             else {
-                compoundButton.pivotY = 50F
                 compoundButton.scaleY = 1.0F
                 compoundButton.startAnimation(flipAnimation)
                 topLayout.animate()
