@@ -14,6 +14,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private val model = MainModel()
     val user: MutableLiveData<UserData> = MutableLiveData()
     val error: MutableLiveData<String> = MutableLiveData()
+    val done: MutableLiveData<Boolean> = MutableLiveData()
 
     fun setModel(): ViewModel {
         model.setProfileViewModel(this)

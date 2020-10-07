@@ -1,6 +1,7 @@
 package ru.yogago.goyoga.ui.select
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,9 +21,9 @@ class SelectFragment : Fragment() {
     private lateinit var selectViewModel: SelectViewModel
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         selectViewModel = ViewModelProvider(this).get(SelectViewModel::class.java)
         return inflater.inflate(R.layout.fragment_select, container, false)
@@ -34,7 +35,7 @@ class SelectFragment : Fragment() {
         val count = view.findViewById<TextView>(R.id.count)
         val loading = view.findViewById<ProgressBar>(R.id.loading)
         val rvAsanas: RecyclerView = view.findViewById(R.id.rvAsanas)
-        val glm = GridLayoutManager(context, 2)
+        val glm = GridLayoutManager(context, getScreenColumn())
         rvAsanas.layoutManager = glm
 
         selectViewModel.userData.observe(viewLifecycleOwner, {
@@ -65,4 +66,7 @@ class SelectFragment : Fragment() {
         selectViewModel.loadAsanas()
     }
 
+    private fun getScreenColumn(): Int {
+        return if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 4 else 2
+    }
 }

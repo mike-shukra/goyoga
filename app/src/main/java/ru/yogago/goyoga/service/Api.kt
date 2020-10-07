@@ -44,7 +44,7 @@ interface Api {
         @Field("knee") knee: String,
         @Field("loins") loins: String,
         @Field("neck") neck: String
-    ): Deferred<Response<Data>>
+    ): Deferred<Response<Message>>
 
     @POST("Api/out")
     fun logOutAsync(): Deferred<Response<Message>>

@@ -131,44 +131,40 @@ class MainModel: CoroutineScope {
 
     fun create(level: String, knee: String, loins: String, neck: String) {
         launch {
-            val result = dbDao.insertActionState(ActionState(currentId = 1))
-            val data = getCreatedRemoteData(level, knee, loins, neck)
-            if (data.error == "no") {
+            dbDao.insertActionState(ActionState(currentId = 1))
+            val message = getCreatedRemoteData(level, knee, loins, neck)
+            if (message.message == "true") {
                 val responseDeleteActionState = dbDao.deleteActionState()
+                profileViewModel.done.postValue(true)
                 Log.d(LOG_TAG, "MainModel - create responseDeleteActionState: $responseDeleteActionState")
-                Log.d(LOG_TAG, "MainModel - create - data: $data")
+                Log.d(LOG_TAG, "MainModel - create - message: $message")
             } else {
-                Log.d(LOG_TAG, "MainModel - create - error: ${data.error}")
-                profileViewModel.error.postValue(data.error)
+                Log.d(LOG_TAG, "MainModel - create - message: ${message.error}")
+                profileViewModel.error.postValue(message.error)
             }
         }
     }
 
-    private suspend fun getCreatedRemoteData(level: String, knee: String, loins: String, neck: String): Data {
+    private suspend fun getCreatedRemoteData(level: String, knee: String, loins: String, neck: String): Message {
         val request = service.createAsync(
             level = level,
             knee = knee,
             loins = loins,
             neck =neck
         )
-        try {
+        return try {
             val response = request.await()
-            return if(response.isSuccessful) {
-                val data = response.body()!!
-                Log.d(LOG_TAG, "MainModel - getRemoteData - data: $data")
-                val asanas = data.asanas
-                Log.d(LOG_TAG, "MainModel - getRemoteData - asanas: $asanas")
-                val userData = data.userData
-                Log.d(LOG_TAG, "MainModel - getRemoteData - userData: $userData")
-                data
+            if(response.isSuccessful) {
+                val message = response.body()!!
+                Log.d(LOG_TAG, "MainModel - getCreatedRemoteData - data: $message")
+                message
             } else {
-                Log.d(LOG_TAG,"MainModel - getRemoteData error: " + response.errorBody().toString())
-                Data(error = response.errorBody().toString())
+                Log.d(LOG_TAG,"MainModel - getCreatedRemoteData error: " + response.errorBody().toString())
+                Message(error = response.errorBody().toString())
             }
-        }
-        catch (e: Exception) {
-            Log.d(LOG_TAG, "MainModel - getRemoteData - Exception: $e")
-            return Data(error = e.toString())
+        } catch (e: Exception) {
+            Log.d(LOG_TAG, "MainModel - getCreatedRemoteData - Exception: $e")
+            Message(error = e.toString())
         }
     }
 
