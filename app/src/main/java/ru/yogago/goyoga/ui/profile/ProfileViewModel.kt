@@ -1,13 +1,12 @@
 package ru.yogago.goyoga.ui.profile
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import ru.yogago.goyoga.data.AppConstants
 import ru.yogago.goyoga.data.UserData
 import ru.yogago.goyoga.model.MainModel
+import ru.yogago.goyoga.model.MyBilling
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -21,6 +20,10 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         return this
     }
 
+    fun setMyBilling(mB: MyBilling) {
+        model.setMyBilling(mB)
+    }
+
     fun loadUserData() {
         model.loadUserData()
     }
@@ -32,6 +35,10 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             loins = if (loins) 1.toString() else 0.toString(),
             neck = if (neck) 1.toString() else 0.toString()
         )
+    }
+
+    fun destroyBilling(){
+        model.destroyBilling()
     }
 
 }

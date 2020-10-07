@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.BillingState
 import ru.yogago.goyoga.data.SelectedIndexArray
+import ru.yogago.goyoga.model.MyBilling
 
 
 class ProfileFragment : Fragment() {
@@ -120,7 +121,13 @@ class ProfileFragment : Fragment() {
         })
 
         profileViewModel.setModel()
+        profileViewModel.setMyBilling(MyBilling(requireActivity()))
         profileViewModel.loadUserData()
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        profileViewModel.destroyBilling()
     }
 }

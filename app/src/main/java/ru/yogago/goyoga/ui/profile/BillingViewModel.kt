@@ -23,10 +23,15 @@ class BillingViewModel : ViewModel(), CoroutineScope {
     fun setMyBilling(mB: MyBilling){
         myBilling = mB
         myBilling.setViewModel(this)
-        myBilling.queryPurchases()
+        myBilling.loadBillings()
     }
 
     fun subscribe(id: Int) {
         myBilling.subscribe(id)
     }
+
+    fun destroyBilling(){
+        myBilling.destroy()
+    }
+
 }

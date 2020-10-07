@@ -9,7 +9,6 @@
 <!--    android:translationY="-84dp"-->
 
     <ScrollView
-        android:id="@+id/mainLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -143,8 +142,9 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-<!--    android:translationY="-84dp"-->
+<!--    android:translationY="-84dp"    -->
     <LinearLayout
+        android:translationY="-84dp"
         android:id="@+id/topLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -174,7 +174,6 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
-                    android:id="@+id/imageView"
                     android:layout_width="66dp"
                     android:layout_height="66dp"
                     android:contentDescription="@string/icon"
@@ -213,7 +212,6 @@
         </LinearLayout>
 
         <FrameLayout
-            android:id="@+id/profileButtonBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 

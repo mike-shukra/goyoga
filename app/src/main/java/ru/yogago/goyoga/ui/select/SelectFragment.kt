@@ -1,6 +1,5 @@
 package ru.yogago.goyoga.ui.select
 
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater

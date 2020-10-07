@@ -10,15 +10,7 @@ import ru.yogago.goyoga.data.BillingState
 import ru.yogago.goyoga.ui.profile.BillingViewModel
 import kotlin.coroutines.CoroutineContext
 
-class MyBilling(val activity: Activity): CoroutineScope, PurchasesUpdatedListener {
-
-    companion object {
-        var myBilling: MyBilling? = null
-        fun newInstance(activity: Activity?): MyBilling{
-            if (myBilling == null) myBilling = MyBilling(activity!!)
-            return myBilling!!
-        }
-    }
+class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdatedListener {
 
     private lateinit var skuDetails: List<SkuDetails>
     private lateinit var viewModel: BillingViewModel
@@ -28,10 +20,10 @@ class MyBilling(val activity: Activity): CoroutineScope, PurchasesUpdatedListene
     private var isBillingServiceConnected = false
 
     private val purchasesUpdatedListener = PurchasesUpdatedListener { billingResult: BillingResult, purchases ->
-            // To be implemented in a later section.
-            Log.d(LOG_TAG, "MyBilling - purchasesUpdatedListener - billingResult.debugMessage: ${billingResult.debugMessage}")
-            Log.d(LOG_TAG, "MyBilling - purchasesUpdatedListener - purchases: $purchases")
-        }
+        // To be implemented in a later section.
+        Log.d(LOG_TAG, "MyBilling - purchasesUpdatedListener - billingResult.debugMessage: ${billingResult.debugMessage}")
+        Log.d(LOG_TAG, "MyBilling - purchasesUpdatedListener - purchases: $purchases")
+    }
 
     private var billingClient = BillingClient.newBuilder(activity.applicationContext)
         .setListener(purchasesUpdatedListener)
@@ -75,6 +67,8 @@ class MyBilling(val activity: Activity): CoroutineScope, PurchasesUpdatedListene
             val purchasesResult = billingClient.queryPurchases(BillingClient.SkuType.SUBS)
             if (purchasesResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 onEntitledPurchases(purchasesResult.purchasesList!!)
+                Log.d(LOG_TAG, "MyBilling - startQueryPurchases - purchasesResult.purchasesList: ${purchasesResult.purchasesList}")
+
             } else {
                 Log.d(LOG_TAG, "Error trying to query purchases: $purchasesResult")
             }
@@ -134,6 +128,7 @@ class MyBilling(val activity: Activity): CoroutineScope, PurchasesUpdatedListene
     }
 
     fun queryPurchases() {
+        Log.d(LOG_TAG, "MyBilling - queryPurchases")
         startConnect {
             startQueryPurchases()
         }
@@ -150,14 +145,16 @@ class MyBilling(val activity: Activity): CoroutineScope, PurchasesUpdatedListene
             }
         } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
             // Handle an error caused by a user cancelling the purchase flow.
+            Log.d(LOG_TAG, "MyBilling - onPurchasesUpdated - Handle an error caused by a user cancelling the purchase flow.")
         } else {
             // Handle any other error codes.
+            Log.d(LOG_TAG, "MyBilling - onPurchasesUpdated - Handle any other error codes.")
         }
     }
 
     private fun handlePurchase(purchase: Purchase) {
         // Purchase retrieved from BillingClient#queryPurchases or your PurchasesUpdatedListener.
-        val purchase : Purchase = purchase
+        val myPurchase : Purchase = purchase
 
         // Verify the purchase.
         // Ensure entitlement was not already granted for this purchaseToken.
@@ -165,7 +162,7 @@ class MyBilling(val activity: Activity): CoroutineScope, PurchasesUpdatedListene
 
         val consumeParams =
             ConsumeParams.newBuilder()
-                .setPurchaseToken(purchase.purchaseToken)
+                .setPurchaseToken(myPurchase.purchaseToken)
                 .build()
 
         billingClient.consumeAsync(consumeParams) { billingResult, outToken ->
@@ -175,5 +172,13 @@ class MyBilling(val activity: Activity): CoroutineScope, PurchasesUpdatedListene
             }
         }
     }
+
+    fun destroy() {
+        Log.d(LOG_TAG,"destroy()")
+        if (billingClient.isReady) {
+            billingClient.endConnection()
+        }
+    }
+
 
 }
