@@ -8,13 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.yogago.goyoga.R
-import ru.yogago.goyoga.ui.login.LoginActivity
 
 class SelectFragment : Fragment() {
 
@@ -56,10 +56,12 @@ class SelectFragment : Fragment() {
         })
 
         selectViewModel.error.observe(viewLifecycleOwner, {
-            if (it == "Не авторизовано") {
-                val intent = Intent(this.context, LoginActivity::class.java)
-                startActivity(intent)
+            var text = it
+            if (it.contains("UnknownHostException")) text = getString(R.string.no_internet)
+            if (it.contains("Не авторизовано")) {
+                text = getString(R.string.not_authorized)
             }
+            Toast.makeText(context, text, Toast.LENGTH_LONG).show()
         })
 
         selectViewModel.setModel()

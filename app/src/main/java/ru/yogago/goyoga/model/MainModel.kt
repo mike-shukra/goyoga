@@ -8,7 +8,6 @@ import ru.yogago.goyoga.data.AppConstants.LOG_TAG
 import ru.yogago.goyoga.service.ApiFactory
 import ru.yogago.goyoga.service.DataBase
 import ru.yogago.goyoga.service.TokenProvider
-import ru.yogago.goyoga.ui.profile.EditUserViewModel
 import ru.yogago.goyoga.ui.profile.ProfileViewModel
 import ru.yogago.goyoga.ui.select.SelectViewModel
 import java.util.*
@@ -22,7 +21,6 @@ class MainModel: CoroutineScope {
     private val dbDao = DataBase.db.getDBDao()
     private val service = ApiFactory.API
     private lateinit var selectViewModel: SelectViewModel
-    private lateinit var editUserViewModel: EditUserViewModel
     private lateinit var profileViewModel: ProfileViewModel
     private val myBilling = MyBilling.newInstance(null)
 
@@ -168,35 +166,9 @@ class MainModel: CoroutineScope {
         }
     }
 
-    fun updatePassword(password: String) {
-        launch {
-            val request = service.updatePasswordAsync(password)
-            try {
-                val response = request.await()
-                if(response.isSuccessful) {
-                    val token = response.body()!!
-                    LoginModel().saveTokenDB(token)
-                    Log.d(LOG_TAG, "MainModel - updatePassword response.body(): $token")
-                    editUserViewModel.isUpdate.postValue(true)
-                } else {
-                    Log.d(LOG_TAG,"MainModel - updatePassword  error: " + response.errorBody().toString())
-                    editUserViewModel.error.postValue(response.errorBody().toString())
-                }
-            }
-            catch (e: Exception) {
-                Log.d(LOG_TAG, "MainModel - updatePassword - Exception: $e")
-                editUserViewModel.error.postValue(e.toString())
-            }
-        }
-    }
-
-    fun updateUserName(userData: UserData){
-        launch {
-            if (updateUserNameRemote(userData)) {
-                val response = dbDao.insertUserName(userData.first_name!!, userData.id)
-                Log.d(LOG_TAG, "MainModel - updateUserInfo response: $response")
-            }
-        }
+    private fun saveTokenDB(token: Token) {
+        val response = dbDao.insertToken(token)
+        Log.d(LOG_TAG, "LoginModel - saveTokenDB response: $response")
     }
 
     fun loadUserData() {
@@ -206,7 +178,7 @@ class MainModel: CoroutineScope {
                 val uniqueID: String = UUID.randomUUID().toString()
                 registerAnonymousUser(uniqueID)
                 val token = TokenProvider.getToken(uniqueID, APP_TOKEN)
-                LoginModel().saveTokenDB(token)
+                saveTokenDB(token)
             }
 
             val data = loadRemoteUser()
@@ -229,44 +201,6 @@ class MainModel: CoroutineScope {
         return user
     }
 
-    fun loadUserToEditUser() {
-        launch {
-            val response: UserData? = dbDao.loadUserData()
-            Log.d(LOG_TAG, "MainModel - loadUserToEditUser user $response")
-            if (response != null) editUserViewModel.setUserToVM(response)
-//            else editUserViewModel.error.postValue("")
-        }
-    }
-
-    private suspend fun updateUserNameRemote(user: UserData): Boolean = withContext(coroutineContext){
-            val petRequest = service.updateUserNameAsync(user.first_name!!)
-            try {
-                val response = petRequest.await()
-                if (response.isSuccessful) {
-                    val data = response.body()!!
-                    Log.d(LOG_TAG, "MainModel - updateUserRemote  data: $data")
-                    if (data.result!!) {
-                        editUserViewModel.isUpdate.postValue(true)
-                        return@withContext true
-                    }
-                    if (data.error != null) {
-                        editUserViewModel.error.postValue(data.error)
-                        return@withContext false
-                    }
-                    return@withContext false
-                } else {
-                    Log.d(LOG_TAG,"MainModel - updateUserRemote  error: " + response.errorBody().toString())
-                    editUserViewModel.error.postValue(response.errorBody().toString())
-                    return@withContext false
-                }
-            }
-            catch (e: Exception) {
-                Log.d(LOG_TAG, "MainModel - updateUserRemote - Exception: $e")
-                editUserViewModel.error.postValue(e.toString())
-                return@withContext false
-            }
-        }
-
     private suspend fun loadRemoteUser(): Data {
         val petRequest = service.getDataAsync()
         return try {
@@ -287,11 +221,6 @@ class MainModel: CoroutineScope {
 
     fun setViewModel(m: SelectViewModel) : MainModel {
         this.selectViewModel = m
-        return this
-    }
-
-    fun setEditUserViewModel(m: EditUserViewModel) : MainModel {
-        this.editUserViewModel = m
         return this
     }
 

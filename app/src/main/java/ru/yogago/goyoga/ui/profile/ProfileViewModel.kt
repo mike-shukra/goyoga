@@ -34,9 +34,4 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         )
     }
 
-    fun cancelBackgroundWork() {
-        model.cancelBackgroundWork()
-        Log.d(AppConstants.LOG_TAG, "ActionViewModel - cancelBackgroundWork")
-    }
-
 }
