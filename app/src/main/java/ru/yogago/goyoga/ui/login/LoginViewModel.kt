@@ -61,7 +61,9 @@ class LoginViewModel(private val loginRepository: LoginRepository, application: 
     }
 
     fun saveToken() {
-        model.saveTokenDB(TokenProvider.token)
+        launch {
+            model.saveTokenDB(TokenProvider.token)
+        }
     }
 
     fun loginDataChanged(username: String, password: String) {

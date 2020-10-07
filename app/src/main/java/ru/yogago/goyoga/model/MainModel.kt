@@ -220,7 +220,6 @@ class MainModel: CoroutineScope {
             Log.d(LOG_TAG, "MainModel - loadUserToProfile - loadUserFromDB user: $user")
             if (user == null) user = UserData(0)
             profileViewModel.user.postValue(user)
-
         }
     }
 
