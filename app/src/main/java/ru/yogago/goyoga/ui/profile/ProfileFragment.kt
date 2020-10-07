@@ -60,10 +60,8 @@ class ProfileFragment : Fragment() {
         val checkBoxNeck = view.findViewById<CheckBox>(R.id.checkBoxNeck)
         val checkBoxLoins = view.findViewById<CheckBox>(R.id.checkBoxLoins)
         val loading = view.findViewById<ProgressBar>(R.id.loading)
-        val mainLayout = view.findViewById<LinearLayout>(R.id.mainLayout)
         val topLayout = view.findViewById<LinearLayout>(R.id.topLayout)
         val profileWrapper: LinearLayout = view.findViewById(R.id.profileWrapper)
-        val profileButtonBox: FrameLayout = view.findViewById(R.id.profileButtonBox)
         val buttonMainTransition = view.findViewById<ToggleButton>(R.id.buttonMainTransition)
         val advertisingBox = view.findViewById<LinearLayout>(R.id.advertising_box)
 
@@ -114,8 +112,11 @@ class ProfileFragment : Fragment() {
                 checkBoxLoins.isChecked,
                 checkBoxNeck.isChecked
             )
-            findNavController().navigate(R.id.nav_select)
         }
+
+        profileViewModel.done.observe(viewLifecycleOwner, {
+            if (it) findNavController().navigate(R.id.nav_select)
+        })
 
         profileLogOutButton.setOnClickListener {
             loginViewModel.logOut()
