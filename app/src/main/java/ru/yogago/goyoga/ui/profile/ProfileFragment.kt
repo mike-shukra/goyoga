@@ -46,8 +46,6 @@ class ProfileFragment : Fragment() {
         val advertisingBox = view.findViewById<LinearLayout>(R.id.advertising_box)
         val flipAnimation = AnimationUtils.loadAnimation(context, R.anim.flip)
 
-        if (BillingState.isAds) advertisingBox.visibility = View.VISIBLE
-
         profileBillingButton.setOnClickListener {
             findNavController().navigate(R.id.nav_billing)
         }
@@ -89,6 +87,11 @@ class ProfileFragment : Fragment() {
             )
         }
 
+        profileViewModel.isAds.observe(viewLifecycleOwner, {
+            if (it) advertisingBox.visibility = View.VISIBLE
+            else advertisingBox.visibility = View.GONE
+        })
+
         profileViewModel.done.observe(viewLifecycleOwner, {
             if (it) findNavController().navigate(R.id.nav_select)
         })
@@ -122,6 +125,7 @@ class ProfileFragment : Fragment() {
 
         profileViewModel.setModel()
         profileViewModel.setMyBilling(MyBilling(requireActivity()))
+        profileViewModel.handleBilling()
         profileViewModel.loadUserData()
 
     }
