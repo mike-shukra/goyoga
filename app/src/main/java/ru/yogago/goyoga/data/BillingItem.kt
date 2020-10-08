@@ -6,5 +6,6 @@ data class BillingItem (
     val price_currency_code: String,
     val subscriptionPeriod: String,
     val title: String,
-    val description: String
+    val description: String,
+    val activated: Boolean = false
 )
