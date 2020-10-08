@@ -6,8 +6,6 @@
     <color name="colorPrimaryDark">#151515</color>
     <color name="colorAccent">#dc8628</color>
     <color name="colorAccentDark">#dc8628</color>
-    <color name="colorAccentVariant">#D1710A</color>
-    <color name="colorRedTwo">#D58080</color>
     <color name="colorWhiteMiddle">#b7b7b7</color>
     <color name="colorWhiteLite">#FAFAFA</color>
 </resources>

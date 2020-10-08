@@ -26,33 +26,10 @@
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" >
         <action
-            android:id="@+id/action_nav_profile_to_nav_editUser"
-            app:destination="@id/nav_editUser" />
-        <action
             android:id="@+id/action_nav_profile_to_billingFragment"
             app:destination="@id/nav_billing" />
     </fragment>
 
-    <fragment
-        android:id="@+id/nav_editUser"
-        android:name="ru.yogago.goyoga.ui.profile.EditUserFragment"
-        android:label="edit_user_fragment"
-        tools:layout="@layout/edit_user_fragment" />
-    <activity
-        android:id="@+id/mainActivity"
-        android:name="ru.yogago.goyoga.MainActivity"
-        android:label="activity_error"
-        tools:layout="@layout/activity_error" />
-    <activity
-        android:id="@+id/loginActivity"
-        android:name="ru.yogago.goyoga.ui.login.LoginActivity"
-        android:label="activity_login"
-        tools:layout="@layout/activity_login" />
-    <activity
-        android:id="@+id/registerActivity"
-        android:name="ru.yogago.goyoga.ui.login.RegisterActivity"
-        android:label="activity_register"
-        tools:layout="@layout/activity_register" />
     <fragment
         android:id="@+id/nav_billing"
         android:name="ru.yogago.goyoga.ui.profile.BillingFragment"

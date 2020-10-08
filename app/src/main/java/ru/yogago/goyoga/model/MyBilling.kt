@@ -5,33 +5,22 @@ import android.util.Log
 import com.android.billingclient.api.*
 import kotlinx.coroutines.*
 import ru.yogago.goyoga.data.AppConstants.LOG_TAG
-import ru.yogago.goyoga.data.BillingItem
+import ru.yogago.goyoga.data.AppConstants.LOG_TAG_BILLING
 import ru.yogago.goyoga.data.BillingState
-import ru.yogago.goyoga.ui.profile.BillingViewModel
 import kotlin.coroutines.CoroutineContext
 
-class MyBilling(val activity: Activity): CoroutineScope, PurchasesUpdatedListener {
+class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdatedListener {
 
-    companion object {
-        var myBilling: MyBilling? = null
-        fun newInstance(activity: Activity?): MyBilling{
-            if (myBilling == null) myBilling = MyBilling(activity!!)
-            return myBilling!!
-        }
-    }
-
-    private lateinit var skuDetails: List<SkuDetails>
-    private lateinit var viewModel: BillingViewModel
     private val job = SupervisorJob()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
     private var isBillingServiceConnected = false
 
     private val purchasesUpdatedListener = PurchasesUpdatedListener { billingResult: BillingResult, purchases ->
-            // To be implemented in a later section.
-            Log.d(LOG_TAG, "MyBilling - purchasesUpdatedListener - billingResult.debugMessage: ${billingResult.debugMessage}")
-            Log.d(LOG_TAG, "MyBilling - purchasesUpdatedListener - purchases: $purchases")
-        }
+        // To be implemented in a later section.
+        Log.d(LOG_TAG_BILLING, "MyBilling - purchasesUpdatedListener - billingResult.debugMessage: ${billingResult.debugMessage}")
+        Log.d(LOG_TAG_BILLING, "MyBilling - purchasesUpdatedListener - purchases: $purchases")
+    }
 
     private var billingClient = BillingClient.newBuilder(activity.applicationContext)
         .setListener(purchasesUpdatedListener)
@@ -64,83 +53,66 @@ class MyBilling(val activity: Activity): CoroutineScope, PurchasesUpdatedListene
     private fun isSubscriptionPurchaseSupported(): Boolean {
         val response = billingClient.isFeatureSupported(BillingClient.FeatureType.SUBSCRIPTIONS)
         if (response.responseCode != BillingClient.BillingResponseCode.OK) {
-            Log.d(LOG_TAG, "isSubscriptionPurchaseSupported(), response.responseCode: ${response.responseCode}")
-            Log.d(LOG_TAG, "isSubscriptionPurchaseSupported(), not supported, error response: $response")
+            Log.d(LOG_TAG_BILLING, "isSubscriptionPurchaseSupported(), response.responseCode: ${response.responseCode}")
+            Log.d(LOG_TAG_BILLING, "isSubscriptionPurchaseSupported(), not supported, error response: $response")
         }
         return response.responseCode == BillingClient.BillingResponseCode.OK
     }
 
-    private fun startQueryPurchases() {
+    private fun startQueryPurchases(
+        onSuccess: (List<Purchase>) -> Unit,
+        onError: (message: String) -> Unit
+    ) {
         if (isSubscriptionPurchaseSupported()) {
             val purchasesResult = billingClient.queryPurchases(BillingClient.SkuType.SUBS)
             if (purchasesResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                onEntitledPurchases(purchasesResult.purchasesList!!)
+                onSuccess(purchasesResult.purchasesList!!)
+                Log.d(LOG_TAG_BILLING, "MyBilling - startQueryPurchases - purchasesResult.purchasesList: ${purchasesResult.purchasesList}")
             } else {
-                Log.d(LOG_TAG, "Error trying to query purchases: $purchasesResult")
+                Log.d(LOG_TAG_BILLING, "Error trying to query purchases: $purchasesResult")
+                onError(purchasesResult.toString())
             }
         } else {
-            onEntitledPurchases(emptyList())
+            onSuccess(emptyList())
         }
     }
 
-    private fun onEntitledPurchases(purchasesList: List<Purchase>) {
-        Log.d(LOG_TAG, "MyBilling - onEntitledPurchases - purchasesList: $purchasesList")
-        if (purchasesList.isNotEmpty()) BillingState.isAds = true
-        Log.d(LOG_TAG, "BillingState.isAds: ${BillingState.isAds}")
 
-    }
-
-    private fun querySkuDetails() {
-        launch {
-            val skuList = ArrayList<String>()
-            skuList.add("remove_ads")
-            val params = SkuDetailsParams.newBuilder()
-            params.setSkusList(skuList).setType(BillingClient.SkuType.SUBS)
-            val skuDetailsResult: SkuDetailsResult = withContext(coroutineContext) {
-                billingClient.querySkuDetails(params.build())
+    private fun querySubscriptionSkuDetails(skus: List<String>, onSuccess: (List<SkuDetails>) -> Unit, onError: (code: Int, message: String) -> Unit) {
+        val params = SkuDetailsParams.newBuilder().setSkusList(skus).setType(BillingClient.SkuType.SUBS)
+        billingClient.querySkuDetailsAsync(params.build()) { billingResult, skuDetailsList ->
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && skuDetailsList != null) {
+                onSuccess(skuDetailsList)
+            } else {
+                onError(billingResult.responseCode, billingResult.debugMessage)
             }
-            // Process the result.
-            Log.d(LOG_TAG, "MyBilling - querySkuDetails - skuDetailsResult.skuDetailsList: ${skuDetailsResult.skuDetailsList}")
-            val billings = ArrayList<BillingItem>()
-            skuDetails = skuDetailsResult.skuDetailsList!!
-            skuDetails.forEach {
-                billings.add(BillingItem(
-                    type = it.type,
-                    price = it.price,
-                    price_currency_code = it.priceCurrencyCode,
-                    subscriptionPeriod = it.subscriptionPeriod,
-                    title = it.title,
-                    description = it.description
-                ))
-            }
-            viewModel.billings.postValue(billings)
         }
     }
 
-    fun subscribe(id: Int){
+    fun querySubscriptionSkuDetails(onSuccess: (List<SkuDetails>) -> Unit, onError: (code: Int, message: String) -> Unit) {
+        startConnect {
+            querySubscriptionSkuDetails(listOf("just_pay", "remove_ads"), onSuccess, onError)
+        }
+    }
+
+    fun subscribe(sku: SkuDetails): Int{
         // Retrieve a value for "skuDetails" by calling querySkuDetailsAsync().
         val flowParams = BillingFlowParams.newBuilder()
-            .setSkuDetails(skuDetails[id])
+            .setSkuDetails(sku)
             .build()
         val responseCode = billingClient.launchBillingFlow(activity, flowParams).responseCode
-        Log.d(LOG_TAG, "MyBilling - subscribe - responseCode: $responseCode")
+        Log.d(LOG_TAG_BILLING, "MyBilling - subscribe - responseCode: $responseCode")
+        return responseCode
     }
 
-    fun loadBillings(){
-        Log.d(LOG_TAG, "MyBilling - launchBilling")
+    fun queryPurchases(
+        onSuccess: (List<Purchase>) -> Unit,
+        onError: (message: String) -> Unit
+    ) {
+        Log.d(LOG_TAG_BILLING, "MyBilling - queryPurchases")
         startConnect {
-            querySkuDetails()
+            startQueryPurchases(onSuccess, onError)
         }
-    }
-
-    fun queryPurchases() {
-        startConnect {
-            startQueryPurchases()
-        }
-    }
-
-    fun setViewModel(vm: BillingViewModel) {
-        viewModel = vm
     }
 
     override fun onPurchasesUpdated(billingResult: BillingResult, purchases: List<Purchase>?) {
@@ -150,14 +122,16 @@ class MyBilling(val activity: Activity): CoroutineScope, PurchasesUpdatedListene
             }
         } else if (billingResult.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
             // Handle an error caused by a user cancelling the purchase flow.
+            Log.d(LOG_TAG_BILLING, "MyBilling - onPurchasesUpdated - Handle an error caused by a user cancelling the purchase flow.")
         } else {
             // Handle any other error codes.
+            Log.d(LOG_TAG_BILLING, "MyBilling - onPurchasesUpdated - Handle any other error codes.")
         }
     }
 
     private fun handlePurchase(purchase: Purchase) {
         // Purchase retrieved from BillingClient#queryPurchases or your PurchasesUpdatedListener.
-        val purchase : Purchase = purchase
+        val myPurchase : Purchase = purchase
 
         // Verify the purchase.
         // Ensure entitlement was not already granted for this purchaseToken.
@@ -165,7 +139,7 @@ class MyBilling(val activity: Activity): CoroutineScope, PurchasesUpdatedListene
 
         val consumeParams =
             ConsumeParams.newBuilder()
-                .setPurchaseToken(purchase.purchaseToken)
+                .setPurchaseToken(myPurchase.purchaseToken)
                 .build()
 
         billingClient.consumeAsync(consumeParams) { billingResult, outToken ->
@@ -175,5 +149,27 @@ class MyBilling(val activity: Activity): CoroutineScope, PurchasesUpdatedListene
             }
         }
     }
+
+    fun acknowledgedPurchase(purchase: Purchase) {
+        launch {
+            if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
+                if (!purchase.isAcknowledged) {
+                    val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
+                        .setPurchaseToken(purchase.purchaseToken)
+                    val ackPurchaseResult = withContext(Dispatchers.IO) {
+                        billingClient.acknowledgePurchase(acknowledgePurchaseParams.build())
+                    }
+                }
+            }
+        }
+    }
+
+    fun destroy() {
+        Log.d(LOG_TAG_BILLING,"destroy()")
+        if (billingClient.isReady) {
+            billingClient.endConnection()
+        }
+    }
+
 
 }
