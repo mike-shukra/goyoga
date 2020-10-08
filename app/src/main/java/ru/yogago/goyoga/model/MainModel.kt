@@ -22,7 +22,6 @@ class MainModel: CoroutineScope {
     private val service = ApiFactory.API
     private lateinit var selectViewModel: SelectViewModel
     private lateinit var profileViewModel: ProfileViewModel
-    private lateinit var myBilling: MyBilling
 
     fun loadData() {
         launch {
@@ -172,7 +171,6 @@ class MainModel: CoroutineScope {
     }
 
     fun loadUserData() {
-        myBilling.queryPurchases()
         launch {
             if(!isTokenDB()) {
                 val uniqueID: String = UUID.randomUUID().toString()
@@ -194,6 +192,7 @@ class MainModel: CoroutineScope {
             profileViewModel.user.postValue(user)
         }
     }
+
 
     private fun loadUserFromDB(): UserData {
         val user = dbDao.loadUserData()
@@ -224,10 +223,6 @@ class MainModel: CoroutineScope {
         return this
     }
 
-    fun setMyBilling(mB: MyBilling) {
-        this.myBilling = mB
-    }
-
     fun setProfileViewModel(m: ProfileViewModel) : MainModel {
         this.profileViewModel = m
         return this
@@ -238,8 +233,5 @@ class MainModel: CoroutineScope {
 //        Log.d(LOG_TAG, "MainModel - cancelBackgroundWork")
 //    }
 
-    fun destroyBilling() {
-        myBilling.destroy()
-    }
 
 }
