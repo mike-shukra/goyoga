@@ -41,9 +41,9 @@ class BillingItemAdapter(
         return rowView
     }
 
-    fun setOnTapListener(listener: ((BillingItem) -> Unit)) {
-        this.listener = listener
-    }
+//    fun setOnTapListener(listener: ((BillingItem) -> Unit)) {
+//        this.listener = listener
+//    }
 
     override fun getItem(position: Int): BillingItem {
         return dataSource[position]

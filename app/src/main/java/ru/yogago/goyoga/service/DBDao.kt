@@ -47,4 +47,10 @@ interface DBDao {
     @Query("UPDATE userdata SET first_name = :name WHERE id = :id")
     fun insertUserName(name: String, id: Long): Int
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertPurchase(purchase: PurchaseItem): Long
+
+    @Query("UPDATE PurchaseItem SET purchaseToken = :purchaseToken, purchaseState = :purchaseState, acknowledged = :acknowledged WHERE productId = :productId")
+    fun updatePurchase(productId: Long, purchaseToken: String, purchaseState: Int, acknowledged: Boolean): Int
+
 }

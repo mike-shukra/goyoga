@@ -11,14 +11,14 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/profilePetsUserPic"
             android:layout_width="156dp"
             android:layout_height="156dp"
             android:padding="32dp"
             android:adjustViewBounds="true"
             android:src="@drawable/ic_baseline_shopping_cart_24"
             android:background="@color/colorAccent"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:contentDescription="TODO" />
 
         <LinearLayout
             android:layout_width="match_parent"
