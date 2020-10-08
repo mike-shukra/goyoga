@@ -39,13 +39,12 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             Log.d(AppConstants.LOG_TAG_BILLING, "ProfileViewModel - MyBilling - handleBilling - purchasesList: $purchases")
             if (purchases.isEmpty()) {
                 BillingState.isAds = true
+                BillingState.isJustPay = true
                 isAds.postValue(true)
             }
             else {
                 purchases.forEach {
                     myBilling.acknowledgedPurchase(it)
-                    val test = ((it.sku == "remove_ads") && (it.purchaseState == Purchase.PurchaseState.PURCHASED) && (it.isAcknowledged))
-                    Log.d(AppConstants.LOG_TAG_BILLING, "ProfileViewModel - test: $test")
                     Log.d(AppConstants.LOG_TAG_BILLING, "ProfileViewModel - test: it.sku: ${it.sku}")
                     Log.d(AppConstants.LOG_TAG_BILLING, "ProfileViewModel - test: it.isAcknowledged: ${it.isAcknowledged}")
 
@@ -57,6 +56,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                         BillingState.isAds = true
                         isAds.postValue(BillingState.isAds)
                     }
+                    BillingState.isJustPay =
+                        !((it.sku == "just_pay") && (it.purchaseState == Purchase.PurchaseState.PURCHASED) && (it.isAcknowledged))
                 }
             }
             Log.d(AppConstants.LOG_TAG_BILLING, "ProfileViewModel - BillingState.isAds: ${BillingState.isAds}")

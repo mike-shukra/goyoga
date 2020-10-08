@@ -31,19 +31,10 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="4dp"
-                    android:text="Товар:"
-                    android:textSize="16sp" />
-
-                <TextView
                     android:id="@+id/billing_item_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:text="@string/field_title"
@@ -60,7 +51,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="4dp"
-                    android:text="Тип:"
+                    android:text="@string/type_title"
                     android:textSize="16sp" />
 
 
@@ -85,7 +76,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="4dp"
-                    android:text="Цена:"
+                    android:text="@string/price_title"
                     android:textSize="16sp" />
 
                 <TextView
@@ -98,15 +89,6 @@
                     android:text="@string/_00"
                     android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/billing_item_price_currency_code"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="4dp"
-                    android:text="руб."
-                    android:textSize="16sp" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -119,7 +101,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="4dp"
-                    android:text="Период:"
+                    android:text="@string/period_title"
                     android:textSize="16sp" />
 
                 <TextView
@@ -140,20 +122,10 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="16dp"
-            android:text="Описание:"
-            android:textSize="16sp" />
-
-        <TextView
             android:id="@+id/billing_item_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="16dp"

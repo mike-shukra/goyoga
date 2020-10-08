@@ -30,5 +30,15 @@
     <string name="description_title">Описание</string>
     <string name="billing_head">Покупки</string>
     <string name="advertising">РЕКЛАМА</string>
+    <string name="type_title">Тип:</string>
+    <string name="price_title">Цена:</string>
+    <string name="period_title">Период:</string>
+    <string name="week">неделя</string>
+    <string name="weeks">недель</string>
+    <string name="month">месяц</string>
+    <string name="months">месяцев</string>
+    <string name="year">год</string>
+    <string name="years">лет</string>
+
 
 </resources>

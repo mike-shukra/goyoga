@@ -36,6 +36,8 @@ class BillingViewModel : ViewModel(), CoroutineScope {
                     title = it.title,
                     description = it.description
                 ))
+                Log.d(AppConstants.LOG_TAG_BILLING, "BillingViewModel - loadBillings - onSuccess - skus.title: ${it.sku}")
+
             }
             billings.postValue(billingItems)
         }

@@ -146,6 +146,8 @@ class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdate
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 // Handle the success of the consume operation.
                 BillingState.isAds = false
+                Log.d(LOG_TAG_BILLING, "MyBilling - handlePurchase - outToken: $outToken")
+
             }
         }
     }
@@ -159,6 +161,8 @@ class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdate
                     val ackPurchaseResult = withContext(Dispatchers.IO) {
                         billingClient.acknowledgePurchase(acknowledgePurchaseParams.build())
                     }
+                    Log.d(LOG_TAG_BILLING,"MyBilling - acknowledgedPurchase - ackPurchaseResult: $ackPurchaseResult")
+
                 }
             }
         }
