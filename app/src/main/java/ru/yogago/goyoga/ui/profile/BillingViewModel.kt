@@ -29,6 +29,7 @@ class BillingViewModel : ViewModel(), CoroutineScope {
             Log.d(AppConstants.LOG_TAG_BILLING, "BillingViewModel - loadBillings - onSuccess - List<SkuDetails>: $skus")
             skus.forEach {
                 billingItems.add(BillingItem(
+                    sku = it.sku,
                     type = it.type,
                     price = it.price,
                     price_currency_code = it.priceCurrencyCode,
@@ -52,9 +53,13 @@ class BillingViewModel : ViewModel(), CoroutineScope {
         myBilling = mB
     }
 
-    fun subscribe(id: Int) {
-        val responseCode = myBilling.subscribe(skus[id])
-        if (responseCode == BillingClient.BillingResponseCode.OK) BillingState.isAds = false
+    fun subscribe(title: String) {
+        skus.forEach {
+            if (it.sku == title) {
+                val responseCode = myBilling.subscribe(it)
+                if (responseCode == BillingClient.BillingResponseCode.OK) BillingState.setFlagByString(title, false)
+            }
+        }
     }
 
     fun destroyBilling(){

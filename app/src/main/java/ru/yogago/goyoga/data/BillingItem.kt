@@ -1,6 +1,7 @@
 package ru.yogago.goyoga.data
 
 data class BillingItem (
+    val sku: String,
     val title: String,
     val type: String,
     val price: String,
