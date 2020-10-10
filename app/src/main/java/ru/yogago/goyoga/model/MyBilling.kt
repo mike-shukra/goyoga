@@ -145,7 +145,7 @@ class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdate
         billingClient.consumeAsync(consumeParams) { billingResult, outToken ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 // Handle the success of the consume operation.
-                BillingState.isAds = false
+                BillingState.isAds.postValue(false)
                 Log.d(LOG_TAG_BILLING, "MyBilling - handlePurchase - outToken: $outToken")
 
             }

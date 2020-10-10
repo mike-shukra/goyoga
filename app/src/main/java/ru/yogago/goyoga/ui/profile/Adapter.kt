@@ -6,21 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
 import ru.yogago.goyoga.R
-import ru.yogago.goyoga.data.AppConstants.LOG_TAG
-import ru.yogago.goyoga.data.AppConstants.PHOTO_URL
-import ru.yogago.goyoga.data.Asana
+import ru.yogago.goyoga.data.AppConstants
 import ru.yogago.goyoga.data.BillingItem
-import java.util.*
+import ru.yogago.goyoga.data.BillingState
 
-class Adapter(private val items: List<BillingItem>, private val resources: Resources): RecyclerView.Adapter<Adapter.ItemViewHolder?>() {
+class Adapter(
+    private val items: List<BillingItem>,
+    private val resources: Resources,
+    private val viewLifecycleOwner: LifecycleOwner
+): RecyclerView.Adapter<Adapter.ItemViewHolder?>() {
 
-    lateinit var onItemClick: ((BillingItem) -> Unit)
-    lateinit var onSubscribeClick: ((BillingItem) -> Unit)
+    lateinit var onButtonClick: (BillingItem) -> Unit
+    lateinit var onSubscribeClick: (BillingItem) -> Unit
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ItemViewHolder {
         val v = LayoutInflater.from(viewGroup.context).inflate(
@@ -35,8 +36,11 @@ class Adapter(private val items: List<BillingItem>, private val resources: Resou
         itemViewHolder.billingItemTitle.text = items[position].title
         itemViewHolder.billingItemType.text = items[position].type
         itemViewHolder.billingItemPrice.text = items[position].price
-        itemViewHolder.billingItemSubscriptionPeriod.text = items[position].subscriptionPeriod
+        itemViewHolder.billingItemSubscriptionPeriod.text = formatPeriod(items[position].subscriptionPeriod, true)
         itemViewHolder.billingItemDescription.text = items[position].description
+
+        itemViewHolder.buttonSubscribe.isEnabled = BillingState.getFlagByString(items[position].sku)
+
     }
 
     override fun getItemCount(): Int {
@@ -49,12 +53,18 @@ class Adapter(private val items: List<BillingItem>, private val resources: Resou
         val billingItemPrice = itemView.findViewById(R.id.billing_item_price) as TextView
         val billingItemSubscriptionPeriod = itemView.findViewById(R.id.billing_item_subscriptionPeriod) as TextView
         val billingItemDescription = itemView.findViewById(R.id.billing_item_description) as TextView
+        val buttonSubscribe = itemView.findViewById(R.id.buttonSubscribe) as Button
+        val button = itemView.findViewById(R.id.button) as Button
 
         init {
-            itemView.setOnClickListener {
-                onItemClick(items[adapterPosition])
+            BillingState.isAds.observe(viewLifecycleOwner, { b ->
+                buttonSubscribe.isEnabled = !b
+                Log.d(AppConstants.LOG_TAG_BILLING, "b: $b")
+            })
+
+            button.setOnClickListener {
+                onButtonClick(items[adapterPosition])
             }
-            val buttonSubscribe = itemView.findViewById(R.id.buttonSubscribe) as Button
             buttonSubscribe.setOnClickListener {
                 onSubscribeClick(items[adapterPosition])
             }

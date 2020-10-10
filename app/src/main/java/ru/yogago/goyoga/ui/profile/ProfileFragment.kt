@@ -87,7 +87,7 @@ class ProfileFragment : Fragment() {
             )
         }
 
-        profileViewModel.isAds.observe(viewLifecycleOwner, {
+        BillingState.isAds.observe(viewLifecycleOwner, {
             if (it) advertisingBox.visibility = View.VISIBLE
             else advertisingBox.visibility = View.GONE
         })

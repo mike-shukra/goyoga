@@ -18,7 +18,6 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     val user: MutableLiveData<UserData> = MutableLiveData()
     val error: MutableLiveData<String> = MutableLiveData()
     val done: MutableLiveData<Boolean> = MutableLiveData()
-    val isAds: MutableLiveData<Boolean> = MutableLiveData()
     private lateinit var myBilling: MyBilling
 
     fun setModel(): ViewModel {
@@ -38,9 +37,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         val onSuccess: (List<Purchase>) -> Unit = { purchases ->
             Log.d(AppConstants.LOG_TAG_BILLING, "ProfileViewModel - MyBilling - handleBilling - purchasesList: $purchases")
             if (purchases.isEmpty()) {
-                BillingState.isAds = true
-                BillingState.isJustPay = true
-                isAds.postValue(true)
+                BillingState.isAds.postValue(true)
+                BillingState.isJustPay.postValue(true)
             }
             else {
                 purchases.forEach {
@@ -49,18 +47,15 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                     Log.d(AppConstants.LOG_TAG_BILLING, "ProfileViewModel - test: it.isAcknowledged: ${it.isAcknowledged}")
 
                     if ((it.sku == "remove_ads") && (it.purchaseState == Purchase.PurchaseState.PURCHASED) && (it.isAcknowledged)) {
-                        BillingState.isAds = false
-                        isAds.postValue(BillingState.isAds)
+                        BillingState.isAds.postValue(false)
                     }
                     else {
-                        BillingState.isAds = true
-                        isAds.postValue(BillingState.isAds)
+                        BillingState.isAds.postValue(true)
                     }
-                    BillingState.isJustPay =
-                        !((it.sku == "just_pay") && (it.purchaseState == Purchase.PurchaseState.PURCHASED) && (it.isAcknowledged))
+                    BillingState.isJustPay.postValue(!((it.sku == "just_pay") && (it.purchaseState == Purchase.PurchaseState.PURCHASED) && (it.isAcknowledged)))
                 }
             }
-            Log.d(AppConstants.LOG_TAG_BILLING, "ProfileViewModel - BillingState.isAds: ${BillingState.isAds}")
+            Log.d(AppConstants.LOG_TAG_BILLING, "ProfileViewModel - BillingState.isAds: ${BillingState.isAds.value}")
 
         }
         val onError: (message: String) -> Unit = {message: String ->
