@@ -119,7 +119,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/billing_item_description"
@@ -131,6 +131,15 @@
             android:layout_marginBottom="16dp"
             android:text="@string/field_title"
             android:textSize="16sp" />
-        </LinearLayout>
+
+<!--        <Button-->
+<!--            android:id="@+id/button"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="16dp"-->
+<!--            android:background="@drawable/button_background"-->
+<!--            android:text="Button" />-->
+
+    </LinearLayout>
 
 </LinearLayout>

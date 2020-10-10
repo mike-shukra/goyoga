@@ -88,7 +88,7 @@ class Adapter(private val items: List<Asana>, private val resources: Resources):
 
         init {
             itemView.setOnClickListener {
-                items[adapterPosition].let { pet -> onItemClick?.invoke(pet) }
+                onItemClick?.invoke(items[adapterPosition])
             }
         }
 
