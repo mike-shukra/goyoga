@@ -12,9 +12,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants.LOG_TAG_BILLING
-import ru.yogago.goyoga.data.BillingItem
+import ru.yogago.goyoga.data.BillingState
 import ru.yogago.goyoga.model.MyBilling
-import java.util.ArrayList
 
 class BillingFragment : Fragment() {
 
@@ -39,10 +38,10 @@ class BillingFragment : Fragment() {
 
         viewModel.billings.observe(viewLifecycleOwner, { it ->
             loading.visibility = View.GONE
-            val adapter = Adapter(it, this.resources)
+            val adapter = Adapter(it, this.resources, viewLifecycleOwner)
 
-            adapter.onItemClick = {
-                Log.d(LOG_TAG_BILLING, "adapter.onItemClick: $it")
+            adapter.onButtonClick = {
+                Log.d(LOG_TAG_BILLING, "adapter.onButtonClick: $it")
             }
 
             adapter.onSubscribeClick = {
