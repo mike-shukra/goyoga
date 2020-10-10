@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.Button
 import android.widget.ListView
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.BillingItem
@@ -30,12 +32,18 @@ class BillingFragment : Fragment() {
 
         val billingsLv = view.findViewById<ListView>(R.id.billings)
 
-        viewModel.billings.observe(viewLifecycleOwner, {
+        viewModel.billings.observe(viewLifecycleOwner, { it ->
             val adapter = getAdapter(it)
             billingsLv.adapter = adapter
             billingsLv.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+//                val button = view.findViewById(R.id.button) as Button
+//                button.setOnClickListener { view ->
+//                    Toast.makeText(context, "OnClickListener", Toast.LENGTH_LONG).show()
+//                }
+                Toast.makeText(context, "OnItemClickListener", Toast.LENGTH_LONG).show()
                 viewModel.subscribe(id.toInt())
             }
+
         })
 
         viewModel.setMyBilling(MyBilling(requireActivity()))
