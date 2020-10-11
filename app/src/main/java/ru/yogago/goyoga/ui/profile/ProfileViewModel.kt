@@ -6,7 +6,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.android.billingclient.api.Purchase
-import com.android.billingclient.api.SkuDetails
 import ru.yogago.goyoga.data.*
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG_BILLING
 import ru.yogago.goyoga.model.MainModel
@@ -65,17 +64,30 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         myBilling.queryPurchases(onSuccess, onError)
     }
 
-    private fun checkContain(purchases: List<Purchase>){
-        purchases.forEach { purchase ->
-            if (getIsContainName(purchase) == null)  BillingState.setFlagByString(purchase.sku, true)
-        }
-    }
+//    private fun checkContain(purchases: List<Purchase>){
+//        purchases.forEach { purchase ->
+//            if (!isContain(purchase))  {
+//                BillingState.setFlagByString(purchase.sku, true)
+//            }
+//        }
+//    }
 
-    private fun getIsContainName(purchase: Purchase): String? {
-        BillingState.getSubscribesList().forEach { subscribe ->
-            if (subscribe == purchase.sku) return subscribe
+    private fun checkContain(purchases: List<Purchase>) {
+        val noContains = arrayListOf<String>()
+        val subscribesList = BillingState.getSubscribesList()
+        val purchaseStrings = arrayListOf<String>()
+        purchases.forEach {
+            purchaseStrings.add(it.sku)
         }
-        return null
+        subscribesList.forEach {
+            if (!purchaseStrings.contains(it)) {
+                noContains.add(it)
+            }
+        }
+        noContains.forEach {
+            BillingState.setFlagByString(it, true)
+            Log.d(LOG_TAG_BILLING, "ProfileViewModel - checkContain noContain: $it")
+        }
     }
 
     fun create(level: String, knee: Boolean, loins: Boolean, neck: Boolean) {
