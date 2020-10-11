@@ -54,10 +54,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                         BillingState.setFlagByString(it.sku, true)
                     }
                 }
-                if (!isContain(purchases)) {
-                    Log.d(LOG_TAG_BILLING, "ProfileViewModel - isContain: $it")
-                    BillingState.setFlagByString(it.sku, true)
-                }
+                checkContain(purchases)
             }
             Log.d(LOG_TAG_BILLING, "ProfileViewModel - BillingState.isAds: ${BillingState.isAds.value}")
             Log.d(LOG_TAG_BILLING, "ProfileViewModel - BillingState.isJustPay: ${BillingState.isJustPay.value}")
@@ -68,13 +65,17 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         myBilling.queryPurchases(onSuccess, onError)
     }
 
-    private fun isContain(purchase: List<Purchase>): String{
-        Log.d(LOG_TAG_BILLING, "ProfileViewModel - isContain purchase: $purchase")
-
-        BillingState.getSubscribesList().forEach {
-            if (purchase.sku == it) return true
+    private fun checkContain(purchases: List<Purchase>){
+        purchases.forEach { purchase ->
+            if (getIsContainName(purchase) == null)  BillingState.setFlagByString(purchase.sku, true)
         }
-        return false
+    }
+
+    private fun getIsContainName(purchase: Purchase): String? {
+        BillingState.getSubscribesList().forEach { subscribe ->
+            if (subscribe == purchase.sku) return subscribe
+        }
+        return null
     }
 
     fun create(level: String, knee: Boolean, loins: Boolean, neck: Boolean) {
