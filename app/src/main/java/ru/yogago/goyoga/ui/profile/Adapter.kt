@@ -11,7 +11,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.*
-import ru.yogago.goyoga.data.AppConstants.LOG_TAG_BILLING
+import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG_BILLING
 
 class Adapter(
     private val items: List<BillingItem>,

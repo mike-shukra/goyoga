@@ -3,8 +3,8 @@ package ru.yogago.goyoga.model
 import android.util.Log
 import kotlinx.coroutines.*
 import ru.yogago.goyoga.data.*
-import ru.yogago.goyoga.data.AppConstants.APP_TOKEN
-import ru.yogago.goyoga.data.AppConstants.LOG_TAG
+import ru.yogago.goyoga.data.AppConstants.Companion.APP_TOKEN
+import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
 import ru.yogago.goyoga.service.ApiFactory
 import ru.yogago.goyoga.service.DataBase
 import ru.yogago.goyoga.service.TokenProvider

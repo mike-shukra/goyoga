@@ -28,7 +28,7 @@
     <string name="select_head">Последовательность</string>
     <string name="_01">01</string>
     <string name="description_title">Описание</string>
-    <string name="billing_head">Покупки</string>
+    <string name="billing_head">Подписки</string>
     <string name="advertising">РЕКЛАМА</string>
     <string name="type_title">Тип:</string>
     <string name="price_title">Цена:</string>
@@ -40,6 +40,7 @@
     <string name="year">год</string>
     <string name="years">лет</string>
     <string name="subscribe">Подсаться</string>
+    <string name="manage_subscription_label">Управлять подпиской</string>
 
 
 </resources>

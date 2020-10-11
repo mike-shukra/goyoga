@@ -4,8 +4,7 @@ import android.app.Activity
 import android.util.Log
 import com.android.billingclient.api.*
 import kotlinx.coroutines.*
-import ru.yogago.goyoga.data.AppConstants.LOG_TAG
-import ru.yogago.goyoga.data.AppConstants.LOG_TAG_BILLING
+import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG_BILLING
 import ru.yogago.goyoga.data.BillingState
 import ru.yogago.goyoga.data.JUST_PAY
 import ru.yogago.goyoga.data.REMOVE_ADS
@@ -38,7 +37,7 @@ class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdate
         } else {
             billingClient.startConnection(object : BillingClientStateListener {
                 override fun onBillingSetupFinished(billingResult: BillingResult) {
-                    Log.d(LOG_TAG, "MyBilling - startConnect - BillingClientStateListener - onBillingSetupFinished - billingResult.responseCode: ${billingResult.responseCode}")
+                    Log.d(LOG_TAG_BILLING, "MyBilling - startConnect - BillingClientStateListener - onBillingSetupFinished - billingResult.responseCode: ${billingResult.responseCode}")
                     if (billingResult.responseCode ==  BillingClient.BillingResponseCode.OK) {
                         // The BillingClient is ready. You can query purchases here.
                         isBillingServiceConnected = true
@@ -49,7 +48,7 @@ class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdate
                     // Try to restart the connection on the next request to
                     // Google Play by calling the startConnection() method.
                     isBillingServiceConnected = false
-                    Log.d(LOG_TAG, "MyBilling - startConnect - BillingClientStateListener - onBillingServiceDisconnected")
+                    Log.d(LOG_TAG_BILLING, "MyBilling - startConnect - BillingClientStateListener - onBillingServiceDisconnected")
                 }
             })
         }
@@ -180,7 +179,7 @@ class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdate
     }
 
     fun destroy() {
-        Log.d(LOG_TAG_BILLING,"destroy()")
+        Log.d(LOG_TAG_BILLING,"MyBilling - destroy()")
         if (billingClient.isReady) {
             billingClient.endConnection()
         }

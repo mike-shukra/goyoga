@@ -6,7 +6,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.SkuDetails
 import ru.yogago.goyoga.data.*
+import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG_BILLING
 import ru.yogago.goyoga.model.MainModel
 import ru.yogago.goyoga.model.MyBilling
 
@@ -41,9 +43,9 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             else {
                 purchases.forEach {
                     myBilling.acknowledgedPurchase(it)
-                    Log.d(AppConstants.LOG_TAG_BILLING, "ProfileViewModel - test: it.sku: ${it.sku}")
-                    Log.d(AppConstants.LOG_TAG_BILLING, "ProfileViewModel - test: it.purchaseState: ${it.purchaseState}")
-                    Log.d(AppConstants.LOG_TAG_BILLING, "ProfileViewModel - test: it.isAcknowledged: ${it.isAcknowledged}")
+                    Log.d(LOG_TAG_BILLING, "ProfileViewModel - purchase.sku: ${it.sku}")
+                    Log.d(LOG_TAG_BILLING, "ProfileViewModel - purchase.purchaseState: ${it.purchaseState}")
+                    Log.d(LOG_TAG_BILLING, "ProfileViewModel - purchase.isAcknowledged: ${it.isAcknowledged}")
 
                     if ((it.purchaseState == Purchase.PurchaseState.PURCHASED) && (it.isAcknowledged)) {
                         BillingState.setFlagByString(it.sku, false)
@@ -52,14 +54,27 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                         BillingState.setFlagByString(it.sku, true)
                     }
                 }
+                if (!isContain(purchases)) {
+                    Log.d(LOG_TAG_BILLING, "ProfileViewModel - isContain: $it")
+                    BillingState.setFlagByString(it.sku, true)
+                }
             }
-            Log.d(AppConstants.LOG_TAG_BILLING, "ProfileViewModel - BillingState.isAds: ${BillingState.isAds.value}")
-            Log.d(AppConstants.LOG_TAG_BILLING, "ProfileViewModel - BillingState.isJustPay: ${BillingState.isJustPay.value}")
+            Log.d(LOG_TAG_BILLING, "ProfileViewModel - BillingState.isAds: ${BillingState.isAds.value}")
+            Log.d(LOG_TAG_BILLING, "ProfileViewModel - BillingState.isJustPay: ${BillingState.isJustPay.value}")
         }
         val onError: (message: String) -> Unit = {message: String ->
-            Log.d(AppConstants.LOG_TAG_BILLING, "ProfileViewModel - handleBilling - onError - message: $message")
+            Log.d(LOG_TAG_BILLING, "ProfileViewModel - handleBilling - onError - message: $message")
         }
         myBilling.queryPurchases(onSuccess, onError)
+    }
+
+    private fun isContain(purchase: List<Purchase>): String{
+        Log.d(LOG_TAG_BILLING, "ProfileViewModel - isContain purchase: $purchase")
+
+        BillingState.getSubscribesList().forEach {
+            if (purchase.sku == it) return true
+        }
+        return false
     }
 
     fun create(level: String, knee: Boolean, loins: Boolean, neck: Boolean) {
