@@ -19,6 +19,11 @@ class BillingFragment : Fragment() {
 
     private lateinit var viewModel: BillingViewModel
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(BillingViewModel::class.java)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -28,7 +33,6 @@ class BillingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(BillingViewModel::class.java)
 
         val loading = view.findViewById<ProgressBar>(R.id.loading)
         val rvBillings = view.findViewById<RecyclerView>(R.id.rvBillings)

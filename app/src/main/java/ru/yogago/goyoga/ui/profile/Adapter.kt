@@ -10,9 +10,8 @@ import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import ru.yogago.goyoga.R
-import ru.yogago.goyoga.data.AppConstants
-import ru.yogago.goyoga.data.BillingItem
-import ru.yogago.goyoga.data.BillingState
+import ru.yogago.goyoga.data.*
+import ru.yogago.goyoga.data.AppConstants.LOG_TAG_BILLING
 
 class Adapter(
     private val items: List<BillingItem>,
@@ -39,7 +38,27 @@ class Adapter(
         itemViewHolder.billingItemSubscriptionPeriod.text = formatPeriod(items[position].subscriptionPeriod, true)
         itemViewHolder.billingItemDescription.text = items[position].description
 
-        itemViewHolder.buttonSubscribe.isEnabled = BillingState.getFlagByString(items[position].sku)
+        when (items[position].sku) {
+            JUST_PAY -> {
+                BillingState.isJustPay.observe(viewLifecycleOwner, { b ->
+                    itemViewHolder.buttonSubscribe.isEnabled = b
+                    Log.d(LOG_TAG_BILLING, "Adapter - items[position].sku: ${items[position].sku} - $b")
+                })
+            }
+            REMOVE_ADS -> {
+                BillingState.isAds.observe(viewLifecycleOwner, { b ->
+                    itemViewHolder.buttonSubscribe.isEnabled = b
+                    Log.d(LOG_TAG_BILLING, "Adapter - items[position].sku: ${items[position].sku} - $b")
+                })
+            }
+        }
+
+        itemViewHolder.button.setOnClickListener {
+            onButtonClick(items[position])
+        }
+        itemViewHolder.buttonSubscribe.setOnClickListener {
+            onSubscribeClick(items[position])
+        }
 
     }
 
@@ -55,20 +74,6 @@ class Adapter(
         val billingItemDescription = itemView.findViewById(R.id.billing_item_description) as TextView
         val buttonSubscribe = itemView.findViewById(R.id.buttonSubscribe) as Button
         val button = itemView.findViewById(R.id.button) as Button
-
-        init {
-            BillingState.isAds.observe(viewLifecycleOwner, { b ->
-                buttonSubscribe.isEnabled = !b
-                Log.d(AppConstants.LOG_TAG_BILLING, "b: $b")
-            })
-
-            button.setOnClickListener {
-                onButtonClick(items[adapterPosition])
-            }
-            buttonSubscribe.setOnClickListener {
-                onSubscribeClick(items[adapterPosition])
-            }
-        }
     }
 
     private fun formatPeriod(period: String, isIncludeSingularNumber: Boolean): String {

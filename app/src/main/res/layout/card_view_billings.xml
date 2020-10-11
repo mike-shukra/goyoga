@@ -152,7 +152,7 @@
                     android:background="@drawable/button_background"
                     android:paddingStart="32dp"
                     android:paddingEnd="32dp"
-                    android:enabled="false"
+                    android:enabled="true"
                     android:text="@string/subscribe" />
 
                 <Button

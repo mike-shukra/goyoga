@@ -2,23 +2,21 @@ package ru.yogago.goyoga.data
 
 import androidx.lifecycle.MutableLiveData
 
+const val JUST_PAY: String = "just_pay"
+const val REMOVE_ADS: String = "remove_ads"
+
 object BillingState {
     val isAds: MutableLiveData<Boolean> = MutableLiveData()
     val isJustPay: MutableLiveData<Boolean> = MutableLiveData()
 
-    init {
-        isAds.postValue(false)
-        isJustPay.postValue(false)
-    }
-
     fun setFlagByString(s: String, b: Boolean) {
-        if (s == "just_pay") isJustPay.postValue(b)
-        if (s == "remove_ads") isAds.postValue(b)
+        if (s == JUST_PAY) isJustPay.postValue(b)
+        if (s == REMOVE_ADS) isAds.postValue(b)
     }
 
     fun getFlagByString(s: String): Boolean {
-        if (s == "just_pay") return isJustPay.value!!
-        if (s == "remove_ads") return isAds.value!!
+        if (s == JUST_PAY) return isJustPay.value!!
+        if (s == REMOVE_ADS) return isAds.value!!
         return false
     }
 }
