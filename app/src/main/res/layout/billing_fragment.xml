@@ -47,8 +47,8 @@
             android:layout_height="match_parent"
             android:background="@color/colorPrimaryMiddle"
             android:contentDescription=""
-            android:padding="4dp"
-            android:paddingBottom="56dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
             app:spanCount="1"
             tools:listitem="@layout/card_view_billings"/>
 

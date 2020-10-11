@@ -12,14 +12,6 @@ interface Api {
     fun getDataAsync(): Deferred<Response<Data>>
 
     @FormUrlEncoded
-    @POST("Api/register")
-    fun registerUserAsync(
-        @Field("login") login: String,
-        @Field("mail") email: String,
-        @Field("passwd") password: String
-    ): Deferred<Response<Message>>
-
-    @FormUrlEncoded
     @POST("Api/registerApp")
     fun registerAnonymousUserAsync(
         @Field("login") login: String,
@@ -45,19 +37,5 @@ interface Api {
         @Field("loins") loins: String,
         @Field("neck") neck: String
     ): Deferred<Response<Message>>
-
-    @POST("Api/out")
-    fun logOutAsync(): Deferred<Response<Message>>
-
-    @POST("Api/deleteUser")
-    fun deleteUserAsync(): Deferred<Response<Message>>
-
-    @FormUrlEncoded
-    @POST("Api/password")
-    fun updatePasswordAsync(@Field("password") password: String): Deferred<Response<Token>>
-
-    @FormUrlEncoded
-    @POST("Api/name")
-    fun updateUserNameAsync(@Field("login") name: String): Deferred<Response<Message>>
 
 }

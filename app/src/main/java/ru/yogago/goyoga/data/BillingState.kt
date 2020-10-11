@@ -14,9 +14,4 @@ object BillingState {
         if (s == REMOVE_ADS) isAds.postValue(b)
     }
 
-    fun getFlagByString(s: String): Boolean {
-        if (s == JUST_PAY) return isJustPay.value!!
-        if (s == REMOVE_ADS) return isAds.value!!
-        return false
-    }
 }

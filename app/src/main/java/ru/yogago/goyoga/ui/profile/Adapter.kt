@@ -53,9 +53,9 @@ class Adapter(
             }
         }
 
-        itemViewHolder.button.setOnClickListener {
-            onButtonClick(items[position])
-        }
+//        itemViewHolder.button.setOnClickListener {
+//            onButtonClick(items[position])
+//        }
         itemViewHolder.buttonSubscribe.setOnClickListener {
             onSubscribeClick(items[position])
         }
@@ -73,7 +73,7 @@ class Adapter(
         val billingItemSubscriptionPeriod = itemView.findViewById(R.id.billing_item_subscriptionPeriod) as TextView
         val billingItemDescription = itemView.findViewById(R.id.billing_item_description) as TextView
         val buttonSubscribe = itemView.findViewById(R.id.buttonSubscribe) as Button
-        val button = itemView.findViewById(R.id.button) as Button
+//        val button = itemView.findViewById(R.id.button) as Button
     }
 
     private fun formatPeriod(period: String, isIncludeSingularNumber: Boolean): String {

@@ -2,17 +2,16 @@ package ru.yogago.goyoga.ui.profile
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ProgressBar
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants.LOG_TAG_BILLING
-import ru.yogago.goyoga.data.BillingState
 import ru.yogago.goyoga.model.MyBilling
 
 class BillingFragment : Fragment() {
