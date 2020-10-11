@@ -21,6 +21,12 @@ class ProfileFragment : Fragment() {
 
     private lateinit var profileViewModel: ProfileViewModel
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -31,7 +37,6 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
 
         val profileBillingButton: Button = view.findViewById(R.id.profileBillingButton)
         val createButton = view.findViewById<Button>(R.id.createButton)

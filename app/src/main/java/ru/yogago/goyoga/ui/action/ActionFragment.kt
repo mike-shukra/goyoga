@@ -27,18 +27,19 @@ class ActionFragment : Fragment() {
     private val isRussianLanguage: Boolean = java.util.Locale.getDefault().language == "ru"
     private var animatorItemCurrentTime: Long = 0
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        actionViewModel = ViewModelProvider(this).get(ActionViewModel::class.java)
+        arguments?.let {
+            actionViewModel.id = it.getLong("id")
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        actionViewModel = ViewModelProvider(this).get(ActionViewModel::class.java)
-
-        arguments?.let {
-            actionViewModel.id = it.getLong("id")
-        }
-
         return inflater.inflate(R.layout.fragment_action, container, false)
     }
 

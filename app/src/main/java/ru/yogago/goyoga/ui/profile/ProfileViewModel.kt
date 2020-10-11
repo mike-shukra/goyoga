@@ -6,9 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.android.billingclient.api.Purchase
-import ru.yogago.goyoga.data.AppConstants
-import ru.yogago.goyoga.data.BillingState
-import ru.yogago.goyoga.data.UserData
+import ru.yogago.goyoga.data.*
 import ru.yogago.goyoga.model.MainModel
 import ru.yogago.goyoga.model.MyBilling
 
@@ -44,19 +42,19 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 purchases.forEach {
                     myBilling.acknowledgedPurchase(it)
                     Log.d(AppConstants.LOG_TAG_BILLING, "ProfileViewModel - test: it.sku: ${it.sku}")
+                    Log.d(AppConstants.LOG_TAG_BILLING, "ProfileViewModel - test: it.purchaseState: ${it.purchaseState}")
                     Log.d(AppConstants.LOG_TAG_BILLING, "ProfileViewModel - test: it.isAcknowledged: ${it.isAcknowledged}")
 
-                    if ((it.sku == "remove_ads") && (it.purchaseState == Purchase.PurchaseState.PURCHASED) && (it.isAcknowledged)) {
-                        BillingState.isAds.postValue(false)
+                    if ((it.purchaseState == Purchase.PurchaseState.PURCHASED) && (it.isAcknowledged)) {
+                        BillingState.setFlagByString(it.sku, false)
                     }
                     else {
-                        BillingState.isAds.postValue(true)
+                        BillingState.setFlagByString(it.sku, true)
                     }
-                    BillingState.isJustPay.postValue(!((it.sku == "just_pay") && (it.purchaseState == Purchase.PurchaseState.PURCHASED) && (it.isAcknowledged)))
                 }
             }
             Log.d(AppConstants.LOG_TAG_BILLING, "ProfileViewModel - BillingState.isAds: ${BillingState.isAds.value}")
-
+            Log.d(AppConstants.LOG_TAG_BILLING, "ProfileViewModel - BillingState.isJustPay: ${BillingState.isJustPay.value}")
         }
         val onError: (message: String) -> Unit = {message: String ->
             Log.d(AppConstants.LOG_TAG_BILLING, "ProfileViewModel - handleBilling - onError - message: $message")

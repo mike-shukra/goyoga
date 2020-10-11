@@ -7,6 +7,8 @@ import kotlinx.coroutines.*
 import ru.yogago.goyoga.data.AppConstants.LOG_TAG
 import ru.yogago.goyoga.data.AppConstants.LOG_TAG_BILLING
 import ru.yogago.goyoga.data.BillingState
+import ru.yogago.goyoga.data.JUST_PAY
+import ru.yogago.goyoga.data.REMOVE_ADS
 import kotlin.coroutines.CoroutineContext
 
 class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdatedListener {
@@ -18,8 +20,11 @@ class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdate
 
     private val purchasesUpdatedListener = PurchasesUpdatedListener { billingResult: BillingResult, purchases ->
         // To be implemented in a later section.
-        Log.d(LOG_TAG_BILLING, "MyBilling - purchasesUpdatedListener - billingResult.debugMessage: ${billingResult.debugMessage}")
+        Log.d(LOG_TAG_BILLING, "MyBilling - purchasesUpdatedListener - billingResult.debugMessage: $billingResult")
         Log.d(LOG_TAG_BILLING, "MyBilling - purchasesUpdatedListener - purchases: $purchases")
+        purchases?.forEach {
+            acknowledgedPurchase(it)
+        }
     }
 
     private var billingClient = BillingClient.newBuilder(activity.applicationContext)
@@ -78,7 +83,7 @@ class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdate
     }
 
 
-    private fun querySubscriptionSkuDetails(skus: List<String>, onSuccess: (List<SkuDetails>) -> Unit, onError: (code: Int, message: String) -> Unit) {
+    private fun subscriptionSkuDetails(skus: List<String>, onSuccess: (List<SkuDetails>) -> Unit, onError: (code: Int, message: String) -> Unit) {
         val params = SkuDetailsParams.newBuilder().setSkusList(skus).setType(BillingClient.SkuType.SUBS)
         billingClient.querySkuDetailsAsync(params.build()) { billingResult, skuDetailsList ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && skuDetailsList != null) {
@@ -89,9 +94,9 @@ class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdate
         }
     }
 
-    fun querySubscriptionSkuDetails(onSuccess: (List<SkuDetails>) -> Unit, onError: (code: Int, message: String) -> Unit) {
+    fun subscriptionSkuDetails(onSuccess: (List<SkuDetails>) -> Unit, onError: (code: Int, message: String) -> Unit) {
         startConnect {
-            querySubscriptionSkuDetails(listOf("just_pay", "remove_ads"), onSuccess, onError)
+            subscriptionSkuDetails(listOf(JUST_PAY, REMOVE_ADS), onSuccess, onError)
         }
     }
 
@@ -116,6 +121,9 @@ class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdate
     }
 
     override fun onPurchasesUpdated(billingResult: BillingResult, purchases: List<Purchase>?) {
+        Log.d(LOG_TAG_BILLING, "MyBilling - onPurchasesUpdated - billingResult: $billingResult")
+        Log.d(LOG_TAG_BILLING, "MyBilling - onPurchasesUpdated - purchases: $purchases")
+
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
             for (purchase in purchases) {
                 handlePurchase(purchase)
@@ -130,6 +138,7 @@ class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdate
     }
 
     private fun handlePurchase(purchase: Purchase) {
+        Log.d(LOG_TAG_BILLING, "MyBilling - handlePurchase")
         // Purchase retrieved from BillingClient#queryPurchases or your PurchasesUpdatedListener.
         val myPurchase : Purchase = purchase
 
@@ -141,15 +150,17 @@ class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdate
             ConsumeParams.newBuilder()
                 .setPurchaseToken(myPurchase.purchaseToken)
                 .build()
-
-        billingClient.consumeAsync(consumeParams) { billingResult, outToken ->
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                // Handle the success of the consume operation.
-                BillingState.isAds.postValue(false)
+        launch {
+            billingClient.consumeAsync(consumeParams) { billingResult, outToken ->
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    // Handle the success of the consume operation.
+                    acknowledgedPurchase(myPurchase)
+                }
                 Log.d(LOG_TAG_BILLING, "MyBilling - handlePurchase - outToken: $outToken")
-
+                Log.d(LOG_TAG_BILLING, "MyBilling - handlePurchase - billingResult: $billingResult")
             }
         }
+
     }
 
     fun acknowledgedPurchase(purchase: Purchase) {
@@ -162,7 +173,7 @@ class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdate
                         billingClient.acknowledgePurchase(acknowledgePurchaseParams.build())
                     }
                     Log.d(LOG_TAG_BILLING,"MyBilling - acknowledgedPurchase - ackPurchaseResult: $ackPurchaseResult")
-
+                    BillingState.setFlagByString(purchase.sku, false)
                 }
             }
         }
