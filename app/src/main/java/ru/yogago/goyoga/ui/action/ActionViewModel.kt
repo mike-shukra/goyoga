@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
 import ru.yogago.goyoga.data.ActionState
-import ru.yogago.goyoga.data.AppConstants.LOG_TAG
+import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
 import ru.yogago.goyoga.data.Asana
 import ru.yogago.goyoga.data.UserData
 import ru.yogago.goyoga.service.DataBase

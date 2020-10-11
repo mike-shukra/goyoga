@@ -18,7 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.squareup.picasso.Picasso
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants
-import ru.yogago.goyoga.data.AppConstants.LOG_TAG
+import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
 
 
 class ActionFragment : Fragment() {

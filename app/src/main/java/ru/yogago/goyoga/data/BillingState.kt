@@ -9,9 +9,17 @@ object BillingState {
     val isAds: MutableLiveData<Boolean> = MutableLiveData()
     val isJustPay: MutableLiveData<Boolean> = MutableLiveData()
 
+    init {
+        isAds.postValue(false)
+        isJustPay.postValue(false)
+    }
+
     fun setFlagByString(s: String, b: Boolean) {
         if (s == JUST_PAY) isJustPay.postValue(b)
         if (s == REMOVE_ADS) isAds.postValue(b)
     }
 
+    fun getSubscribesList(): List<String> {
+        return listOf(JUST_PAY, REMOVE_ADS)
+    }
 }

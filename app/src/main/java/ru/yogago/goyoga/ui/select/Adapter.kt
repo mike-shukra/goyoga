@@ -10,8 +10,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import ru.yogago.goyoga.R
-import ru.yogago.goyoga.data.AppConstants.LOG_TAG
-import ru.yogago.goyoga.data.AppConstants.PHOTO_URL
+import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
+import ru.yogago.goyoga.data.AppConstants.Companion.PHOTO_URL
 import ru.yogago.goyoga.data.Asana
 import java.util.*
 

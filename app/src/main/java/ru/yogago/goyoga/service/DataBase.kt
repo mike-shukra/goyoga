@@ -3,7 +3,7 @@ package ru.yogago.goyoga.service
 import android.content.Context
 import android.util.Log
 import androidx.room.Room
-import ru.yogago.goyoga.data.AppConstants.LOG_TAG
+import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
 
 object DataBase {
     lateinit var db: AppDatabase

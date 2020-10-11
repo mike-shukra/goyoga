@@ -1,18 +1,19 @@
 package ru.yogago.goyoga.ui.profile
 
+import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.android.billingclient.api.SkuDetails
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import ru.yogago.goyoga.data.AppConstants.LOG_TAG_BILLING
+import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG_BILLING
 import ru.yogago.goyoga.data.BillingItem
 import ru.yogago.goyoga.model.MyBilling
 import kotlin.coroutines.CoroutineContext
 
-class BillingViewModel : ViewModel(), CoroutineScope {
+class BillingViewModel(application: Application) : AndroidViewModel(application), CoroutineScope {
     private val job = SupervisorJob()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
