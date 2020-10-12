@@ -34,7 +34,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     fun handleBilling() {
         val onSuccess: (List<Purchase>) -> Unit = { purchases ->
-            Log.d(AppConstants.LOG_TAG_BILLING, "ProfileViewModel - MyBilling - handleBilling - purchasesList: $purchases")
+            Log.d(LOG_TAG_BILLING, "ProfileViewModel - MyBilling - handleBilling - purchasesList: $purchases")
             if (purchases.isEmpty()) {
                 BillingState.isAds.postValue(true)
                 BillingState.isJustPay.postValue(true)
@@ -63,14 +63,6 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         }
         myBilling.queryPurchases(onSuccess, onError)
     }
-
-//    private fun checkContain(purchases: List<Purchase>){
-//        purchases.forEach { purchase ->
-//            if (!isContain(purchase))  {
-//                BillingState.setFlagByString(purchase.sku, true)
-//            }
-//        }
-//    }
 
     private fun checkContain(purchases: List<Purchase>) {
         val noContains = arrayListOf<String>()
