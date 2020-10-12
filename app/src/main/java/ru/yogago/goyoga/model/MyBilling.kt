@@ -43,6 +43,11 @@ class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdate
                         isBillingServiceConnected = true
                         task()
                     }
+                    if (billingResult.responseCode ==  BillingClient.BillingResponseCode.BILLING_UNAVAILABLE) {
+                        BillingState.getSubscribesList().forEach {
+                            BillingState.setFlagByString(it, true)
+                        }
+                    }
                 }
                 override fun onBillingServiceDisconnected() {
                     // Try to restart the connection on the next request to

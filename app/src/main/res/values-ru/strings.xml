@@ -41,6 +41,8 @@
     <string name="years">лет</string>
     <string name="subscribe">Подсаться</string>
     <string name="manage_subscription_label">Управлять подпиской</string>
+    <string name="google_play_subscriptions">Подписки Google Play</string>
+    <string name="manage_subscription_message">Управлять подписками в Google Play</string>
 
 
 </resources>
