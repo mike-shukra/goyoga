@@ -39,6 +39,7 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val profileBillingButton: Button = view.findViewById(R.id.profileBillingButton)
+        val profileInfoButton: Button = view.findViewById(R.id.profileInfoButton)
         val createButton = view.findViewById<Button>(R.id.createButton)
         val levelSpinner = view.findViewById<Spinner>(R.id.levelSpinner)
         val checkBoxKnee = view.findViewById<CheckBox>(R.id.checkBoxKnee)
@@ -53,6 +54,10 @@ class ProfileFragment : Fragment() {
 
         profileBillingButton.setOnClickListener {
             findNavController().navigate(R.id.nav_billing)
+        }
+
+        profileInfoButton.setOnClickListener {
+            findNavController().navigate(R.id.nav_info)
         }
 
         buttonMainTransition.setOnCheckedChangeListener { compoundButton, b ->
