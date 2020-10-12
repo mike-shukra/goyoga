@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_nav_profile_to_billingFragment"
             app:destination="@id/nav_billing" />
+        <action
+            android:id="@+id/action_nav_profile_to_infoFragment"
+            app:destination="@id/nav_info" />
     </fragment>
 
     <fragment
@@ -35,5 +38,10 @@
         android:name="ru.yogago.goyoga.ui.profile.BillingFragment"
         android:label="billing_fragment"
         tools:layout="@layout/billing_fragment" />
+    <fragment
+        android:id="@+id/nav_info"
+        android:name="ru.yogago.goyoga.ui.profile.InfoFragment"
+        android:label="info_fragment"
+        tools:layout="@layout/info_fragment" />
 
 </navigation>
