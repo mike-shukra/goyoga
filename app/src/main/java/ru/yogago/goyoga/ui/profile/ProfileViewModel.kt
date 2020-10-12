@@ -36,8 +36,9 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         val onSuccess: (List<Purchase>) -> Unit = { purchases ->
             Log.d(LOG_TAG_BILLING, "ProfileViewModel - MyBilling - handleBilling - purchasesList: $purchases")
             if (purchases.isEmpty()) {
-                BillingState.isAds.postValue(true)
-                BillingState.isJustPay.postValue(true)
+                BillingState.getSubscribesList().forEach {
+                    BillingState.setFlagByString(it, true)
+                }
             }
             else {
                 purchases.forEach {
