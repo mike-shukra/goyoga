@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -13,7 +14,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.yandex.mobile.ads.AdRequest
+import com.yandex.mobile.ads.AdSize
+import com.yandex.mobile.ads.AdView
 import ru.yogago.goyoga.R
+import ru.yogago.goyoga.data.AppConstants
+import ru.yogago.goyoga.data.BillingState
+import ru.yogago.goyoga.service.StickyBannerEventListener
 
 class SelectFragment : Fragment() {
 
@@ -36,6 +43,18 @@ class SelectFragment : Fragment() {
         val rvAsanas: RecyclerView = view.findViewById(R.id.rvAsanas)
         val glm = GridLayoutManager(context, getScreenColumn())
         rvAsanas.layoutManager = glm
+        val advertisingBox = view.findViewById<LinearLayout>(R.id.advertising_box)
+        val mAdView = view.findViewById<AdView>(R.id.ad_view)
+        mAdView.blockId = AppConstants.YANDEX_RTB_ID
+        mAdView.adSize = AdSize.flexibleSize()
+        val adRequest = AdRequest.Builder().build()
+        mAdView.adEventListener = StickyBannerEventListener()
+        mAdView.loadAd(adRequest)
+
+        BillingState.isAds.observe(viewLifecycleOwner, {
+            if (it) advertisingBox.visibility = View.VISIBLE
+            else advertisingBox.visibility = View.GONE
+        })
 
         selectViewModel.userData.observe(viewLifecycleOwner, {
             time.text = (it.allTime / 60).toString()

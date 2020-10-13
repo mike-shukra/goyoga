@@ -9,16 +9,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.animation.DecelerateInterpolator
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.ToggleButton
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.squareup.picasso.Picasso
+import com.yandex.mobile.ads.AdRequest
+import com.yandex.mobile.ads.AdSize
+import com.yandex.mobile.ads.AdView
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
+import ru.yogago.goyoga.data.BillingState
+import ru.yogago.goyoga.service.StickyBannerEventListener
 
 
 class ActionFragment : Fragment() {
@@ -58,6 +60,13 @@ class ActionFragment : Fragment() {
         val description: TextView = view.findViewById(R.id.description)
         val buttonStart = view.findViewById<ToggleButton>(R.id.buttonStart)
         val buttonSound = view.findViewById<ToggleButton>(R.id.buttonSound)
+        val advertisingBox = view.findViewById<LinearLayout>(R.id.advertising_box)
+        val mAdView = view.findViewById<AdView>(R.id.ad_view)
+        mAdView.blockId = AppConstants.YANDEX_RTB_ID
+        mAdView.adSize = AdSize.flexibleSize()
+        val adRequest = AdRequest.Builder().build()
+        mAdView.adEventListener = StickyBannerEventListener()
+        mAdView.loadAd(adRequest)
 
         val animFadeOut = AnimationUtils.loadAnimation(context, R.anim.alpha_out)
         val animForButtonStart = AnimationUtils.loadAnimation(context, R.anim.button_anim)
@@ -89,6 +98,11 @@ class ActionFragment : Fragment() {
             }
 
         }
+
+        BillingState.isAds.observe(viewLifecycleOwner, {
+            if (it) advertisingBox.visibility = View.VISIBLE
+            else advertisingBox.visibility = View.GONE
+        })
 
         actionViewModel.isFinish.observe(viewLifecycleOwner, {
             progressBarAll.setProgress(1000, true)

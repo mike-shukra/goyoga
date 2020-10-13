@@ -11,10 +11,15 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.yandex.mobile.ads.AdRequest
+import com.yandex.mobile.ads.AdSize
+import com.yandex.mobile.ads.AdView
 import ru.yogago.goyoga.R
+import ru.yogago.goyoga.data.AppConstants.Companion.YANDEX_RTB_ID
 import ru.yogago.goyoga.data.BillingState
 import ru.yogago.goyoga.data.SelectedIndexArray
 import ru.yogago.goyoga.model.MyBilling
+import ru.yogago.goyoga.service.StickyBannerEventListener
 
 
 class ProfileFragment : Fragment() {
@@ -51,6 +56,13 @@ class ProfileFragment : Fragment() {
         val buttonMainTransition = view.findViewById<ToggleButton>(R.id.buttonMainTransition)
         val advertisingBox = view.findViewById<LinearLayout>(R.id.advertising_box)
         val flipAnimation = AnimationUtils.loadAnimation(context, R.anim.flip)
+
+        val mAdView = view.findViewById<AdView>(R.id.ad_view)
+        mAdView.blockId = YANDEX_RTB_ID
+        mAdView.adSize = AdSize.flexibleSize()
+        val adRequest = AdRequest.Builder().build()
+        mAdView.adEventListener = StickyBannerEventListener()
+        mAdView.loadAd(adRequest)
 
         profileBillingButton.setOnClickListener {
             findNavController().navigate(R.id.nav_billing)
@@ -144,4 +156,5 @@ class ProfileFragment : Fragment() {
         super.onDestroy()
         profileViewModel.destroyBilling()
     }
+
 }
