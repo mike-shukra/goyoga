@@ -37,15 +37,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/colorWhiteLite"
-                android:gravity="center"
-                android:padding="16dp"
-                android:visibility="gone">
+                android:layout_marginTop="40dp"
+                android:gravity="center">
 
-                <TextView
+                <com.yandex.mobile.ads.AdView
+                    android:id="@+id/ad_view"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/advertising"
-                    android:textColor="@color/colorPrimaryMiddle" />
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
 
             <TextView
@@ -140,8 +138,12 @@
                     android:textColor="@color/colorWhiteLite" />
 
             </LinearLayout>
+
+
         </LinearLayout>
+
     </ScrollView>
+
 <!--    android:translationY="-84dp"    -->
     <LinearLayout
         android:translationY="-84dp"

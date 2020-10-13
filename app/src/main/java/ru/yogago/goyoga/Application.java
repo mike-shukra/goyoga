@@ -7,15 +7,17 @@ import static ru.yogago.goyoga.data.AppConstants.API_key;
 
 public class Application extends android.app.Application {
 
-    private static boolean sIsLocationTrackingEnabled = true;
+//    private static boolean sIsLocationTrackingEnabled = true;
+//
+//    public static void setLocationTrackingEnabled(final boolean value) {
+//        sIsLocationTrackingEnabled = value;
+//    }
 
-    public static void setLocationTrackingEnabled(final boolean value) {
-        sIsLocationTrackingEnabled = value;
-    }
-
-    public static boolean isIsLocationTrackingEnabled() {
-        return sIsLocationTrackingEnabled;
-    }
+// --Commented out by Inspection START (13.10.2020 21:10):
+//    public static boolean isIsLocationTrackingEnabled() {
+//        return sIsLocationTrackingEnabled;
+//    }
+// --Commented out by Inspection STOP (13.10.2020 21:10)
 
     @Override
     public void onCreate() {
