@@ -93,4 +93,9 @@ dependencies {
 
     //billing
     implementation 'com.android.billingclient:billing-ktx:3.0.1'
+
+    //yandex
+    implementation 'com.yandex.android:mobileads:3.0.0'
+    // AppMetrica SDK.
+    implementation 'com.yandex.android:mobmetricalib:3.15.0'
 }
