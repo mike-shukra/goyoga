@@ -6,8 +6,6 @@ import com.android.billingclient.api.*
 import kotlinx.coroutines.*
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG_BILLING
 import ru.yogago.goyoga.data.BillingState
-import ru.yogago.goyoga.data.JUST_PAY
-import ru.yogago.goyoga.data.REMOVE_ADS
 import kotlin.coroutines.CoroutineContext
 
 class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdatedListener {
@@ -100,7 +98,7 @@ class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdate
 
     fun subscriptionSkuDetails(onSuccess: (List<SkuDetails>) -> Unit, onError: (code: Int, message: String) -> Unit) {
         startConnect {
-            subscriptionSkuDetails(listOf(JUST_PAY, REMOVE_ADS), onSuccess, onError)
+            subscriptionSkuDetails(BillingState.getSubscribesList(), onSuccess, onError)
         }
     }
 

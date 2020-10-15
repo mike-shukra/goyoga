@@ -44,7 +44,7 @@ class ActionViewModel : ViewModel(), CoroutineScope {
     private suspend fun playAsanas(current: Int) {
         var i = current-1
         while (i < asanas.size) {
-            var time = asanas[i].times
+            var time = asanas[i].times*10
             pauseIfIsPause()
             asana.postValue(asanas[i])
             while(time > 0) {
