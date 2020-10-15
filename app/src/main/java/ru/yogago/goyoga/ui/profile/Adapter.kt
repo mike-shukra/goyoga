@@ -45,7 +45,7 @@ class Adapter(
                     Log.d(LOG_TAG_BILLING, "Adapter - items[position].sku: ${items[position].sku} - $b")
                 })
             }
-            REMOVE_ADS -> {
+            REMOVE_ADS, REMOVE_ADS_Y -> {
                 BillingState.isAds.observe(viewLifecycleOwner, { b ->
                     itemViewHolder.buttonSubscribe.isEnabled = b
                     Log.d(LOG_TAG_BILLING, "Adapter - items[position].sku: ${items[position].sku} - $b")
