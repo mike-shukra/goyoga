@@ -21,7 +21,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="72dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -36,9 +37,9 @@
                     android:layout_marginBottom="8dp"
                     android:max="1000"
                     android:progressDrawable="@drawable/progress"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -102,7 +103,6 @@
                         android:src="@drawable/placeholder" />
 
 
-
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
@@ -110,24 +110,23 @@
             <ProgressBar
                 android:id="@+id/progressBarItem"
                 style="?android:attr/progressBarStyleHorizontal"
-                android:layout_margin="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="16dp"
+                android:layout_margin="8dp"
                 android:max="1000"
-                android:progressDrawable="@drawable/progress"
-                />
+                android:progressDrawable="@drawable/progress" />
+
             <LinearLayout
                 android:id="@+id/advertising_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorWhiteLite"
                 android:layout_margin="8dp"
                 android:gravity="center">
 
                 <com.yandex.mobile.ads.AdView
                     android:id="@+id/ad_view"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
             <LinearLayout

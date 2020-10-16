@@ -18,7 +18,7 @@ import com.yandex.mobile.ads.AdRequest
 import com.yandex.mobile.ads.AdSize
 import com.yandex.mobile.ads.AdView
 import ru.yogago.goyoga.R
-import ru.yogago.goyoga.data.AppConstants
+import ru.yogago.goyoga.data.AppConstants.Companion.YANDEX_RTB_ID_SELECT_320X100
 import ru.yogago.goyoga.data.BillingState
 import ru.yogago.goyoga.service.StickyBannerEventListener
 
@@ -44,9 +44,10 @@ class SelectFragment : Fragment() {
         val glm = GridLayoutManager(context, getScreenColumn())
         rvAsanas.layoutManager = glm
         val advertisingBox = view.findViewById<LinearLayout>(R.id.advertising_box)
+
         val mAdView = view.findViewById<AdView>(R.id.ad_view)
-        mAdView.blockId = AppConstants.YANDEX_RTB_ID
-        mAdView.adSize = AdSize.flexibleSize()
+        mAdView.blockId = YANDEX_RTB_ID_SELECT_320X100
+        mAdView.adSize = AdSize.stickySize(AdSize.FULL_WIDTH)
         val adRequest = AdRequest.Builder().build()
         mAdView.adEventListener = StickyBannerEventListener()
         mAdView.loadAd(adRequest)

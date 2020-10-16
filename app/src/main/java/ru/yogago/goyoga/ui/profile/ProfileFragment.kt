@@ -15,7 +15,7 @@ import com.yandex.mobile.ads.AdRequest
 import com.yandex.mobile.ads.AdSize
 import com.yandex.mobile.ads.AdView
 import ru.yogago.goyoga.R
-import ru.yogago.goyoga.data.AppConstants.Companion.YANDEX_RTB_ID
+import ru.yogago.goyoga.data.AppConstants.Companion.YANDEX_RTB_ID_PROFILE
 import ru.yogago.goyoga.data.BillingState
 import ru.yogago.goyoga.data.SelectedIndexArray
 import ru.yogago.goyoga.model.MyBilling
@@ -58,8 +58,8 @@ class ProfileFragment : Fragment() {
         val flipAnimation = AnimationUtils.loadAnimation(context, R.anim.flip)
 
         val mAdView = view.findViewById<AdView>(R.id.ad_view)
-        mAdView.blockId = YANDEX_RTB_ID
-        mAdView.adSize = AdSize.flexibleSize()
+        mAdView.blockId = YANDEX_RTB_ID_PROFILE
+        mAdView.adSize = AdSize.stickySize(AdSize.FULL_WIDTH)
         val adRequest = AdRequest.Builder().build()
         mAdView.adEventListener = StickyBannerEventListener()
         mAdView.loadAd(adRequest)
