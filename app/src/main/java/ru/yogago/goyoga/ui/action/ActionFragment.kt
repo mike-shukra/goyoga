@@ -62,8 +62,8 @@ class ActionFragment : Fragment() {
         val buttonSound = view.findViewById<ToggleButton>(R.id.buttonSound)
         val advertisingBox = view.findViewById<LinearLayout>(R.id.advertising_box)
         val mAdView = view.findViewById<AdView>(R.id.ad_view)
-        mAdView.blockId = AppConstants.YANDEX_RTB_ID
-        mAdView.adSize = AdSize.flexibleSize()
+        mAdView.blockId = AppConstants.YANDEX_RTB_ID_ACTION
+        mAdView.adSize = AdSize.stickySize(AdSize.FULL_WIDTH)
         val adRequest = AdRequest.Builder().build()
         mAdView.adEventListener = StickyBannerEventListener()
         mAdView.loadAd(adRequest)
