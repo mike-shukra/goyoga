@@ -140,7 +140,7 @@ class ProfileFragment : Fragment() {
             var text = it
             if (it.contains("UnknownHostException")) text = getString(R.string.no_internet)
             if (it.contains("Не авторизовано")) {
-                text = getString(R.string.not_authorized)
+                text = getString(R.string.wait)
             }
             Toast.makeText(context, text, Toast.LENGTH_LONG).show()
         })

@@ -165,29 +165,26 @@ class MainModel: CoroutineScope {
         }
     }
 
-    private fun saveTokenDB(token: Token) {
-        val response = dbDao.insertToken(token)
-        Log.d(LOG_TAG, "LoginModel - saveTokenDB response: $response")
-    }
-
     fun loadUserData() {
         launch {
             if(!isTokenDB()) {
                 val uniqueID: String = UUID.randomUUID().toString()
                 registerAnonymousUser(uniqueID)
                 val token = TokenProvider.getToken(uniqueID, APP_TOKEN)
-                saveTokenDB(token)
+                val response = dbDao.insertToken(token)
+                Log.d(LOG_TAG, "MainModel - loadUserData - saveTokenDB response: $response")
             }
 
             val data = loadRemoteUser()
             if (data.error == "no") {
                 val saveUserToDB = saveUserToDB(data.userData!!)
-                Log.d(LOG_TAG, "MainModel - loadUserToProfile - saveUserToDB: $saveUserToDB")
+                Log.d(LOG_TAG, "MainModel - loadUserData - saveUserToDB: $saveUserToDB")
             } else {
                 profileViewModel.error.postValue(data.error)
+                Log.d(LOG_TAG, "MainModel - loadUserData - error: ${data.error}")
             }
             var user: UserData? = loadUserFromDB()
-            Log.d(LOG_TAG, "MainModel - loadUserToProfile - loadUserFromDB user: $user")
+            Log.d(LOG_TAG, "MainModel - loadUserData - loadUserFromDB user: $user")
             if (user == null) user = UserData(0)
             profileViewModel.user.postValue(user)
         }
