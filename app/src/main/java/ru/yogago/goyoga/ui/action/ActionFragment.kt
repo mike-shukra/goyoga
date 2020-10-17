@@ -66,7 +66,6 @@ class ActionFragment : Fragment() {
         mAdView.adSize = AdSize.stickySize(AdSize.FULL_WIDTH)
         val adRequest = AdRequest.Builder().build()
         mAdView.adEventListener = StickyBannerEventListener()
-        mAdView.loadAd(adRequest)
 
         val animFadeOut = AnimationUtils.loadAnimation(context, R.anim.alpha_out)
         val animForButtonStart = AnimationUtils.loadAnimation(context, R.anim.button_anim)
@@ -116,6 +115,7 @@ class ActionFragment : Fragment() {
         })
 
         actionViewModel.asana.observe(viewLifecycleOwner, { asana ->
+            mAdView.loadAd(adRequest)
             if (!buttonSound.isChecked) sp.play(mSp, 1F, 1F, 1, 0, 1F)
             progressBarAll.setProgress(1000 / allCount * asana.id.toInt(), true)
 
