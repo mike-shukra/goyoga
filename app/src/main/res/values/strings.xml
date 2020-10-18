@@ -26,6 +26,7 @@
     <string name="difficulty_level">Difficulty level select</string>
     <string name="asanas_card_list">Asana cards of the formed sequence</string>
     <string name="not_authorized">Not authorized</string>
+    <string name="not_created">Not created</string>
     <string name="select_head">Sequence</string>
     <string name="description_title">Description</string>
     <string name="billing_head">Subscriptions</string>

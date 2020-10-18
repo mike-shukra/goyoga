@@ -19,6 +19,7 @@ import com.yandex.mobile.ads.AdSize
 import com.yandex.mobile.ads.AdView
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants.Companion.YANDEX_RTB_ID_SELECT_320X100
+import ru.yogago.goyoga.data.AppConstants.Companion.YANDEX_RTB_ID_SELECT_VERTICAL
 import ru.yogago.goyoga.data.BillingState
 import ru.yogago.goyoga.service.StickyBannerEventListener
 
@@ -46,8 +47,15 @@ class SelectFragment : Fragment() {
         val advertisingBox = view.findViewById<LinearLayout>(R.id.advertising_box)
 
         val mAdView = view.findViewById<AdView>(R.id.ad_view)
-        mAdView.blockId = YANDEX_RTB_ID_SELECT_320X100
-        mAdView.adSize = AdSize.stickySize(AdSize.FULL_WIDTH)
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            mAdView.blockId = YANDEX_RTB_ID_SELECT_VERTICAL
+            mAdView.adSize = AdSize.stickySize(AdSize.FULL_HEIGHT)
+        }
+        else {
+            mAdView.blockId = YANDEX_RTB_ID_SELECT_320X100
+            mAdView.adSize = AdSize.stickySize(AdSize.FULL_WIDTH)
+        }
+
         val adRequest = AdRequest.Builder().build()
         mAdView.adEventListener = StickyBannerEventListener()
         mAdView.loadAd(adRequest)
@@ -88,6 +96,6 @@ class SelectFragment : Fragment() {
     }
 
     private fun getScreenColumn(): Int {
-        return if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 4 else 2
+        return if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 3 else 2
     }
 }
