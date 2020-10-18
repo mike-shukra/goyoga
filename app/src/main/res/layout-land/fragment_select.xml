@@ -12,7 +12,7 @@
         android:id="@+id/linearLayout3"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2"
+        android:layout_weight="24"
         android:background="@color/colorPrimaryMiddle"
         android:gravity="center"
         android:orientation="vertical">
@@ -114,9 +114,11 @@
 
         <LinearLayout
             android:id="@+id/advertising_box"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="8dp"
             android:gravity="center">
 
             <com.yandex.mobile.ads.AdView
@@ -129,14 +131,14 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvAsanas"
-        android:layout_weight="8"
+        android:layout_weight="76"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:background="@color/colorPrimaryMiddle"
         android:contentDescription="@string/asanas_card_list"
         android:padding="4dp"
         android:paddingBottom="56dp"
-        app:spanCount="4"
+        app:spanCount="3"
         tools:listitem="@layout/card_view_asana">
 
     </androidx.recyclerview.widget.RecyclerView>

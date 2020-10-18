@@ -14,6 +14,7 @@ class AppConstants {
         const val YANDEX_RTB_ID_ACTION = "R-M-648245-5"
         const val YANDEX_RTB_ID_SELECT_320X100 = "R-M-648245-4"
         const val YANDEX_RTB_ID_SELECT_VERTICAL = "R-M-648245-6"
+        const val YANDEX_RTB_ID_NATIVE = "R-M-648245-7"
         const val PLAY_STORE_SUBSCRIPTION_URL =
             "https://play.google.com/store/account/subscriptions"
         const val PLAY_STORE_SUBSCRIPTION_DEEPLINK_URL =
