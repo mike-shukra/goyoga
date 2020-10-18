@@ -49,7 +49,7 @@ class SelectFragment : Fragment() {
         val mAdView = view.findViewById<AdView>(R.id.ad_view)
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             mAdView.blockId = YANDEX_RTB_ID_SELECT_VERTICAL
-            mAdView.adSize = AdSize.stickySize(AdSize.FULL_HEIGHT)
+            mAdView.adSize = AdSize.BANNER_240x400
         }
         else {
             mAdView.blockId = YANDEX_RTB_ID_SELECT_320X100
