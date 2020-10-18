@@ -5,7 +5,6 @@ import android.content.Intent
 import android.media.SoundPool
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
-import android.speech.tts.Voice
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -43,11 +42,8 @@ class ActionFragment : Fragment() {
             actionViewModel.id = it.getLong("id")
         }
 
-        //подготовка движка TTS для проговаривания слов
         val checkTTSIntent = Intent()
-        //проверка наличия TTS
         checkTTSIntent.action = TextToSpeech.Engine.ACTION_CHECK_TTS_DATA
-        //запуск checkTTSIntent интента
         startActivityForResult(checkTTSIntent, ttsCheckCode)
     }
 
@@ -109,8 +105,8 @@ class ActionFragment : Fragment() {
             if (!b) {
                 animatorItemCurrentTime = animatorForProgressItem.currentPlayTime
                 animatorForProgressItem.cancel()
+                myTTS?.stop()
             }
-
         }
 
         BillingState.isAds.observe(viewLifecycleOwner, {
@@ -159,16 +155,11 @@ class ActionFragment : Fragment() {
         actionViewModel.loadData()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putLong("animatorItemCurrentTime", animatorItemCurrentTime)
-        super.onSaveInstanceState(outState)
-    }
-
     override fun onDestroy() {
         Log.d(LOG_TAG, "ActionFragment - onDestroy this: ${this.hashCode()}")
         actionViewModel.cancelBackgroundWork()
-//        myTTS?.stop()
-//        myTTS?.shutdown()
+        myTTS?.stop()
+        myTTS?.shutdown()
         super.onDestroy()
     }
 
@@ -177,33 +168,8 @@ class ActionFragment : Fragment() {
             if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
                 myTTS = TextToSpeech(this.context) {
                     if (it == TextToSpeech.SUCCESS){
-                        Log.d(LOG_TAG, "myTTS?.voices" + myTTS?.voices)
-                        val v: Voice
-                        val a: MutableSet<String> = HashSet()
-                        a.add("male")
-                        a.add("female")
-//                        myTTS?.language = if (isRussianLanguage) Locale(Locale.getDefault().language) else Locale.US
-                        if (isRussianLanguage) {
-                            v = Voice(
-                                "en-us-x-sfg#male_1-local",
-                                Locale("ru", "RU"),
-                                400,
-                                200,
-                                true,
-                                a
-                            )
-                        }
-                        else {
-                            v = Voice(
-                                "en-us-x-sfg#male_1-local",
-                                Locale("en", "US"),
-                                400,
-                                200,
-                                true,
-                                a
-                            )
-                        }
-                        myTTS?.voice = v
+                        Log.d(LOG_TAG, "myTTS.voices: " + myTTS?.voices)
+                        myTTS?.language = if (isRussianLanguage) Locale(Locale.getDefault().language) else Locale.US
                         myTTS?.setPitch(1.0f)
                         myTTS?.setSpeechRate(1.0f)
                         ttsEnabled = true
