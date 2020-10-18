@@ -114,48 +114,60 @@
         <Space
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="5" />
+            android:layout_weight="2" />
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="40"
-            android:orientation="vertical">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
 
             <LinearLayout
-                android:id="@+id/advertising_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:gravity="center">
+                android:paddingBottom="72dp"
+                android:orientation="vertical">
 
-                <com.yandex.mobile.ads.AdView
-                    android:id="@+id/ad_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:id="@+id/advertising_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:gravity="center">
+
+                    <com.yandex.mobile.ads.AdView
+                        android:id="@+id/ad_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:text="@string/field_title"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorWhiteLite"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:text="@string/field_title"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/colorWhiteLite"
+                    android:textSize="16sp" />
+
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="@string/field_title"
-                android:textAlignment="center"
-                android:textColor="@color/colorWhiteLite"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="@string/field_title"
-                android:textAlignment="textStart"
-                android:textColor="@color/colorWhiteLite"
-                android:textSize="16sp" />
-
-        </LinearLayout>
+        </ScrollView>
 
     </LinearLayout>
 
