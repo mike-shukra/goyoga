@@ -1,8 +1,11 @@
 package ru.yogago.goyoga.ui.action
 
 import android.animation.ObjectAnimator
+import android.content.Intent
 import android.media.SoundPool
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
+import android.speech.tts.Voice
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -21,13 +24,17 @@ import ru.yogago.goyoga.data.AppConstants
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
 import ru.yogago.goyoga.data.BillingState
 import ru.yogago.goyoga.service.StickyBannerEventListener
+import java.util.*
 
 
 class ActionFragment : Fragment() {
 
+    private var ttsEnabled: Boolean = true
     private lateinit var actionViewModel: ActionViewModel
-    private val isRussianLanguage: Boolean = java.util.Locale.getDefault().language == "ru"
+    private val isRussianLanguage: Boolean = Locale.getDefault().language == "ru"
     private var animatorItemCurrentTime: Long = 0
+    private val ttsCheckCode = 0
+    private var myTTS: TextToSpeech? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +42,13 @@ class ActionFragment : Fragment() {
         arguments?.let {
             actionViewModel.id = it.getLong("id")
         }
+
+        //подготовка движка TTS для проговаривания слов
+        val checkTTSIntent = Intent()
+        //проверка наличия TTS
+        checkTTSIntent.action = TextToSpeech.Engine.ACTION_CHECK_TTS_DATA
+        //запуск checkTTSIntent интента
+        startActivityForResult(checkTTSIntent, ttsCheckCode)
     }
 
     override fun onCreateView(
@@ -80,6 +94,7 @@ class ActionFragment : Fragment() {
 
         buttonSound.setOnCheckedChangeListener { compoundButton, b ->
             compoundButton.startAnimation(animForButtonStart)
+            if (b) myTTS?.stop()
         }
 
 //        val pager = view.findViewById(R.id.pager) as ViewPager
@@ -115,18 +130,18 @@ class ActionFragment : Fragment() {
         })
 
         actionViewModel.asana.observe(viewLifecycleOwner, { asana ->
+            sp.play(mSp, 1F, 1F, 1, 0, 1F)
             mAdView.loadAd(adRequest)
-            if (!buttonSound.isChecked) sp.play(mSp, 1F, 1F, 1, 0, 1F)
             progressBarAll.setProgress(1000 / allCount * asana.id.toInt(), true)
-
             animatorForProgressItem.duration = asana.times * 1000.toLong()
             animatorForProgressItem.interpolator = DecelerateInterpolator()
             if (actionViewModel.isPlay) animatorForProgressItem.start()
-
             title.text = if (isRussianLanguage) asana.name else asana.eng
-            description.text = if (isRussianLanguage) asana.description else asana.description_en
+            val descriptionText = if (isRussianLanguage) asana.description else asana.description_en
+            description.text = descriptionText
+            if (!buttonSound.isChecked)
+                myTTS?.speak(descriptionText, TextToSpeech.QUEUE_FLUSH, null, asana.id.toString())
             currentTextView.text = asana.id.toString()
-
             val patch = AppConstants.PHOTO_URL + asana.photo
             Log.d(LOG_TAG, patch)
             val picasso = Picasso.get()
@@ -142,7 +157,6 @@ class ActionFragment : Fragment() {
         })
 
         actionViewModel.loadData()
-
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -153,7 +167,59 @@ class ActionFragment : Fragment() {
     override fun onDestroy() {
         Log.d(LOG_TAG, "ActionFragment - onDestroy this: ${this.hashCode()}")
         actionViewModel.cancelBackgroundWork()
+//        myTTS?.stop()
+//        myTTS?.shutdown()
         super.onDestroy()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == ttsCheckCode) {
+            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+                myTTS = TextToSpeech(this.context) {
+                    if (it == TextToSpeech.SUCCESS){
+                        Log.d(LOG_TAG, "myTTS?.voices" + myTTS?.voices)
+                        val v: Voice
+                        val a: MutableSet<String> = HashSet()
+                        a.add("male")
+                        a.add("female")
+//                        myTTS?.language = if (isRussianLanguage) Locale(Locale.getDefault().language) else Locale.US
+                        if (isRussianLanguage) {
+                            v = Voice(
+                                "en-us-x-sfg#male_1-local",
+                                Locale("ru", "RU"),
+                                400,
+                                200,
+                                true,
+                                a
+                            )
+                        }
+                        else {
+                            v = Voice(
+                                "en-us-x-sfg#male_1-local",
+                                Locale("en", "US"),
+                                400,
+                                200,
+                                true,
+                                a
+                            )
+                        }
+                        myTTS?.voice = v
+                        myTTS?.setPitch(1.0f)
+                        myTTS?.setSpeechRate(1.0f)
+                        ttsEnabled = true
+                    }
+                    else if (it == TextToSpeech.ERROR) {
+                        Toast.makeText(this.context, R.string.tts_error, Toast.LENGTH_LONG).show()
+                        ttsEnabled = false
+                    }
+                }
+            } else {
+                val installTTSIntent = Intent()
+                installTTSIntent.action = TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA
+                startActivity(installTTSIntent)
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
 }
