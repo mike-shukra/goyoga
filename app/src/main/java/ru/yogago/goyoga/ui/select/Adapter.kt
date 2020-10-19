@@ -19,7 +19,7 @@ private const val TYPE_FIST_SIDE = 0
 private const val TYPE_SECOND_SIDE = 1
 private const val TYPE_SYMMETRIC = 2
 
-class Adapter(private val items: List<Asana>, private val resources: Resources): RecyclerView.Adapter<Adapter.ItemViewHolder?>() {
+class Adapter(private val items: List<Asana>, private val resources: Resources, private val picasso: Picasso): RecyclerView.Adapter<Adapter.ItemViewHolder?>() {
 
     var onItemClick: ((Asana) -> Unit)? = null
     private val isRussianLanguage: Boolean = Locale.getDefault().language == "ru"
@@ -61,7 +61,6 @@ class Adapter(private val items: List<Asana>, private val resources: Resources):
         itemViewHolder.profilePetsUserPic.contentDescription = "" + position + "_" + itemViewHolder.profilePetsUserPic.contentDescription.toString() + "_" + items[position].eng
         val patch = PHOTO_URL + items[position].photo
         Log.d(LOG_TAG, patch)
-        val picasso = Picasso.get()
         picasso.setIndicatorsEnabled(false)
         picasso
             .load(patch)

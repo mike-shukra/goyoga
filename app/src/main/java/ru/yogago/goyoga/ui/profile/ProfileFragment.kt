@@ -107,15 +107,14 @@ class ProfileFragment : Fragment() {
                 checkBoxLoins.isChecked,
                 checkBoxNeck.isChecked
             )
+            profileViewModel.done.observe(viewLifecycleOwner, {
+                if (it) findNavController().navigate(R.id.nav_select)
+            })
         }
 
         BillingState.isAds.observe(viewLifecycleOwner, {
             if (it) advertisingBox.visibility = View.VISIBLE
             else advertisingBox.visibility = View.GONE
-        })
-
-        profileViewModel.done.observe(viewLifecycleOwner, {
-            if (it) findNavController().navigate(R.id.nav_select)
         })
 
         profileViewModel.user.observe(viewLifecycleOwner, {

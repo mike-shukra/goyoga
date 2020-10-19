@@ -14,6 +14,7 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.squareup.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
 import com.yandex.mobile.ads.AdRequest
 import com.yandex.mobile.ads.AdSize
@@ -22,6 +23,7 @@ import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
 import ru.yogago.goyoga.data.BillingState
+import ru.yogago.goyoga.service.OkHttpClientFactory
 import ru.yogago.goyoga.service.StickyBannerEventListener
 import java.util.*
 
@@ -140,11 +142,16 @@ class ActionFragment : Fragment() {
             currentTextView.text = asana.id.toString()
             val patch = AppConstants.PHOTO_URL + asana.photo
             Log.d(LOG_TAG, patch)
-            val picasso = Picasso.get()
+
+
+            val picasso = Picasso.Builder(this.requireContext())
+                .downloader(OkHttp3Downloader(OkHttpClientFactory.getClient()))
+                .build()
+
             picasso.setIndicatorsEnabled(false)
             picasso
                 .load(patch)
-                .resize(320, 214)
+                .resize(640, 426)
                 .onlyScaleDown()
                 .centerCrop()
                 .placeholder(resources.getIdentifier("placeholder", "drawable", "ru.yogago.goyoga"))

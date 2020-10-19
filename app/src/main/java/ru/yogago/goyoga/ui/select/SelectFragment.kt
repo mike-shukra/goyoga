@@ -14,6 +14,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.OkHttp3Downloader
+import com.squareup.picasso.Picasso
 import com.yandex.mobile.ads.AdRequest
 import com.yandex.mobile.ads.AdSize
 import com.yandex.mobile.ads.AdView
@@ -21,6 +23,7 @@ import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants.Companion.YANDEX_RTB_ID_SELECT_320X100
 import ru.yogago.goyoga.data.AppConstants.Companion.YANDEX_RTB_ID_SELECT_VERTICAL
 import ru.yogago.goyoga.data.BillingState
+import ru.yogago.goyoga.service.OkHttpClientFactory
 import ru.yogago.goyoga.service.StickyBannerEventListener
 
 class SelectFragment : Fragment() {
@@ -72,7 +75,11 @@ class SelectFragment : Fragment() {
 
         selectViewModel.asanas.observe(viewLifecycleOwner, {
             loading.visibility = View.GONE
-            val adapter = Adapter(it, this.resources)
+            val picasso = Picasso.Builder(this.requireContext())
+                .downloader(OkHttp3Downloader(OkHttpClientFactory.getClient()))
+                .build()
+
+            val adapter = Adapter(it, this.resources, picasso)
             rvAsanas.adapter = adapter
 
             adapter.onItemClick = { asana ->
