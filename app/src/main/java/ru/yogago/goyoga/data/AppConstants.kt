@@ -4,7 +4,7 @@ class AppConstants {
 
     companion object {
         const val BASE_URL = "https://yoga-go.ru/"
-//        const val PHOTO_URL = "https://yoga-go.ru/asana/"
+        const val SMALL_PHOTO_URL = "https://yoga-go.ru/asana/"
         const val PHOTO_URL = "https://yoga-go.ru/Image/?image="
         const val LOG_TAG: String = "myLog"
         const val LOG_TAG_BILLING: String = "billingLog"

@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
-import ru.yogago.goyoga.data.AppConstants.Companion.PHOTO_URL
+import ru.yogago.goyoga.data.AppConstants.Companion.SMALL_PHOTO_URL
 import ru.yogago.goyoga.data.Asana
 import java.util.*
 
@@ -59,7 +59,7 @@ class Adapter(private val items: List<Asana>, private val resources: Resources, 
 
         itemViewHolder.fieldsName.text = if (isRussianLanguage) items[position].name else items[position].eng
         itemViewHolder.profilePetsUserPic.contentDescription = "" + position + "_" + itemViewHolder.profilePetsUserPic.contentDescription.toString() + "_" + items[position].eng
-        val patch = PHOTO_URL + items[position].photo
+        val patch = SMALL_PHOTO_URL + items[position].photo
         Log.d(LOG_TAG, patch)
         picasso.setIndicatorsEnabled(false)
         picasso
