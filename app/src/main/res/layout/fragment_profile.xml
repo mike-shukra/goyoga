@@ -9,7 +9,6 @@
 <!--    android:translationY="-84dp"-->
 
     <ScrollView
-        android:id="@+id/mainScroll"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingTop="56dp"
@@ -161,7 +160,7 @@
             android:id="@+id/profileWrapper"
             android:layout_width="match_parent"
             android:layout_height="84dp"
-            android:background="@color/colorPrimary"
+            android:background="@color/colorPrimaryMiddle"
             android:baselineAligned="false"
             android:orientation="horizontal"
             android:padding="8dp">
@@ -232,7 +231,7 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="24dp"
-                android:background="@color/colorPrimaryMiddle">
+                android:background="@color/colorAccent">
 
             </FrameLayout>
 

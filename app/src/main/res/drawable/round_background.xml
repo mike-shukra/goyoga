@@ -3,7 +3,7 @@
     <item
         android:state_enabled="false">
         <shape android:shape="oval">
-            <solid android:color="@color/colorPrimaryMiddle" />
+            <solid android:color="@color/colorAccent" />
         </shape>
     </item>
 
@@ -11,7 +11,7 @@
         android:state_pressed="true"
         android:state_enabled="true">
         <shape android:shape="oval">
-            <solid android:color="@color/colorPrimaryMiddle" />
+            <solid android:color="@color/colorAccent" />
 
         </shape>
     </item>
@@ -19,13 +19,13 @@
         android:state_focused="true"
         android:state_enabled="true">
         <shape android:shape="oval">
-            <solid android:color="@color/colorPrimaryMiddle" />
+            <solid android:color="@color/colorAccent" />
         </shape>
     </item>
     <item
         android:state_enabled="true">
         <shape android:shape="oval">
-            <solid android:color="@color/colorPrimaryMiddle" />
+            <solid android:color="@color/colorAccent" />
         </shape>
     </item>
 

@@ -8,10 +8,10 @@ interface DBDao {
     @Query("SELECT * FROM asana")
     fun getAsanas(): List<Asana>
 
-    @Query("SELECT * FROM userdata")
+    @Query("SELECT * FROM userData")
     fun getUserData(): UserData
 
-    @Query("SELECT * FROM actionstate")
+    @Query("SELECT * FROM actionState")
     fun getActionState(): ActionState
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
