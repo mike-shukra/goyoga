@@ -27,53 +27,24 @@ class MainModel: CoroutineScope {
         launch {
             val data = getRemoteData()
             if (data.error == "no") {
-                val updateDataDB = updateDataDB(data.asanas!!, data.userData!!)
-                Log.d(LOG_TAG, "MainModel - loadData - updateDataDB: $updateDataDB")
+                val responseDelete = dbDao.deleteAsanas()
+                Log.d(LOG_TAG, "MainModel - loadData responseDelete: $responseDelete")
+                val responseInsertAsanas = dbDao.insertAsanas(data.asanas!!)
+                Log.d(LOG_TAG, "MainModel - loadData responseInsertAsanas: $responseInsertAsanas")
+                val responseInsertUserData = dbDao.insertUserData(data.userData!!)
+                Log.d(LOG_TAG, "MainModel - loadData responseInsertUserData: $responseInsertUserData")
             } else {
+                Log.d(LOG_TAG, "MainModel - loadData error: ${data.error}")
                 selectViewModel.error.postValue(data.error)
             }
-            val asanas: List<Asana>? = loadAsanasFromDB()
-            val userData: UserData? = loadDataFromDB()
+            val asanas: List<Asana>? = dbDao.getAsanas()
+            val userData: UserData? = dbDao.getUserData()
             if (asanas != null) selectViewModel.asanas.postValue(asanas.filter {
                 it.side != "second"
             })
             if (userData != null) selectViewModel.userData.postValue(userData)
 
         }
-    }
-
-    private fun updateDataDB(asanas: List<Asana>, userData: UserData): Boolean {
-        val saveAsanasToDB = saveAsanasToDB(asanas)
-        Log.d(LOG_TAG, "MainModel - updateDataDB - saveAsanasToDB: $saveAsanasToDB")
-        val saveUserToDB = saveUserToDB(userData)
-        Log.d(LOG_TAG, "MainModel - updateDataDB - saveUserToDB: $saveUserToDB")
-        return true
-    }
-
-    private fun saveAsanasToDB(items: List<Asana>): List<Long> {
-        val responseDelete = dbDao.deleteAsanas()
-        Log.d(LOG_TAG, "MainModel - saveAsanasToDB responseDelete: $responseDelete")
-        val response = dbDao.insertAsanas(items)
-        Log.d(LOG_TAG, "MainModel - saveAsanasToDB response: $response")
-        return response
-    }
-
-    private fun saveUserToDB(user: UserData): Long {
-        val response = dbDao.insertUserData(user)
-        Log.d(LOG_TAG, "MainModel - saveUserToDB response: $response")
-        return response
-    }
-
-    private fun loadAsanasFromDB(): List<Asana> {
-        val asanas = dbDao.getAsanas()
-        Log.d(LOG_TAG, "MainModel - loadAsanasFromDB: $asanas")
-        return asanas
-    }
-
-    private fun loadDataFromDB(): UserData {
-        val userData = dbDao.getUserData()
-        Log.d(LOG_TAG, "MainModel - loadDataFromDB: $userData")
-        return userData
     }
 
     private suspend fun getRemoteData(): Data {
@@ -129,39 +100,32 @@ class MainModel: CoroutineScope {
     fun create(level: String, knee: String, loins: String, neck: String) {
         launch {
             dbDao.insertActionState(ActionState(currentId = 1))
-            val message = getCreatedRemoteData(level, knee, loins, neck)
-            if (message.message == "true") {
-                val responseDeleteActionState = dbDao.deleteActionState()
-                profileViewModel.done.postValue(true)
-                Log.d(LOG_TAG, "MainModel - create responseDeleteActionState: $responseDeleteActionState")
-                Log.d(LOG_TAG, "MainModel - create - message: $message")
-            } else {
-                Log.d(LOG_TAG, "MainModel - create - message: ${message.error}")
-                profileViewModel.error.postValue(message.error)
+            val requestMessageCreate = service.createAsync(
+                level = level,
+                knee = knee,
+                loins = loins,
+                neck = neck
+            )
+            try {
+                val responseMessage = requestMessageCreate.await()
+                if(responseMessage.isSuccessful) {
+                    val message = responseMessage.body()!!
+                    if (message.message == "true") {
+                        Log.d(LOG_TAG, "MainModel - create - message: $message")
+                        delay(300)
+                        profileViewModel.done.postValue(true)
+                    } else {
+                        Log.d(LOG_TAG, "MainModel - create - message error: ${message.error}")
+                        profileViewModel.error.postValue(message.error)
+                    }
+                } else {
+                    Log.d(LOG_TAG,"MainModel - responseMessage error: " + responseMessage.errorBody().toString())
+                    Message(error = responseMessage.errorBody().toString())
+                }
+            } catch (e: Exception) {
+                Log.d(LOG_TAG, "MainModel - responseMessage - Exception: $e")
+                Message(error = e.toString())
             }
-        }
-    }
-
-    private suspend fun getCreatedRemoteData(level: String, knee: String, loins: String, neck: String): Message {
-        val request = service.createAsync(
-            level = level,
-            knee = knee,
-            loins = loins,
-            neck =neck
-        )
-        return try {
-            val response = request.await()
-            if(response.isSuccessful) {
-                val message = response.body()!!
-                Log.d(LOG_TAG, "MainModel - getCreatedRemoteData - data: $message")
-                message
-            } else {
-                Log.d(LOG_TAG,"MainModel - getCreatedRemoteData error: " + response.errorBody().toString())
-                Message(error = response.errorBody().toString())
-            }
-        } catch (e: Exception) {
-            Log.d(LOG_TAG, "MainModel - getCreatedRemoteData - Exception: $e")
-            Message(error = e.toString())
         }
     }
 
@@ -178,24 +142,17 @@ class MainModel: CoroutineScope {
 
             val data = loadRemoteUser()
             if (data.error == "no") {
-                val saveUserToDB = saveUserToDB(data.userData!!)
+                val saveUserToDB = dbDao.insertUserData(data.userData!!)
                 Log.d(LOG_TAG, "MainModel - loadUserData - saveUserToDB: $saveUserToDB")
             } else {
-                profileViewModel.error.postValue(data.error)
                 Log.d(LOG_TAG, "MainModel - loadUserData - error: ${data.error}")
+                profileViewModel.error.postValue(data.error)
             }
-            var user: UserData? = loadUserFromDB()
+            var user: UserData? = dbDao.loadUserData()
             Log.d(LOG_TAG, "MainModel - loadUserData - loadUserFromDB user: $user")
             if (user == null) user = UserData(0)
             profileViewModel.user.postValue(user)
         }
-    }
-
-
-    private fun loadUserFromDB(): UserData {
-        val user = dbDao.loadUserData()
-        Log.d(LOG_TAG, "MainModel - loadUserFromDB user: $user")
-        return user
     }
 
     private suspend fun loadRemoteUser(): Data {
@@ -226,10 +183,10 @@ class MainModel: CoroutineScope {
         return this
     }
 
-//    fun cancelBackgroundWork() {
-//        coroutineContext.cancelChildren()
-//        Log.d(LOG_TAG, "MainModel - cancelBackgroundWork")
-//    }
+    fun cancelBackgroundWork() {
+        coroutineContext.cancelChildren()
+        Log.d(LOG_TAG, "MainModel - cancelBackgroundWork")
+    }
 
 
 }

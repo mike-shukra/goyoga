@@ -93,7 +93,7 @@ class SelectFragment : Fragment() {
             var text = it
             if (it.contains("UnknownHostException")) text = getString(R.string.no_internet)
             if (it.contains("Не авторизовано")) {
-                text = getString(R.string.not_authorized)
+                text = getString(R.string.not_created_yet)
             }
             Toast.makeText(context, text, Toast.LENGTH_LONG).show()
         })
@@ -104,5 +104,10 @@ class SelectFragment : Fragment() {
 
     private fun getScreenColumn(): Int {
         return if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 3 else 2
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+//        selectViewModel.cancelBackgroundWork()
     }
 }
