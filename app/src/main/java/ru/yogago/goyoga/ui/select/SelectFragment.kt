@@ -5,10 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -47,7 +44,7 @@ class SelectFragment : Fragment() {
         val rvAsanas: RecyclerView = view.findViewById(R.id.rvAsanas)
         val glm = GridLayoutManager(context, getScreenColumn())
         rvAsanas.layoutManager = glm
-        val advertisingBox = view.findViewById<LinearLayout>(R.id.advertising_box)
+        val advertisingBox = view.findViewById<FrameLayout>(R.id.advertising_box)
 
         val mAdView = view.findViewById<AdView>(R.id.ad_view)
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {

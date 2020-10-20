@@ -9,13 +9,13 @@
     <string name="title_action">Тренировка лист</string>
     <string name="level_head">Уровень сложности</string>
     <string name="create">Сформировать</string>
-    <string name="dangers_head">Имеются травмы</string>
+    <string name="dangers_head">Ограничить нагрузку на</string>
     <string name="knee">Колено</string>
     <string name="loins">Поясница</string>
     <string name="neck">Шея</string>
     <string name="field_title">Значение</string>
     <string name="count_asanas">асан</string>
-    <string name="min">мин.</string>
+    <string name="min">мин</string>
     <string name="icon">icon</string>
     <string name="_00">00</string>
     <string name="start">Старт</string>
@@ -55,6 +55,7 @@
     </string>
     <string name="wait">Подождите</string>
     <string name="tts_error">Ошибка синтезатора речи</string>
+    <string name="ads">РЕКЛАМА</string>
 
 
 </resources>

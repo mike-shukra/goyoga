@@ -1,105 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
     tools:context=".ui.select.SelectFragment">
 
-    <LinearLayout
-        android:id="@+id/linearLayout3"
+    <FrameLayout
+        android:id="@+id/advertising_box"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="24"
-        android:background="@color/colorPrimaryMiddle"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:layout_weight="25">
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@color/colorWhiteLite">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/ads"
+                android:textSize="18sp" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <com.yandex.mobile.ads.AdView
+                android:id="@+id/ad_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="75"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:padding="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
                 android:text="@string/select_head"
                 android:textAlignment="viewStart"
                 android:textColor="@color/colorWhiteLite"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_marginStart="8dp"
+                android:text="@string/_00"
+                android:textAlignment="viewStart"
+                android:textSize="18sp" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="4dp"
+                android:text="@string/min"
+                android:textAlignment="viewStart"
+                android:textSize="18sp" />
 
-                    <TextView
-                        android:id="@+id/time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:text="@string/_00"
-                        android:textAlignment="viewStart"
-                        android:textSize="18sp" />
+            <TextView
+                android:id="@+id/count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/_00"
+                android:textAlignment="viewStart"
+                android:textSize="18sp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:text="@string/min"
-                        android:textAlignment="viewStart"
-                        android:textSize="18sp" />
-                </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="@string/count_asanas"
+                android:textAlignment="viewStart"
+                android:textSize="18sp" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:text="@string/_00"
-                        android:textAlignment="viewStart"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:text="@string/count_asanas"
-                        android:textAlignment="viewStart"
-                        android:textSize="18sp" />
-
-                </LinearLayout>
-            </LinearLayout>
         </LinearLayout>
 
         <ProgressBar
@@ -112,35 +114,17 @@
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="16dp" />
 
-        <LinearLayout
-            android:id="@+id/advertising_box"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="0dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvAsanas"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimaryMiddle"
+            android:contentDescription="@string/asanas_card_list"
+            android:padding="4dp"
+            app:spanCount="3"
+            tools:listitem="@layout/card_view_asana">
 
-            <com.yandex.mobile.ads.AdView
-                android:id="@+id/ad_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
+        </androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvAsanas"
-        android:layout_weight="76"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimaryMiddle"
-        android:contentDescription="@string/asanas_card_list"
-        android:padding="4dp"
-        android:paddingBottom="56dp"
-        app:spanCount="3"
-        tools:listitem="@layout/card_view_asana">
-
-    </androidx.recyclerview.widget.RecyclerView>
 
 </LinearLayout>
