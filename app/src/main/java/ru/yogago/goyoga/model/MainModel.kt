@@ -25,6 +25,7 @@ class MainModel: CoroutineScope {
 
     fun loadData() {
         launch {
+            delay(300)
             var data = getRemoteData()
             if (data.error != "no") {
                 delay(1000)
@@ -116,7 +117,6 @@ class MainModel: CoroutineScope {
                     val message = responseMessage.body()!!
                     if (message.message == "true") {
                         Log.d(LOG_TAG, "MainModel - create - message: $message")
-                        delay(300)
                         profileViewModel.done.postValue(true)
                     } else {
                         Log.d(LOG_TAG, "MainModel - create - message error: ${message.error}")

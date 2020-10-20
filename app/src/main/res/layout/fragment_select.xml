@@ -92,18 +92,37 @@
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="16dp" />
 
-        <LinearLayout
+        <FrameLayout
             android:id="@+id/advertising_box"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:gravity="center">
+            android:layout_margin="8dp">
 
-            <com.yandex.mobile.ads.AdView
-                android:id="@+id/ad_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/ads"
+                    android:textSize="18sp" />
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <com.yandex.mobile.ads.AdView
+                    android:id="@+id/ad_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </FrameLayout>
 
     </LinearLayout>
 
