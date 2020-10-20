@@ -25,7 +25,11 @@ class MainModel: CoroutineScope {
 
     fun loadData() {
         launch {
-            val data = getRemoteData()
+            var data = getRemoteData()
+            if (data.error != "no") {
+                delay(1000)
+                data = getRemoteData()
+            }
             if (data.error == "no") {
                 val responseDelete = dbDao.deleteAsanas()
                 Log.d(LOG_TAG, "MainModel - loadData responseDelete: $responseDelete")
