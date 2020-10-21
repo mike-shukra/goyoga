@@ -8,6 +8,7 @@ import com.yandex.metrica.YandexMetrica
 import com.yandex.metrica.YandexMetricaConfig
 import ru.yogago.goyoga.data.AppConstants.Companion.API_key
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
+import ru.yogago.goyoga.service.DataBase
 import java.util.*
 
 class MyCustomApplication : Application()  {
@@ -22,6 +23,8 @@ class MyCustomApplication : Application()  {
         YandexMetrica.activate(applicationContext, config)
         // Automatic tracking of user activity.
         YandexMetrica.enableActivityAutoTracking(this)
+
+        DataBase.createDataBase(this)
 
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val change = when (sharedPreferences.getString("language", "bak")) {

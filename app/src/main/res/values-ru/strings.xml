@@ -60,7 +60,6 @@
     <string name="wait">Подождите</string>
     <string name="tts_error">Ошибка синтезатора речи</string>
     <string name="ads">РЕКЛАМА</string>
-    <string name="pref_locale">ru</string>
 
 
 </resources>

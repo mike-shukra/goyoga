@@ -1,7 +1,6 @@
 package ru.yogago.goyoga
 
 import android.content.res.Configuration
-import android.content.res.Resources
 import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.View
@@ -49,7 +48,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
 
-        DataBase.createDataBase(this)
 
 //        val locale = Locale("ru")
 //        Locale.setDefault(locale)
