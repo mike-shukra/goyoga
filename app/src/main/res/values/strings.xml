@@ -60,5 +60,6 @@
     <string name="wait">Wait</string>
     <string name="tts_error">Text to speech error</string>
     <string name="ads">ADVERTISING</string>
+    <string name="pref_locale">ru</string>
 
 </resources>
