@@ -31,6 +31,9 @@
         <action
             android:id="@+id/action_nav_profile_to_infoFragment"
             app:destination="@id/nav_info" />
+        <action
+            android:id="@+id/action_nav_profile_to_settingsFragment"
+            app:destination="@id/nav_settings" />
     </fragment>
 
     <fragment
@@ -43,5 +46,10 @@
         android:name="ru.yogago.goyoga.ui.profile.InfoFragment"
         android:label="info_fragment"
         tools:layout="@layout/info_fragment" />
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="ru.yogago.goyoga.ui.profile.SettingsFragment"
+        tools:layout="@layout/settings_fragment"
+        android:label="settings_fragment" />
 
 </navigation>

@@ -5,6 +5,9 @@ import ru.yogago.goyoga.data.*
 
 @Dao
 interface DBDao {
+    @Query("SELECT * FROM settings")
+    fun getSettings(): List<Settings>?
+
     @Query("SELECT * FROM asana")
     fun getAsanas(): List<Asana>
 
@@ -15,7 +18,10 @@ interface DBDao {
     fun getActionState(): ActionState
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAsanas(pets: List<Asana>): List<Long>
+    fun insertSettings(settings: Settings): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAsanas(asanas: List<Asana>): List<Long>
 
     @Query("SELECT * FROM userData")
     fun loadUserData(): UserData
