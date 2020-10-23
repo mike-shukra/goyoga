@@ -125,7 +125,7 @@ class ProfileFragment : Fragment() {
             else advertisingBox.visibility = View.GONE
         })
 
-        profileViewModel.user.observe(viewLifecycleOwner, {
+        profileViewModel.userData.observe(viewLifecycleOwner, {
             val levels = resources.getStringArray(R.array.levels)
             val selectedIndex = SelectedIndexArray(selectedIndex = it.level, arr = levels)
             val adapter = ArrayAdapter(
