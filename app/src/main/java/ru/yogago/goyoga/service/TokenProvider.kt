@@ -23,6 +23,7 @@ object TokenProvider: CoroutineScope {
                 val response = tokenResponse.await()
                 if (response.isSuccessful) {
                     token = response.body()!!
+                    Log.d(LOG_TAG, "TokenProvider - getToken token: $token")
                     return@withContext token
                 } else {
                     error = "Error: " + response.errorBody() + "\n\nResponse: " + response.raw().message
