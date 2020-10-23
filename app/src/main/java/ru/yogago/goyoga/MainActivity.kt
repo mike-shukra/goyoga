@@ -10,21 +10,10 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import ru.yogago.goyoga.service.DataBase
 import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
-
-//    override fun attachBaseContext(base: Context?) {
-//        super.attachBaseContext(MyContextWrapper.wrap(base, "ru"))
-//    }
-//
-//    override fun applyOverrideConfiguration(overrideConfiguration: Configuration) {
-//        val locale = Locale("ru")
-//        overrideConfiguration.setLocale(locale)
-//        super.applyOverrideConfiguration(overrideConfiguration)
-//    }
 
     companion object {
         var dLocale: Locale = Locale("")
@@ -37,7 +26,6 @@ class MainActivity : AppCompatActivity() {
     private fun updateConfig(wrapper: ContextThemeWrapper) {
         if(dLocale == Locale("") )
             return
-
         Locale.setDefault(dLocale)
         val configuration = Configuration()
         configuration.setLocale(dLocale)
@@ -47,17 +35,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
-
-
-//        val locale = Locale("ru")
-//        Locale.setDefault(locale)
-
-//        val config = baseContext.resources.configuration
-//        baseContext.resources.configuration.setLocale(locale)
-//        config.setLocale(locale)
-//        val context = baseContext.createConfigurationContext(config)
-//        baseContext.resources.updateConfiguration(config, baseContext.resources.displayMetrics)
-
 
         setContentView(R.layout.activity_main)
         val navView: BottomNavigationView = findViewById(R.id.nav_view)

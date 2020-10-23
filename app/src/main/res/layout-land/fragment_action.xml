@@ -18,15 +18,36 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="60"
             android:orientation="vertical">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_gravity="center"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/image_title"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/placeholder" />
+
+
+            </FrameLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ProgressBar
                     android:id="@+id/progressBarAll"
@@ -82,22 +103,6 @@
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/image"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@string/image_title"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/placeholder" />
-
-
-            </LinearLayout>
 
             <ProgressBar
                 android:id="@+id/progressBarItem"
@@ -105,11 +110,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="16dp"
                 android:layout_margin="8dp"
+                android:layout_marginStart="8dp"
                 android:max="1000"
-                android:progressDrawable="@drawable/progress" />
+                android:progressDrawable="@drawable/progress"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <Space
             android:layout_width="0dp"

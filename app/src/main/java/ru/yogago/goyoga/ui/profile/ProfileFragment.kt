@@ -45,6 +45,7 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val settingsButton: Button = view.findViewById(R.id.settingsButton)
         val profileBillingButton: Button = view.findViewById(R.id.profileBillingButton)
         val profileWebButton: Button = view.findViewById(R.id.profileWebButton)
         val profileInfoButton: Button = view.findViewById(R.id.profileInfoButton)
@@ -70,6 +71,10 @@ class ProfileFragment : Fragment() {
         profileWebButton.setOnClickListener {
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://yoga-go.ru"))
             startActivity(browserIntent)
+        }
+
+        settingsButton.setOnClickListener {
+            findNavController().navigate(R.id.nav_settings)
         }
 
         profileBillingButton.setOnClickListener {
