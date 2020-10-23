@@ -8,7 +8,7 @@ import ru.yogago.goyoga.BuildConfig
 import java.net.CookieManager
 import java.util.concurrent.TimeUnit
 
-object OkHttpClientFactory {
+class OkHttpClientFactory {
 
     private val authInterceptor = Interceptor {chain->
         val newUrl = chain

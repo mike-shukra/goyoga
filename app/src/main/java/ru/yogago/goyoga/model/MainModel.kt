@@ -141,6 +141,7 @@ class MainModel: CoroutineScope {
                 val token = TokenProvider.getToken(uniqueID, APP_TOKEN)
                 val response = dbDao.insertToken(token)
                 Log.d(LOG_TAG, "MainModel - loadUserData - saveTokenDB response: $response")
+                isTokenDB()
                 create("0", "0", "0", "0")
             }
 

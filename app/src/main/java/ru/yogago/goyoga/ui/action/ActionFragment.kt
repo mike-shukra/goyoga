@@ -145,7 +145,7 @@ class ActionFragment : Fragment() {
 
 
             val picasso = Picasso.Builder(this.requireContext())
-                .downloader(OkHttp3Downloader(OkHttpClientFactory.getClient()))
+                .downloader(OkHttp3Downloader(OkHttpClientFactory().getClient()))
                 .build()
 
             picasso.setIndicatorsEnabled(false)

@@ -73,7 +73,7 @@ class SelectFragment : Fragment() {
         selectViewModel.asanas.observe(viewLifecycleOwner, {
             loading.visibility = View.GONE
             val picasso = Picasso.Builder(this.requireContext())
-                .downloader(OkHttp3Downloader(OkHttpClientFactory.getClient()))
+                .downloader(OkHttp3Downloader(OkHttpClientFactory().getClient()))
                 .build()
 
             val adapter = Adapter(it, this.resources, picasso)
