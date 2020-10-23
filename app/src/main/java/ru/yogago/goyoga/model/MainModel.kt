@@ -26,6 +26,7 @@ class MainModel: CoroutineScope {
     fun loadData() {
         launch {
             delay(300)
+
             var data = getRemoteData()
             if (data.error != "no") {
                 delay(1000)
@@ -145,36 +146,20 @@ class MainModel: CoroutineScope {
                 create("0", "0", "0", "0")
             }
 
-            val data = loadRemoteUser()
+            val data = getRemoteData()
             if (data.error == "no") {
-                val saveUserToDB = dbDao.insertUserData(data.userData!!)
-                Log.d(LOG_TAG, "MainModel - loadUserData - saveUserToDB: $saveUserToDB")
-            } else {
-                Log.d(LOG_TAG, "MainModel - loadUserData - error: ${data.error}")
+                val responseDelete = dbDao.deleteAsanas()
+                Log.d(LOG_TAG, "MainModel - loadUserData responseDelete: $responseDelete")
+                val responseInsertAsanas = dbDao.insertAsanas(data.asanas!!)
+                Log.d(LOG_TAG, "MainModel - loadUserData responseInsertAsanas: $responseInsertAsanas")
+                val responseInsertUserData = dbDao.insertUserData(data.userData!!)
+                Log.d(LOG_TAG, "MainModel - loadUserData responseInsertUserData: $responseInsertUserData")            } else {
                 profileViewModel.error.postValue(data.error)
             }
             var user: UserData? = dbDao.loadUserData()
             Log.d(LOG_TAG, "MainModel - loadUserData - loadUserFromDB user: $user")
             if (user == null) user = UserData(0)
-            profileViewModel.user.postValue(user)
-        }
-    }
-
-    private suspend fun loadRemoteUser(): Data {
-        val petRequest = service.getDataAsync()
-        return try {
-            val response = petRequest.await()
-            if(response.isSuccessful) {
-                val data = response.body()!!
-                Log.d(LOG_TAG, "MainModel - loadRemoteUser  data: $data")
-                data
-            } else {
-                Log.d(LOG_TAG,"MainModel - loadRemoteUser  error: " + response.errorBody().toString())
-                Data(error = response.errorBody().toString())
-            }
-        } catch (e: Exception) {
-            Log.d(LOG_TAG, "MainModel - loadRemoteUser - Exception: $e")
-            Data(error = e.toString())
+            profileViewModel.userData.postValue(user)
         }
     }
 
