@@ -1,7 +1,6 @@
 package ru.yogago.goyoga.service
 
 import android.app.Application
-import android.content.Context
 import android.util.Log
 import androidx.room.Room
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
