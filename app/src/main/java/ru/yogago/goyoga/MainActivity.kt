@@ -20,16 +20,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     init {
-        updateConfig(this)
-    }
-
-    private fun updateConfig(wrapper: ContextThemeWrapper) {
-        if(dLocale == Locale("") )
-            return
-        Locale.setDefault(dLocale)
-        val configuration = Configuration()
-        configuration.setLocale(dLocale)
-        wrapper.applyOverrideConfiguration(configuration)
+        if(dLocale != Locale("") ) {
+            Locale.setDefault(dLocale)
+            val configuration = Configuration()
+            configuration.setLocale(dLocale)
+            this.applyOverrideConfiguration(configuration)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
