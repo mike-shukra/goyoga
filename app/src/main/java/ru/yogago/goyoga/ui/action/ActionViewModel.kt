@@ -23,12 +23,11 @@ class ActionViewModel : ViewModel(), CoroutineScope {
     val isFinish: MutableLiveData<Boolean> = MutableLiveData()
     private val dbDao = DataBase.db.getDBDao()
     private lateinit var asanas: List<Asana>
-    var id: Long = 0
+    var id = 0L
 
     fun loadData() = launch {
-        val loadActionState: ActionState? = if (id == 0L) loadActionStateFromDB()
-        else ActionState(currentId = id.toInt())
-        actionState = loadActionState!!
+        if (id != 0L) saveActionState(id)
+        actionState = loadActionStateFromDB()
         Log.d(LOG_TAG, "ActionViewModel - loadData actionState: $actionState")
         asanas = loadAsanasFromDB()
         Log.d(LOG_TAG, "ActionViewModel - loadData asanas hashCode: ${asanas.hashCode()}")
@@ -91,6 +90,11 @@ class ActionViewModel : ViewModel(), CoroutineScope {
 
     private fun saveActionState() {
         val result = dbDao.insertActionState(actionState)
+        Log.d(LOG_TAG, "ActionViewModel - saveActionStateToDB result: $result")
+    }
+
+    private fun saveActionState(id: Long) {
+        val result = dbDao.insertActionState(ActionState(id))
         Log.d(LOG_TAG, "ActionViewModel - saveActionStateToDB result: $result")
     }
 
