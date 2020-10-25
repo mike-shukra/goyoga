@@ -87,7 +87,7 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="0dp">
 
-                <LinearLayout
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
@@ -102,8 +102,18 @@
                         android:scaleType="centerCrop"
                         android:src="@drawable/placeholder" />
 
+                    <ImageView
+                        android:id="@+id/repeatIcon"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_margin="16dp"
+                        android:background="@drawable/round_background_accent"
+                        android:contentDescription="@string/icon"
+                        android:padding="8dp"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/ic_baseline_loop_24" />
 
-                </LinearLayout>
+                </FrameLayout>
 
             </androidx.cardview.widget.CardView>
 

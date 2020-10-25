@@ -2,7 +2,6 @@ package ru.yogago.goyoga
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.view.ContextThemeWrapper
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
