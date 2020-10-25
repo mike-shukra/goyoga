@@ -40,8 +40,9 @@ class ActionFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         actionViewModel = ViewModelProvider(this).get(ActionViewModel::class.java)
-        arguments?.let {
-            actionViewModel.id = it.getLong("id")
+        if (savedInstanceState?.getLong("id") != null){
+            actionViewModel.id = savedInstanceState.getLong("id")
+            Log.d(LOG_TAG, "ActionFragment - onCreate id: ${actionViewModel.id}")
         }
 
         val checkTTSIntent = Intent()

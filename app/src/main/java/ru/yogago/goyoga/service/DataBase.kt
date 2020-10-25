@@ -15,12 +15,10 @@ object DataBase {
         Log.d(LOG_TAG, "DataBase - createDataBase: " + this.db)
         return this
     }
-    fun createDataBaseToMainTread(application: Application) : DataBase {
-        this.db = Room.databaseBuilder(application, AppDatabase::class.java, "database")
+    fun createDataBaseToMainTread(application: Application) : AppDatabase {
+        return Room.databaseBuilder(application, AppDatabase::class.java, "database")
             .fallbackToDestructiveMigration()
             .allowMainThreadQueries()
             .build()
-        Log.d(LOG_TAG, "DataBase - createDataBaseToMainTread: " + this.db)
-        return this
     }
 }

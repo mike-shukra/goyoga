@@ -24,7 +24,8 @@ class MyCustomApplication : Application()  {
         YandexMetrica.enableActivityAutoTracking(this)
 
         DataBase.createDataBase(this)
-        val settings = DataBase.createDataBaseToMainTread(this).db.getDBDao().getSettings()
+
+        val settings = DataBase.createDataBaseToMainTread(this).getDBDao().getSettings()
         if (settings?.size != 0) {
             val lang= settings?.get(0)?.language
             if (lang != null) {

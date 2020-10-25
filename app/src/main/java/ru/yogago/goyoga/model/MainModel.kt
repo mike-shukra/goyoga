@@ -178,5 +178,4 @@ class MainModel: CoroutineScope {
         Log.d(LOG_TAG, "MainModel - cancelBackgroundWork")
     }
 
-
 }
