@@ -26,19 +26,32 @@
 
             <FrameLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_height="match_parent">
+                app:layout_constraintBottom_toTopOf="@+id/progressBarItem"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
                     android:id="@+id/image"
-                    android:layout_gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/image_title"
                     android:scaleType="fitCenter"
                     android:src="@drawable/placeholder" />
 
+                <ImageView
+                    android:id="@+id/repeatIcon"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_margin="16dp"
+                    android:background="@drawable/round_background_accent"
+                    android:contentDescription="@string/icon"
+                    android:padding="8dp"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_baseline_loop_24" />
 
             </FrameLayout>
 

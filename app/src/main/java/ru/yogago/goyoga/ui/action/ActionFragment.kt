@@ -64,6 +64,7 @@ class ActionFragment : Fragment() {
 //        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         val image = view.findViewById<ImageView>(R.id.image)
+        val repeatIcon = view.findViewById<ImageView>(R.id.repeatIcon)
         val progressBarAll = view.findViewById<ProgressBar>(R.id.progressBarAll)
         val progressBarItem = view.findViewById<ProgressBar>(R.id.progressBarItem)
         val title: TextView = view.findViewById(R.id.title)
@@ -129,6 +130,8 @@ class ActionFragment : Fragment() {
 
         actionViewModel.asana.observe(viewLifecycleOwner, { asana ->
             sp.play(mSp, 1F, 1F, 1, 0, 1F)
+            if (asana.side == "second") repeatIcon.visibility = View.VISIBLE
+            else repeatIcon.visibility = View.GONE
             mAdView.loadAd(adRequest)
             progressBarAll.setProgress(1000 / allCount * asana.id.toInt(), true)
             animatorForProgressItem.duration = asana.times * 1000.toLong()
