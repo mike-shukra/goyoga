@@ -6,7 +6,7 @@ import ru.yogago.goyoga.data.*
 @Dao
 interface DBDao {
     @Query("SELECT * FROM settings")
-    fun getSettings(): List<Settings>?
+    fun getSettings(): Settings?
 
     @Query("SELECT * FROM asana")
     fun getAsanas(): List<Asana>
@@ -52,6 +52,15 @@ interface DBDao {
 
     @Query("UPDATE userdata SET first_name = :name WHERE id = :id")
     fun insertUserName(name: String, id: Long): Int
+
+    @Query("UPDATE settings SET proportionately = :proportionately WHERE id = 0")
+    fun updateSettingsProportionately(proportionately: Float): Int
+
+    @Query("UPDATE settings SET addTime = :addTime WHERE id = 0")
+    fun updateSettingsAddTime(addTime: Int): Int
+
+    @Query("UPDATE settings SET language = :language WHERE id = 0")
+    fun updateSettingsLanguage(language: String): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertPurchase(purchase: PurchaseItem): Long

@@ -26,8 +26,7 @@ class MyCustomApplication : Application()  {
         DataBase.createDataBase(this)
 
         val settings = DataBase.createDataBaseToMainTread(this).getDBDao().getSettings()
-        if (settings?.size != 0) {
-            val lang= settings?.get(0)?.language
+            val lang= settings?.language
             if (lang != null) {
                 val change = when (lang) {
                     "Russian" -> {
@@ -42,7 +41,6 @@ class MyCustomApplication : Application()  {
                 }
                 MainActivity.dLocale = Locale(change)
             }
-        }
     }
 
 }

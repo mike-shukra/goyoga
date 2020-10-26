@@ -45,10 +45,12 @@ class MainModel: CoroutineScope {
             }
             val asanas: List<Asana>? = dbDao.getAsanas()
             val userData: UserData? = dbDao.getUserData()
-            if (asanas != null) selectViewModel.asanas.postValue(asanas.filter {
+            val settings = dbDao.getSettings()
+            userData?.allTime = (userData?.allTime!! * settings?.proportionately!!).toInt() + (settings.addTime * userData.allCount)
+            selectViewModel.asanas.postValue(asanas?.filter {
                 it.side != "second"
             })
-            if (userData != null) selectViewModel.userData.postValue(userData)
+            selectViewModel.userData.postValue(userData)
 
         }
     }
@@ -143,8 +145,12 @@ class MainModel: CoroutineScope {
                 val response = dbDao.insertToken(token)
                 Log.d(LOG_TAG, "MainModel - loadUserData - saveTokenDB response: $response")
                 isTokenDB()
+                dbDao.insertSettings(Settings())
                 create("0", "0", "0", "0")
             }
+            val settings = dbDao.getSettings()
+            profileViewModel.proportionately.postValue(settings?.proportionately)
+            profileViewModel.addTime.postValue(settings?.addTime)
 
             val data = getRemoteData()
             if (data.error == "no") {
@@ -153,7 +159,8 @@ class MainModel: CoroutineScope {
                 val responseInsertAsanas = dbDao.insertAsanas(data.asanas!!)
                 Log.d(LOG_TAG, "MainModel - loadUserData responseInsertAsanas: $responseInsertAsanas")
                 val responseInsertUserData = dbDao.insertUserData(data.userData!!)
-                Log.d(LOG_TAG, "MainModel - loadUserData responseInsertUserData: $responseInsertUserData")            } else {
+                Log.d(LOG_TAG, "MainModel - loadUserData responseInsertUserData: $responseInsertUserData")
+            } else {
                 profileViewModel.error.postValue(data.error)
             }
             var user: UserData? = dbDao.loadUserData()
@@ -176,6 +183,18 @@ class MainModel: CoroutineScope {
     fun cancelBackgroundWork() {
         coroutineContext.cancelChildren()
         Log.d(LOG_TAG, "MainModel - cancelBackgroundWork")
+    }
+
+    fun updateSettingsAddTime(value: Int) {
+        launch {
+            dbDao.updateSettingsAddTime(value)
+        }
+    }
+
+    fun updateSettingsProportionately(value: Float) {
+        launch {
+            dbDao.updateSettingsProportionately(value)
+        }
     }
 
 }

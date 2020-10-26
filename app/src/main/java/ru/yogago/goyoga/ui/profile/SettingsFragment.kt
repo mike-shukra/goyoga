@@ -18,7 +18,6 @@ import kotlinx.coroutines.launch
 import ru.yogago.goyoga.MainActivity
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
-import ru.yogago.goyoga.data.Settings
 import ru.yogago.goyoga.service.DataBase
 import java.util.*
 import kotlin.coroutines.CoroutineContext
@@ -50,21 +49,19 @@ class SettingsFragment : Fragment(), CoroutineScope {
 
         restartButton.setOnClickListener {
             launch {
-                val settings = DataBase.db.getDBDao().getSettings()?.get(0)
-                if (settings != null) {
-                    val change = when (settings.language) {
-                        "Russian" -> {
-                            "ru"
-                        }
-                        "English" -> {
-                            "en"
-                        }
-                        else -> {
-                            ""
-                        }
+                val settings = DataBase.db.getDBDao().getSettings()
+                val change = when (settings?.language) {
+                    "Russian" -> {
+                        "ru"
                     }
-                    MainActivity.dLocale = Locale(change)
+                    "English" -> {
+                        "en"
+                    }
+                    else -> {
+                        ""
+                    }
                 }
+                MainActivity.dLocale = Locale(change)
                 val intent = Intent(context, MainActivity::class.java)
                 startActivity(intent)
                 activity?.finish()
@@ -74,9 +71,8 @@ class SettingsFragment : Fragment(), CoroutineScope {
 
         launch {
             val settings = DataBase.db.getDBDao().getSettings()
-            if (settings?.size != 0) {
-                Log.d(LOG_TAG, "SettingsFragment - settings: $settings")
-                language.postValue(settings?.get(0)?.language)
+            settings?.language.let {
+                language.postValue(it)
             }
         }
 
@@ -99,7 +95,7 @@ class SettingsFragment : Fragment(), CoroutineScope {
             if (lang == "Английский") lang = "English"
             if (lang == "Русский") lang = "Russian"
             launch {
-                DataBase.db.getDBDao().insertSettings(Settings(language = lang))
+                DataBase.db.getDBDao().updateSettingsLanguage(lang)
             }
         }
 

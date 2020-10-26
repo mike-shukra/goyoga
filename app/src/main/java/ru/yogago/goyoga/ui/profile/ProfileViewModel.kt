@@ -17,6 +17,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     val userData: MutableLiveData<UserData> = MutableLiveData()
     val error: MutableLiveData<String> = MutableLiveData()
     val done: MutableLiveData<Boolean> = MutableLiveData()
+    val proportionately: MutableLiveData<Float> = MutableLiveData()
+    val addTime: MutableLiveData<Int> = MutableLiveData()
     private lateinit var myBilling: MyBilling
 
     fun setModel(): ViewModel {
@@ -94,5 +96,13 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     fun destroyBilling(){
         myBilling.destroy()
+    }
+
+    fun updateSettingsAddTime(value: Int) {
+        model.updateSettingsAddTime(value)
+    }
+
+    fun updateSettingsProportionately(value: Float) {
+        model.updateSettingsProportionately(value)
     }
 }

@@ -72,6 +72,106 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
+                android:text="@string/time_control_head"
+                android:textColor="@color/colorAccent"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="vertical">
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="32dp"
+                        android:text="@string/seek_bar_proportionately_head"
+                        android:textColor="@color/colorWhiteLite"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/seekBarProportionallyValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="32dp"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/_01"
+                        android:textColor="@color/colorWhiteLite"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="32dp"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/times"
+                        android:textColor="@color/colorWhiteLite"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+                <SeekBar
+                    android:id="@+id/seekBarProportionally"
+                    android:layout_marginTop="16dp"
+                    android:max="1000"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="32dp"
+                        android:text="@string/seek_bar_add_time_head"
+                        android:textColor="@color/colorWhiteLite"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/seekBarAddTimeValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="32dp"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/_00"
+                        android:textColor="@color/colorWhiteLite"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="32dp"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/sec"
+                        android:textColor="@color/colorWhiteLite"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+                <SeekBar
+                    android:id="@+id/seekBarAddTime"
+                    android:layout_marginTop="16dp"
+                    android:max="120"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
                 android:text="@string/dangers_head"
                 android:textColor="@color/colorAccent"
                 android:textSize="16sp" />
@@ -139,6 +239,7 @@
                     android:textColor="@color/colorWhiteLite" />
 
             </LinearLayout>
+
 
 
         </LinearLayout>
