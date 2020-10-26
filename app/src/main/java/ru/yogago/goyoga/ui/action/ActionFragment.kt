@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.view.animation.DecelerateInterpolator
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -136,7 +135,6 @@ class ActionFragment : Fragment() {
             mAdView.loadAd(adRequest)
             progressBarAll.setProgress(1000 / allCount * asana.id.toInt(), true)
             animatorForProgressItem.duration = asana.times * 1000.toLong()
-            animatorForProgressItem.interpolator = DecelerateInterpolator()
             if (actionViewModel.isPlay) animatorForProgressItem.start()
             title.text = if (isRussianLanguage) asana.name else asana.eng
             val descriptionText = if (isRussianLanguage) asana.description else asana.description_en

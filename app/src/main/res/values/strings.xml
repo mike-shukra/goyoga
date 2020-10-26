@@ -66,5 +66,10 @@
     <string name="english">English</string>
     <string name="russian">Russian</string>
     <string name="restart">Restart</string>
+    <string name="seek_bar_proportionately_head">Proportionally by</string>
+    <string name="seek_bar_add_time_head">Add to each asana</string>
+    <string name="sec">sec.</string>
+    <string name="times">times</string>
+    <string name="time_control_head">Time control</string>
 
 </resources>

@@ -6,5 +6,7 @@ import androidx.room.PrimaryKey
 @Entity
 data class Settings (
     @PrimaryKey val id: Long = 0,
-    val language: String = ""
+    val language: String = "",
+    val proportionately: Float = 1F,
+    val addTime: Int = 0
 )

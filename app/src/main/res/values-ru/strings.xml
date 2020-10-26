@@ -66,6 +66,11 @@
     <string name="english">Английский</string>
     <string name="russian">Русский</string>
     <string name="restart">Перезапустить</string>
+    <string name="seek_bar_proportionately_head">Пропорционально в</string>
+    <string name="seek_bar_add_time_head">Добавить каждой асане</string>
+    <string name="sec">сек.</string>
+    <string name="times">раз</string>
+    <string name="time_control_head">Контроль времени</string>
 
 
 </resources>

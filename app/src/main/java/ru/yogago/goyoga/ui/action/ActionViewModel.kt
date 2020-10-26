@@ -26,10 +26,17 @@ class ActionViewModel : ViewModel(), CoroutineScope {
     var id: Long = 0L
 
     fun loadData() = launch {
+        val settings = dbDao.getSettings()
+        val proportionately = settings?.proportionately!!.toInt()
+        val addTime = settings.addTime
+
         if (id != 0L) dbDao.insertActionState(ActionState(currentId = id.toInt()))
         actionState = loadActionStateFromDB()
         Log.d(LOG_TAG, "ActionViewModel - loadData actionState: $actionState")
         asanas = loadAsanasFromDB()
+        asanas.forEach {
+            it.times = it.times * proportionately + addTime
+        }
         Log.d(LOG_TAG, "ActionViewModel - loadData asanas hashCode: ${asanas.hashCode()}")
         Log.d(LOG_TAG, "ActionViewModel - loadData asanas size: ${asanas.size}")
         val data: UserData? = loadDataFromDB()

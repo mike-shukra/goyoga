@@ -13,5 +13,5 @@ data class Asana (
     val photo: String,
     val symmetric: String,
     val side: String,
-    val times: Int
+    var times: Int
 )

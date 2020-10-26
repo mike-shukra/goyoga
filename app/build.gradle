@@ -11,8 +11,8 @@ android {
         applicationId "ru.yogago.goyoga"
         minSdkVersion 24
         targetSdkVersion 30
-        versionCode 21
-        versionName "1.9.1"
+        versionCode 23
+        versionName "1.9.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import com.yandex.mobile.ads.AdRequest
 import com.yandex.mobile.ads.AdSize
 import com.yandex.mobile.ads.AdView
 import ru.yogago.goyoga.R
+import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
 import ru.yogago.goyoga.data.AppConstants.Companion.YANDEX_RTB_ID_PROFILE
 import ru.yogago.goyoga.data.BillingState
 import ru.yogago.goyoga.data.SelectedIndexArray
@@ -45,6 +47,8 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val flipAnimation = AnimationUtils.loadAnimation(context, R.anim.flip)
+
         val settingsButton: Button = view.findViewById(R.id.settingsButton)
         val profileBillingButton: Button = view.findViewById(R.id.profileBillingButton)
         val profileWebButton: Button = view.findViewById(R.id.profileWebButton)
@@ -59,7 +63,54 @@ class ProfileFragment : Fragment() {
         val profileWrapper: LinearLayout = view.findViewById(R.id.profileWrapper)
         val buttonMainTransition = view.findViewById<ToggleButton>(R.id.buttonMainTransition)
         val advertisingBox = view.findViewById<LinearLayout>(R.id.advertising_box)
-        val flipAnimation = AnimationUtils.loadAnimation(context, R.anim.flip)
+
+        val seekBarProportionallyValue = view.findViewById<TextView>(R.id.seekBarProportionallyValue)
+        val seekBarAddTimeValue = view.findViewById<TextView>(R.id.seekBarAddTimeValue)
+        val seekBarProportionally = view.findViewById<SeekBar>(R.id.seekBarProportionally)
+        val seekBarAddTime = view.findViewById<SeekBar>(R.id.seekBarAddTime)
+
+        seekBarProportionally.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+                val value = (p1 / 500F + 1)
+                val formattedDouble = String.format("%.2f", value)
+                seekBarProportionallyValue.text = formattedDouble
+            }
+
+            override fun onStartTrackingTouch(p0: SeekBar?) {}
+
+            override fun onStopTrackingTouch(p0: SeekBar?) {
+                val value = (seekBarProportionally.progress / 500F + 1)
+                val formattedDouble = String.format("%.2f", value)
+                seekBarProportionallyValue.text = formattedDouble
+                profileViewModel.updateSettingsProportionately(value)
+            }
+
+        })
+
+        seekBarAddTime.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+                seekBarAddTimeValue.text = p1.toString()
+            }
+
+            override fun onStartTrackingTouch(p0: SeekBar?) {}
+
+            override fun onStopTrackingTouch(p0: SeekBar?) {
+                val value = (seekBarAddTime.progress)
+                seekBarAddTimeValue.text = value.toString()
+                profileViewModel.updateSettingsAddTime(value)
+            }
+
+        })
+
+        profileViewModel.proportionately.observe(viewLifecycleOwner, {
+            val f = (500 * (it - 1))
+            Log.d(LOG_TAG, "ProfileFragment f: $f")
+            seekBarProportionally.progress = f.toInt()
+        })
+        profileViewModel.addTime.observe(viewLifecycleOwner, {
+            seekBarAddTime.progress = it
+        })
+
 
         val mAdView = view.findViewById<AdView>(R.id.ad_view)
         mAdView.blockId = YANDEX_RTB_ID_PROFILE

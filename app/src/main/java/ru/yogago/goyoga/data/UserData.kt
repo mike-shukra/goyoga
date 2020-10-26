@@ -9,7 +9,7 @@ data class UserData (
     val email: String? = null,
     var first_name: String? = null,
     val now: Int = 1,
-    val allTime: Int = 0,
+    var allTime: Int = 0,
     val allCount: Int = 0,
     val level: Int = 0,
     val dangerknee: Int = 0,
