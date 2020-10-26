@@ -49,26 +49,27 @@ class SettingsFragment : Fragment(), CoroutineScope {
         val restartButton = view.findViewById<Button>(R.id.restartButton)
 
         restartButton.setOnClickListener {
-            val settings = DataBase.db.getDBDao().getSettings()?.get(0)
-            if (settings != null) {
-                val change = when (settings.language) {
-                    "Russian" -> {
-                        "ru"
+            launch {
+                val settings = DataBase.db.getDBDao().getSettings()?.get(0)
+                if (settings != null) {
+                    val change = when (settings.language) {
+                        "Russian" -> {
+                            "ru"
+                        }
+                        "English" -> {
+                            "en"
+                        }
+                        else -> {
+                            ""
+                        }
                     }
-                    "English" -> {
-                        "en"
-                    }
-                    else -> {
-                        ""
-                    }
+                    MainActivity.dLocale = Locale(change)
                 }
-                MainActivity.dLocale = Locale(change)
+                val intent = Intent(context, MainActivity::class.java)
+                startActivity(intent)
+                activity?.finish()
             }
 
-
-            val intent = Intent(context, MainActivity::class.java)
-            startActivity(intent)
-            activity?.finish()
         }
 
         launch {
