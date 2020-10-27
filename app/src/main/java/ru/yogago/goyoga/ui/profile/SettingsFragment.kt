@@ -30,7 +30,6 @@ class SettingsFragment : Fragment(), CoroutineScope {
         get() = Dispatchers.IO + job
     private val language: MutableLiveData<String> = MutableLiveData()
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

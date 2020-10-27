@@ -103,8 +103,4 @@ class SelectFragment : Fragment() {
         return if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 3 else 2
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-//        selectViewModel.cancelBackgroundWork()
-    }
 }

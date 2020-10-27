@@ -33,7 +33,8 @@ class ProfileFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
-
+        profileViewModel.setModel()
+        profileViewModel.setMyBilling(MyBilling(requireActivity()))
     }
 
     override fun onCreateView(
@@ -208,8 +209,6 @@ class ProfileFragment : Fragment() {
             Toast.makeText(context, text, Toast.LENGTH_LONG).show()
         })
 
-        profileViewModel.setModel()
-        profileViewModel.setMyBilling(MyBilling(requireActivity()))
         profileViewModel.handleBilling()
         profileViewModel.loadUserData()
 
