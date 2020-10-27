@@ -20,41 +20,39 @@ class ActionViewModel : ViewModel(), CoroutineScope {
     private lateinit var actionState: ActionState
     val userData: MutableLiveData<UserData> = MutableLiveData()
     val asana: MutableLiveData<Asana> = MutableLiveData()
-    val asans: MutableLiveData<List<Asana>> = MutableLiveData()
+    val asanas: MutableLiveData<List<Asana>> = MutableLiveData()
     val isFinish: MutableLiveData<Boolean> = MutableLiveData()
     private val dbDao = DataBase.db.getDBDao()
-    private lateinit var asanas: List<Asana>
-    var id: Long = 0L
+    private lateinit var asanasList: List<Asana>
 
     fun loadData() = launch {
         val settings = dbDao.getSettings()
         val proportionately = settings?.proportionately!!.toInt()
         val addTime = settings.addTime
 
-        if (id != 0L) dbDao.insertActionState(ActionState(currentId = id.toInt()))
         actionState = loadActionStateFromDB()
         Log.d(LOG_TAG, "ActionViewModel - loadData actionState: $actionState")
-        asanas = loadAsanasFromDB()
-        asanas.forEach {
+        asanasList = loadAsanasFromDB()
+        asanasList.forEach {
             it.times = it.times * proportionately + addTime
         }
-        asans.postValue(asanas)
-        Log.d(LOG_TAG, "ActionViewModel - loadData asanas hashCode: ${asanas.hashCode()}")
-        Log.d(LOG_TAG, "ActionViewModel - loadData asanas size: ${asanas.size}")
+        asanas.postValue(asanasList)
+        Log.d(LOG_TAG, "ActionViewModel - loadData asanas hashCode: ${asanasList.hashCode()}")
+        Log.d(LOG_TAG, "ActionViewModel - loadData asanas size: ${asanasList.size}")
         val data: UserData? = loadDataFromDB()
         if (data != null) userData.postValue(loadDataFromDB())
-        if (asanas.isNotEmpty()) {
-            asana.postValue(asanas[actionState.currentId-1])
+        if (asanasList.isNotEmpty()) {
+            asana.postValue(asanasList[actionState.currentId-1])
             playAsanas(actionState.currentId)
         }
     }
 
     private suspend fun playAsanas(current: Int) {
         var i = current-1
-        while (i < asanas.size) {
-            var time = asanas[i].times*10
+        while (i < asanasList.size) {
+            var time = asanasList[i].times*10
             pauseIfIsPause()
-            asana.postValue(asanas[i])
+            asana.postValue(asanasList[i])
             while(time > 0) {
                 pauseIfIsPause()
                 delay(100)

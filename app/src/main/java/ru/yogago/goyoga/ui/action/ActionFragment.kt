@@ -9,30 +9,30 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.ProgressBar
-import android.widget.Toast
-import android.widget.ToggleButton
+import android.widget.*
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import com.squareup.picasso.OkHttp3Downloader
+import com.squareup.picasso.Picasso
+import com.yandex.mobile.ads.AdRequest
+import com.yandex.mobile.ads.AdSize
+import com.yandex.mobile.ads.AdView
 import ru.yogago.goyoga.R
+import ru.yogago.goyoga.data.AppConstants
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
 import ru.yogago.goyoga.data.Asana
+import ru.yogago.goyoga.data.BillingState
+import ru.yogago.goyoga.service.OkHttpClientFactory
+import ru.yogago.goyoga.service.StickyBannerEventListener
 import java.util.*
-import kotlin.coroutines.CoroutineContext
 
 
-class ActionFragment : Fragment(), CoroutineScope {
+class ActionFragment : Fragment() {
 
-    private val job = SupervisorJob()
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO + job
     private val isRussianLanguage: Boolean = Locale.getDefault().language == "ru"
     private lateinit var viewPager: ViewPager2
     private lateinit var actionViewModel: ActionViewModel
@@ -45,9 +45,9 @@ class ActionFragment : Fragment(), CoroutineScope {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         actionViewModel = ViewModelProvider(this).get(ActionViewModel::class.java)
-        if (arguments?.getLong("id") != null) {
-            actionViewModel.id = requireArguments().getLong("id")
-            requireArguments().remove("id")
+        arguments?.let {
+            actionViewModel.saveActionState(it.getLong("id").toInt(), false)
+            it.remove("id")
         }
         val checkTTSIntent = Intent()
         checkTTSIntent.action = TextToSpeech.Engine.ACTION_CHECK_TTS_DATA
@@ -101,7 +101,7 @@ class ActionFragment : Fragment(), CoroutineScope {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 Log.d(LOG_TAG, "ScreenSlidePagerAdapter - onPageSelected position: $position")
-                actionViewModel.saveActionState((position + 1), true)
+//                actionViewModel.saveActionState((position + 1), true)
             }
         })
 
@@ -113,7 +113,7 @@ class ActionFragment : Fragment(), CoroutineScope {
             if (!buttonSound.isChecked)
                 myTTS?.speak(descriptionText, TextToSpeech.QUEUE_FLUSH, null, asana.id.toString())
 
-            viewPager.currentItem = (actionViewModel.id - 1).toInt()
+            viewPager.currentItem = (asana.id - 1).toInt()
         })
 
         actionViewModel.isFinish.observe(viewLifecycleOwner, {
@@ -121,7 +121,7 @@ class ActionFragment : Fragment(), CoroutineScope {
 //            buttonStart.isChecked = !it
         })
 
-        actionViewModel.asans.observe(viewLifecycleOwner, {
+        actionViewModel.asanas.observe(viewLifecycleOwner, {
             asanas = it
         })
 
@@ -170,23 +170,81 @@ class ActionFragment : Fragment(), CoroutineScope {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private inner class ScreenSlidePagerAdapter(fa: FragmentActivity = this.requireActivity()) : FragmentStateAdapter(fa) {
+    private inner class ScreenSlidePagerAdapter : RecyclerView.Adapter<PagerViewHolder>() {
+
         override fun getItemCount(): Int {
             return count
         }
 
-        override fun createFragment(position: Int): Fragment{
-            val pos =  (position + 1)
-            val pageFragment = PageFragment()
-            val args = Bundle()
-            args.putInt("id", pos)
-            args.putInt("allCount", count)
-            args.putBoolean("isRussianLanguage", isRussianLanguage)
-            args.putBoolean("isPlay", actionViewModel.isPlay)
-            pageFragment.arguments = args
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PagerViewHolder {
+            return PagerViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.page_action, parent, false))
+        }
+
+        override fun onBindViewHolder(holder: PagerViewHolder, position: Int) {
+            holder.title.text = if (isRussianLanguage) asanas[position].name else asanas[position].eng
+            val descriptionText = if (isRussianLanguage) asanas[position].description else asanas[position].description_en
+            holder.description.text = descriptionText
+            holder.currentTextView.text = asanas[position].id.toString()
+            holder.countTextView.text = count.toString()
+            holder.progressBarAll.setProgress(1000 / count * (position + 1), true)
+
+            val animatorForProgressItem: ObjectAnimator = ObjectAnimator.ofInt(holder.progressBarItem, "progress", 1, 1000)
+            animatorForProgressItem.duration = asanas[position].times * 1000.toLong()
+            if (actionViewModel.isPlay) {
+                animatorForProgressItem.start()
+            }
+
+            val adRequest = AdRequest.Builder().build()
+            holder.mAdView.adEventListener = StickyBannerEventListener()
+            holder.mAdView.loadAd(adRequest)
 
 
-            return pageFragment
+            BillingState.isAds.observe(viewLifecycleOwner, {
+                if (it) holder.advertisingBox.visibility = View.VISIBLE
+                else holder.advertisingBox.visibility = View.GONE
+            })
+
+            if (asanas[position].side == "second") holder.repeatIcon.visibility = View.VISIBLE
+            else holder.repeatIcon.visibility = View.GONE
+
+            val patch = AppConstants.PHOTO_URL + asanas[position].photo
+            Log.d(LOG_TAG, patch)
+
+            val picasso = Picasso.Builder(requireContext())
+                .downloader(OkHttp3Downloader(OkHttpClientFactory().getClient()))
+                .build()
+
+            picasso.setIndicatorsEnabled(false)
+            picasso
+                .load(patch)
+                .resize(640, 426)
+                .onlyScaleDown()
+                .centerCrop()
+                .placeholder(resources.getIdentifier("placeholder", "drawable", "ru.yogago.goyoga"))
+                .into(holder.image)
+
+            holder.image.startAnimation(holder.animFadeOut)
+
+        }
+    }
+
+    private inner class PagerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        val image: ImageView = itemView.findViewById(R.id.image)
+        val repeatIcon: ImageView = itemView.findViewById(R.id.repeatIcon)
+        val progressBarAll: ProgressBar = itemView.findViewById(R.id.progressBarAll)
+        val progressBarItem: ProgressBar = itemView.findViewById(R.id.progressBarItem)
+        val title: TextView = itemView.findViewById(R.id.title)
+        val countTextView: TextView = itemView.findViewById(R.id.count)
+        val currentTextView: TextView = itemView.findViewById(R.id.current)
+        val description: TextView = itemView.findViewById(R.id.description)
+        val advertisingBox: LinearLayout = itemView.findViewById(R.id.advertising_box)
+        val mAdView: AdView = itemView.findViewById(R.id.ad_view)
+        val animFadeOut: Animation = AnimationUtils.loadAnimation(context, R.anim.alpha_out)
+
+        init {
+            mAdView.blockId = AppConstants.YANDEX_RTB_ID_ACTION
+            mAdView.adSize = AdSize.stickySize(AdSize.FULL_WIDTH)
         }
     }
 
