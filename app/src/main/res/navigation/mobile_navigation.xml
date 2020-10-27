@@ -12,13 +12,16 @@
         <action
             android:id="@+id/action_nav_select_to_nav_action"
             app:destination="@id/nav_action" />
+        <action
+            android:id="@+id/action_nav_select_to_screenSlidePagerActivity"
+            app:destination="@id/nav_screenSlidePagerActivity" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_action"
         android:name="ru.yogago.goyoga.ui.action.ActionFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_action" />
+        tools:layout="@layout/page_action" />
 
     <fragment
         android:id="@+id/nav_profile"
@@ -51,5 +54,10 @@
         android:name="ru.yogago.goyoga.ui.profile.SettingsFragment"
         tools:layout="@layout/settings_fragment"
         android:label="settings_fragment" />
+    <activity
+        android:id="@+id/nav_screenSlidePagerActivity"
+        android:name="ru.yogago.goyoga.ui.action.ActionActivity"
+        tools:layout="@layout/fragment_action"
+        android:label="screenSlidePagerActivity" />
 
 </navigation>

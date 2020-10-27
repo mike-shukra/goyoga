@@ -11,6 +11,9 @@ interface DBDao {
     @Query("SELECT * FROM asana")
     fun getAsanas(): List<Asana>
 
+    @Query("SELECT * FROM asana WHERE id = :id")
+    fun getAsana(id: Int): Asana
+
     @Query("SELECT * FROM userData")
     fun getUserData(): UserData
 

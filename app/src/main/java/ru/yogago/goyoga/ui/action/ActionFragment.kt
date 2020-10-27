@@ -10,31 +10,37 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.*
+import android.widget.ProgressBar
+import android.widget.Toast
+import android.widget.ToggleButton
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
-import com.squareup.picasso.OkHttp3Downloader
-import com.squareup.picasso.Picasso
-import com.yandex.mobile.ads.AdRequest
-import com.yandex.mobile.ads.AdSize
-import com.yandex.mobile.ads.AdView
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import ru.yogago.goyoga.R
-import ru.yogago.goyoga.data.AppConstants
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
-import ru.yogago.goyoga.data.BillingState
-import ru.yogago.goyoga.service.OkHttpClientFactory
-import ru.yogago.goyoga.service.StickyBannerEventListener
+import ru.yogago.goyoga.data.Asana
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
 
-class ActionFragment : Fragment() {
+class ActionFragment : Fragment(), CoroutineScope {
 
-    private var ttsEnabled: Boolean = true
-    private lateinit var actionViewModel: ActionViewModel
+    private val job = SupervisorJob()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO + job
     private val isRussianLanguage: Boolean = Locale.getDefault().language == "ru"
-    private var animatorItemCurrentTime: Long = 0
-    private val ttsCheckCode = 0
+    private lateinit var viewPager: ViewPager2
+    private lateinit var actionViewModel: ActionViewModel
+    private var count = 1
+    private var ttsEnabled: Boolean = true
     private var myTTS: TextToSpeech? = null
+    private val ttsCheckCode = 0
+    private lateinit var asanas: List<Asana>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +49,6 @@ class ActionFragment : Fragment() {
             actionViewModel.id = requireArguments().getLong("id")
             requireArguments().remove("id")
         }
-
         val checkTTSIntent = Intent()
         checkTTSIntent.action = TextToSpeech.Engine.ACTION_CHECK_TTS_DATA
         startActivityForResult(checkTTSIntent, ttsCheckCode)
@@ -59,116 +64,84 @@ class ActionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d(LOG_TAG, "ActionFragment - onViewCreated")
 
-//        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-
-        val image = view.findViewById<ImageView>(R.id.image)
-        val repeatIcon = view.findViewById<ImageView>(R.id.repeatIcon)
-        val progressBarAll = view.findViewById<ProgressBar>(R.id.progressBarAll)
-        val progressBarItem = view.findViewById<ProgressBar>(R.id.progressBarItem)
-        val title: TextView = view.findViewById(R.id.title)
-        val countTextView: TextView = view.findViewById(R.id.count)
-        val currentTextView = view.findViewById<TextView>(R.id.current)
-        val description: TextView = view.findViewById(R.id.description)
         val buttonStart = view.findViewById<ToggleButton>(R.id.buttonStart)
         val buttonSound = view.findViewById<ToggleButton>(R.id.buttonSound)
-        val advertisingBox = view.findViewById<LinearLayout>(R.id.advertising_box)
-        val mAdView = view.findViewById<AdView>(R.id.ad_view)
-        mAdView.blockId = AppConstants.YANDEX_RTB_ID_ACTION
-        mAdView.adSize = AdSize.stickySize(AdSize.FULL_WIDTH)
-        val adRequest = AdRequest.Builder().build()
-        mAdView.adEventListener = StickyBannerEventListener()
 
-        val animFadeOut = AnimationUtils.loadAnimation(context, R.anim.alpha_out)
         val animForButtonStart = AnimationUtils.loadAnimation(context, R.anim.button_anim)
-        val animatorForProgressItem = ObjectAnimator.ofInt(progressBarItem, "progress", 1, 1000)
 
         val sp = SoundPool.Builder()
             .setMaxStreams(5)
             .build()
         val mSp = sp.load(this.context, R.raw.metronomsound02, 1)
 
-        var allCount = 0
-
         buttonSound.setOnCheckedChangeListener { compoundButton, b ->
             compoundButton.startAnimation(animForButtonStart)
             if (b) myTTS?.stop()
         }
 
-//        val pager = view.findViewById(R.id.pager) as ViewPager
-
         buttonStart.setOnCheckedChangeListener { compoundButton, b ->
             compoundButton.startAnimation(animForButtonStart)
             actionViewModel.isPlay = b
             if (b) {
-                animatorForProgressItem.currentPlayTime = animatorItemCurrentTime
-                animatorForProgressItem.start()
+//                animatorForProgressItem.currentPlayTime = animatorItemCurrentTime
+//                animatorForProgressItem.start()
             }
             if (!b) {
-                animatorItemCurrentTime = animatorForProgressItem.currentPlayTime
-                animatorForProgressItem.cancel()
+//                animatorItemCurrentTime = animatorForProgressItem.currentPlayTime
+//                animatorForProgressItem.cancel()
                 myTTS?.stop()
             }
         }
 
-        BillingState.isAds.observe(viewLifecycleOwner, {
-            if (it) advertisingBox.visibility = View.VISIBLE
-            else advertisingBox.visibility = View.GONE
-        })
-
-        actionViewModel.isFinish.observe(viewLifecycleOwner, {
-            progressBarAll.setProgress(1000, true)
-            buttonStart.isChecked = !it
-        })
-
-        actionViewModel.userData.observe(viewLifecycleOwner, {
-            allCount = it.allCount
-            countTextView.text = it.allCount.toString()
-            currentTextView.text = actionViewModel.actionState.currentId.toString()
+        // Instantiate a ViewPager2 and a PagerAdapter.
+        viewPager = view.findViewById(R.id.pager)
+        viewPager.setPageTransformer(ZoomOutPageTransformer())
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                Log.d(LOG_TAG, "ScreenSlidePagerAdapter - onPageSelected position: $position")
+                actionViewModel.saveActionState((position + 1), true)
+            }
         })
 
         actionViewModel.asana.observe(viewLifecycleOwner, { asana ->
             sp.play(mSp, 1F, 1F, 1, 0, 1F)
-            if (asana.side == "second") repeatIcon.visibility = View.VISIBLE
-            else repeatIcon.visibility = View.GONE
-            mAdView.loadAd(adRequest)
-            progressBarAll.setProgress(1000 / allCount * asana.id.toInt(), true)
-            animatorForProgressItem.duration = asana.times * 1000.toLong()
-            if (actionViewModel.isPlay) animatorForProgressItem.start()
-            title.text = if (isRussianLanguage) asana.name else asana.eng
+            val title = if (isRussianLanguage) asana.name else asana.eng
             val descriptionText = if (isRussianLanguage) asana.description else asana.description_en
-            description.text = descriptionText
+
             if (!buttonSound.isChecked)
                 myTTS?.speak(descriptionText, TextToSpeech.QUEUE_FLUSH, null, asana.id.toString())
-            currentTextView.text = asana.id.toString()
-            val patch = AppConstants.PHOTO_URL + asana.photo
-            Log.d(LOG_TAG, patch)
+
+            viewPager.currentItem = (actionViewModel.id - 1).toInt()
+        })
+
+        actionViewModel.isFinish.observe(viewLifecycleOwner, {
+//            progressBarAll.setProgress(1000, true)
+//            buttonStart.isChecked = !it
+        })
+
+        actionViewModel.asans.observe(viewLifecycleOwner, {
+            asanas = it
+        })
+
+        actionViewModel.userData.observe(viewLifecycleOwner, {
+            count = it.allCount
+
+            // The pager adapter, which provides the pages to the view pager widget.
+            val pagerAdapter = ScreenSlidePagerAdapter()
+            viewPager.adapter = pagerAdapter
 
 
-            val picasso = Picasso.Builder(this.requireContext())
-                .downloader(OkHttp3Downloader(OkHttpClientFactory().getClient()))
-                .build()
-
-            picasso.setIndicatorsEnabled(false)
-            picasso
-                .load(patch)
-                .resize(640, 426)
-                .onlyScaleDown()
-                .centerCrop()
-                .placeholder(resources.getIdentifier("placeholder", "drawable", "ru.yogago.goyoga"))
-                .into(image)
-            image.startAnimation(animFadeOut)
         })
 
         actionViewModel.loadData()
     }
 
     override fun onDestroy() {
-        Log.d(LOG_TAG, "ActionFragment - onDestroy this: ${this.hashCode()}")
-        actionViewModel.cancelBackgroundWork()
         myTTS?.stop()
         myTTS?.shutdown()
+        actionViewModel.cancelBackgroundWork()
         super.onDestroy()
     }
 
@@ -195,6 +168,26 @@ class ActionFragment : Fragment() {
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private inner class ScreenSlidePagerAdapter(fa: FragmentActivity = this.requireActivity()) : FragmentStateAdapter(fa) {
+        override fun getItemCount(): Int {
+            return count
+        }
+
+        override fun createFragment(position: Int): Fragment{
+            val pos =  (position + 1)
+            val pageFragment = PageFragment()
+            val args = Bundle()
+            args.putInt("id", pos)
+            args.putInt("allCount", count)
+            args.putBoolean("isRussianLanguage", isRussianLanguage)
+            args.putBoolean("isPlay", actionViewModel.isPlay)
+            pageFragment.arguments = args
+
+
+            return pageFragment
+        }
     }
 
 }
