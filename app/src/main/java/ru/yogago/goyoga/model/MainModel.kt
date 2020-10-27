@@ -107,6 +107,16 @@ class MainModel: CoroutineScope {
 
     fun create(level: String, knee: String, loins: String, neck: String) {
         launch {
+            createData(level = level,
+                knee = knee,
+                loins = loins,
+                neck = neck
+            )
+        }
+    }
+
+    private suspend fun createData(level: String, knee: String, loins: String, neck: String){
+        return withContext(TokenProvider.coroutineContext) {
             dbDao.insertActionState(ActionState(currentId = 1))
             val requestMessageCreate = service.createAsync(
                 level = level,
@@ -134,8 +144,8 @@ class MainModel: CoroutineScope {
                 Message(error = e.toString())
             }
         }
-    }
 
+    }
     fun loadUserData() {
         launch {
             if(!isTokenDB()) {
@@ -146,7 +156,11 @@ class MainModel: CoroutineScope {
                 Log.d(LOG_TAG, "MainModel - loadUserData - saveTokenDB response: $response")
                 isTokenDB()
                 dbDao.insertSettings(Settings())
-                create("0", "0", "0", "0")
+                createData(level = "0",
+                    knee = "0",
+                    loins = "0",
+                    neck = "0"
+                )
             }
             val settings = dbDao.getSettings()
             profileViewModel.proportionately.postValue(settings?.proportionately)
