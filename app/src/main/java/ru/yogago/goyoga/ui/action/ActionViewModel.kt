@@ -17,9 +17,10 @@ class ActionViewModel : ViewModel(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
     var isPlay: Boolean = false
-    lateinit var actionState: ActionState
+    private lateinit var actionState: ActionState
     val userData: MutableLiveData<UserData> = MutableLiveData()
     val asana: MutableLiveData<Asana> = MutableLiveData()
+    val asans: MutableLiveData<List<Asana>> = MutableLiveData()
     val isFinish: MutableLiveData<Boolean> = MutableLiveData()
     private val dbDao = DataBase.db.getDBDao()
     private lateinit var asanas: List<Asana>
@@ -37,6 +38,7 @@ class ActionViewModel : ViewModel(), CoroutineScope {
         asanas.forEach {
             it.times = it.times * proportionately + addTime
         }
+        asans.postValue(asanas)
         Log.d(LOG_TAG, "ActionViewModel - loadData asanas hashCode: ${asanas.hashCode()}")
         Log.d(LOG_TAG, "ActionViewModel - loadData asanas size: ${asanas.size}")
         val data: UserData? = loadDataFromDB()
@@ -98,6 +100,13 @@ class ActionViewModel : ViewModel(), CoroutineScope {
     private fun saveActionState() {
         val result = dbDao.insertActionState(actionState)
         Log.d(LOG_TAG, "ActionViewModel - saveActionStateToDB result: $result")
+    }
+
+    fun saveActionState(id: Int, isPlay: Boolean) {
+        launch {
+            val result = dbDao.insertActionState(ActionState(isPlay = isPlay, currentId = id))
+            Log.d(LOG_TAG, "ActionViewModel - saveActionStateToDB result: $result")
+        }
     }
 
     fun cancelBackgroundWork() {

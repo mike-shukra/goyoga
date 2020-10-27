@@ -1,3 +1,5 @@
+@file:Suppress("unused", "unused", "unused", "unused")
+
 package ru.yogago.goyoga
 
 import android.app.Application

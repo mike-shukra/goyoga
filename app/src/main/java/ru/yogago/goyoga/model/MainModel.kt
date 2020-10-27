@@ -194,10 +194,10 @@ class MainModel: CoroutineScope {
         return this
     }
 
-    fun cancelBackgroundWork() {
-        coroutineContext.cancelChildren()
-        Log.d(LOG_TAG, "MainModel - cancelBackgroundWork")
-    }
+//    fun cancelBackgroundWork() {
+//        coroutineContext.cancelChildren()
+//        Log.d(LOG_TAG, "MainModel - cancelBackgroundWork")
+//    }
 
     fun updateSettingsAddTime(value: Int) {
         launch {
