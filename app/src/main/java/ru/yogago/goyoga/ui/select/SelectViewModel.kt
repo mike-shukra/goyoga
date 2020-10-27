@@ -23,8 +23,4 @@ class SelectViewModel : ViewModel() {
         model.loadData()
     }
 
-    fun cancelBackgroundWork() {
-        model.cancelBackgroundWork()
-    }
-
 }

@@ -26,6 +26,7 @@ class BillingFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(BillingViewModel::class.java)
+        viewModel.setMyBilling(MyBilling(requireActivity()))
     }
 
     override fun onCreateView(
@@ -67,10 +68,6 @@ class BillingFragment : Fragment() {
             rvBillings.adapter = adapter
 
         })
-
-
-        viewModel.setMyBilling(MyBilling(requireActivity()))
-
         viewModel.loadBillings()
     }
 
