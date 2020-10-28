@@ -9,24 +9,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.TextView
 import android.widget.Toast
 import android.widget.ToggleButton
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import kotlinx.android.synthetic.main.page_action.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
 import ru.yogago.goyoga.data.Asana
-import java.lang.reflect.Field
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
@@ -43,7 +39,8 @@ class ActionFragment : Fragment(), CoroutineScope {
     private var ttsEnabled: Boolean = true
     private var myTTS: TextToSpeech? = null
     private val ttsCheckCode = 0
-    private lateinit var asanas: List<Asana>
+    private lateinit var asanaList: List<Asana>
+    val myPageHashMap = hashMapOf<Int, Fragment>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,24 +102,24 @@ class ActionFragment : Fragment(), CoroutineScope {
                 super.onPageSelected(position)
                 Log.d(LOG_TAG, "ScreenSlidePagerAdapter - onPageSelected position: $position")
 //                actionViewModel.saveActionState((position + 1), true)
-                Toast.makeText(context, asanas[position].name, Toast.LENGTH_LONG).show()
 
-                val test = viewPager.adapter
-//                test?.title?.text = "position: $position"
+                val myFragment = myPageHashMap[position]
+                myFragment?.view?.findViewById<TextView>(R.id.title)?.text = "position: $position"
+
+                Toast.makeText(context, "myFragment: ${myFragment?.id}", Toast.LENGTH_LONG).show()
 
             }
         })
 
         actionViewModel.asana.observe(viewLifecycleOwner, { asana ->
-            sp.play(mSp, 1F, 1F, 1, 0, 1F)
-            val title = if (isRussianLanguage) asana.name else asana.eng
-            val descriptionText = if (isRussianLanguage) asana.description else asana.description_en
+//            sp.play(mSp, 1F, 1F, 1, 0, 1F)
+//            val title = if (isRussianLanguage) asana.name else asana.eng
+//            val descriptionText = if (isRussianLanguage) asana.description else asana.description_en
+//
+//            if (!buttonSound.isChecked)
+//                myTTS?.speak(descriptionText, TextToSpeech.QUEUE_FLUSH, null, asana.id.toString())
 
-            if (!buttonSound.isChecked)
-                myTTS?.speak(descriptionText, TextToSpeech.QUEUE_FLUSH, null, asana.id.toString())
-            viewPager.post {
-                viewPager.setCurrentItem((actionViewModel.id - 1).toInt(), false)
-            }
+
         })
 
         actionViewModel.isFinish.observe(viewLifecycleOwner, {
@@ -130,8 +127,8 @@ class ActionFragment : Fragment(), CoroutineScope {
 //            buttonStart.isChecked = !it
         })
 
-        actionViewModel.asans.observe(viewLifecycleOwner, {
-            asanas = it
+        actionViewModel.asanas.observe(viewLifecycleOwner, {
+            asanaList = it
             // The pager adapter, which provides the pages to the view pager widget.
             val pagerAdapter = ScreenSlidePagerAdapter()
             viewPager.adapter = pagerAdapter
@@ -139,6 +136,10 @@ class ActionFragment : Fragment(), CoroutineScope {
 
         actionViewModel.userData.observe(viewLifecycleOwner, {
             count = it.allCount
+            viewPager.setCurrentItem((actionViewModel.id - 1).toInt(), false)
+            val myFragment = myPageHashMap[(actionViewModel.id - 1).toInt()]
+            myFragment?.view?.findViewById<TextView>(R.id.title)?.text = "position: ${(actionViewModel.id - 1).toInt()}"
+
         })
 
         actionViewModel.loadData()
@@ -192,6 +193,7 @@ class ActionFragment : Fragment(), CoroutineScope {
             args.putBoolean("isPlay", actionViewModel.isPlay)
             pageFragment.arguments = args
 
+            myPageHashMap[position] = pageFragment
             return pageFragment
         }
     }
