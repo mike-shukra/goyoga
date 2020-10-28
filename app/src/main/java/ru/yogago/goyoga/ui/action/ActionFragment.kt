@@ -102,6 +102,10 @@ class ActionFragment : Fragment() {
                 super.onPageSelected(position)
                 Log.d(LOG_TAG, "ScreenSlidePagerAdapter - onPageSelected position: $position")
 //                actionViewModel.saveActionState((position + 1), true)
+
+                val myFragment = childFragmentManager.findFragmentByTag("f$position")
+                myFragment?.view?.findViewById<TextView>(R.id.title)?.text = "position: $position"
+
             }
         })
 
@@ -113,7 +117,8 @@ class ActionFragment : Fragment() {
             if (!buttonSound.isChecked)
                 myTTS?.speak(descriptionText, TextToSpeech.QUEUE_FLUSH, null, asana.id.toString())
 
-            viewPager.currentItem = (asana.id - 1).toInt()
+            viewPager.setCurrentItem((asana.id - 1).toInt(), false)
+
         })
 
         actionViewModel.isFinish.observe(viewLifecycleOwner, {
