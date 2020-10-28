@@ -41,12 +41,14 @@ class ActionFragment : Fragment() {
     private var myTTS: TextToSpeech? = null
     private val ttsCheckCode = 0
     private lateinit var asanas: List<Asana>
+    val myPageHashMap = hashMapOf<Int, View>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         actionViewModel = ViewModelProvider(this).get(ActionViewModel::class.java)
         arguments?.let {
-            actionViewModel.saveActionState(it.getLong("id").toInt(), false)
+            actionViewModel.id = it.getLong("id")
             it.remove("id")
         }
         val checkTTSIntent = Intent()
@@ -103,13 +105,14 @@ class ActionFragment : Fragment() {
                 Log.d(LOG_TAG, "ScreenSlidePagerAdapter - onPageSelected position: $position")
 //                actionViewModel.saveActionState((position + 1), true)
 
-                val myFragment = childFragmentManager.findFragmentByTag("f$position")
-                myFragment?.view?.findViewById<TextView>(R.id.title)?.text = "position: $position"
+                if (actionViewModel.isPlay)
+                    myPageHashMap[position]?.findViewById<TextView>(R.id.title)?.text = "position: $position"
 
             }
         })
 
         actionViewModel.asana.observe(viewLifecycleOwner, { asana ->
+            val position = (asana.id - 1).toInt()
             sp.play(mSp, 1F, 1F, 1, 0, 1F)
             val title = if (isRussianLanguage) asana.name else asana.eng
             val descriptionText = if (isRussianLanguage) asana.description else asana.description_en
@@ -117,7 +120,8 @@ class ActionFragment : Fragment() {
             if (!buttonSound.isChecked)
                 myTTS?.speak(descriptionText, TextToSpeech.QUEUE_FLUSH, null, asana.id.toString())
 
-            viewPager.setCurrentItem((asana.id - 1).toInt(), false)
+            viewPager.setCurrentItem(position, false)
+//            myPageHashMap[position]?.findViewById<TextView>(R.id.title)?.text = "position: $position"
 
         })
 
@@ -230,6 +234,8 @@ class ActionFragment : Fragment() {
 
             holder.image.startAnimation(holder.animFadeOut)
 
+            val page = holder.itemView
+            myPageHashMap[position] = page
         }
     }
 
