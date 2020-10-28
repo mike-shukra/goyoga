@@ -21,6 +21,7 @@ import com.squareup.picasso.Picasso
 import com.yandex.mobile.ads.AdRequest
 import com.yandex.mobile.ads.AdSize
 import com.yandex.mobile.ads.AdView
+import kotlinx.coroutines.*
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
@@ -29,10 +30,15 @@ import ru.yogago.goyoga.data.BillingState
 import ru.yogago.goyoga.service.OkHttpClientFactory
 import ru.yogago.goyoga.service.StickyBannerEventListener
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
 
-class ActionFragment : Fragment() {
+class ActionFragment : Fragment(), CoroutineScope {
 
+    private val job = SupervisorJob()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO + job
+    private var isPlay: Boolean = false
     private val isRussianLanguage: Boolean = Locale.getDefault().language == "ru"
     private lateinit var viewPager: ViewPager2
     private lateinit var actionViewModel: ActionViewModel
@@ -40,17 +46,21 @@ class ActionFragment : Fragment() {
     private var ttsEnabled: Boolean = true
     private var myTTS: TextToSpeech? = null
     private val ttsCheckCode = 0
-    private lateinit var asanas: List<Asana>
-    val myPageHashMap = hashMapOf<Int, View>()
+    private lateinit var asanaList: List<Asana>
+    private val myPageHashMap = hashMapOf<Int, PagerViewHolder>()
+    var currentAsana: Int = 0
+    private var myPageHolder: PagerViewHolder? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         actionViewModel = ViewModelProvider(this).get(ActionViewModel::class.java)
         arguments?.let {
-            actionViewModel.id = it.getLong("id")
-            it.remove("id")
+            currentAsana = it.getLong("id").toInt()
+            savedInstanceState?.putLong("id", currentAsana.toLong())
         }
+        currentAsana = savedInstanceState?.getLong("id")?.toInt()!!
+
         val checkTTSIntent = Intent()
         checkTTSIntent.action = TextToSpeech.Engine.ACTION_CHECK_TTS_DATA
         startActivityForResult(checkTTSIntent, ttsCheckCode)
@@ -84,14 +94,12 @@ class ActionFragment : Fragment() {
 
         buttonStart.setOnCheckedChangeListener { compoundButton, b ->
             compoundButton.startAnimation(animForButtonStart)
-            actionViewModel.isPlay = b
+            isPlay = b
             if (b) {
-//                animatorForProgressItem.currentPlayTime = animatorItemCurrentTime
-//                animatorForProgressItem.start()
+                actionViewModel.waitAsana()
+                myPageHolder?.animatorForProgressItem?.start()
             }
             if (!b) {
-//                animatorItemCurrentTime = animatorForProgressItem.currentPlayTime
-//                animatorForProgressItem.cancel()
                 myTTS?.stop()
             }
         }
@@ -103,26 +111,26 @@ class ActionFragment : Fragment() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 Log.d(LOG_TAG, "ScreenSlidePagerAdapter - onPageSelected position: $position")
-//                actionViewModel.saveActionState((position + 1), true)
+                currentAsana = position
+                savedInstanceState?.putLong("id", currentAsana.toLong())
+                myPageHolder = myPageHashMap[position]
 
-                if (actionViewModel.isPlay)
-                    myPageHashMap[position]?.findViewById<TextView>(R.id.title)?.text = "position: $position"
+                myPageHolder?.animatorForProgressItem?.duration = asanaList[currentAsana].times * 1000.toLong()
 
+
+                if (isPlay) {
+                    myPageHolder?.animatorForProgressItem?.start()
+                }
+                actionViewModel.setTime(asanaList[currentAsana].times*10)
+                actionViewModel.setIsPause(false)
             }
         })
 
-        actionViewModel.asana.observe(viewLifecycleOwner, { asana ->
-            val position = (asana.id - 1).toInt()
-            sp.play(mSp, 1F, 1F, 1, 0, 1F)
-            val title = if (isRussianLanguage) asana.name else asana.eng
-            val descriptionText = if (isRussianLanguage) asana.description else asana.description_en
-
-            if (!buttonSound.isChecked)
-                myTTS?.speak(descriptionText, TextToSpeech.QUEUE_FLUSH, null, asana.id.toString())
-
-            viewPager.setCurrentItem(position, false)
-//            myPageHashMap[position]?.findViewById<TextView>(R.id.title)?.text = "position: $position"
-
+        actionViewModel.go.observe(viewLifecycleOwner, {
+            if (isPlay) {
+                currentAsana++
+                viewPager.currentItem = (currentAsana)
+            }
         })
 
         actionViewModel.isFinish.observe(viewLifecycleOwner, {
@@ -131,7 +139,7 @@ class ActionFragment : Fragment() {
         })
 
         actionViewModel.asanas.observe(viewLifecycleOwner, {
-            asanas = it
+            asanaList = it
         })
 
         actionViewModel.userData.observe(viewLifecycleOwner, {
@@ -140,7 +148,6 @@ class ActionFragment : Fragment() {
             // The pager adapter, which provides the pages to the view pager widget.
             val pagerAdapter = ScreenSlidePagerAdapter()
             viewPager.adapter = pagerAdapter
-
 
         })
 
@@ -190,18 +197,15 @@ class ActionFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: PagerViewHolder, position: Int) {
-            holder.title.text = if (isRussianLanguage) asanas[position].name else asanas[position].eng
-            val descriptionText = if (isRussianLanguage) asanas[position].description else asanas[position].description_en
+            holder.title.text = if (isRussianLanguage) asanaList[position].name else asanaList[position].eng
+            val descriptionText = if (isRussianLanguage) asanaList[position].description else asanaList[position].description_en
             holder.description.text = descriptionText
-            holder.currentTextView.text = asanas[position].id.toString()
+            holder.currentTextView.text = asanaList[position].id.toString()
             holder.countTextView.text = count.toString()
             holder.progressBarAll.setProgress(1000 / count * (position + 1), true)
 
-            val animatorForProgressItem: ObjectAnimator = ObjectAnimator.ofInt(holder.progressBarItem, "progress", 1, 1000)
-            animatorForProgressItem.duration = asanas[position].times * 1000.toLong()
-            if (actionViewModel.isPlay) {
-                animatorForProgressItem.start()
-            }
+
+
 
             val adRequest = AdRequest.Builder().build()
             holder.mAdView.adEventListener = StickyBannerEventListener()
@@ -213,10 +217,10 @@ class ActionFragment : Fragment() {
                 else holder.advertisingBox.visibility = View.GONE
             })
 
-            if (asanas[position].side == "second") holder.repeatIcon.visibility = View.VISIBLE
+            if (asanaList[position].side == "second") holder.repeatIcon.visibility = View.VISIBLE
             else holder.repeatIcon.visibility = View.GONE
 
-            val patch = AppConstants.PHOTO_URL + asanas[position].photo
+            val patch = AppConstants.PHOTO_URL + asanaList[position].photo
             Log.d(LOG_TAG, patch)
 
             val picasso = Picasso.Builder(requireContext())
@@ -234,8 +238,7 @@ class ActionFragment : Fragment() {
 
             holder.image.startAnimation(holder.animFadeOut)
 
-            val page = holder.itemView
-            myPageHashMap[position] = page
+            myPageHashMap[position] = holder
         }
     }
 
@@ -252,6 +255,10 @@ class ActionFragment : Fragment() {
         val advertisingBox: LinearLayout = itemView.findViewById(R.id.advertising_box)
         val mAdView: AdView = itemView.findViewById(R.id.ad_view)
         val animFadeOut: Animation = AnimationUtils.loadAnimation(context, R.anim.alpha_out)
+
+        val animatorForProgressItem: ObjectAnimator = ObjectAnimator.ofInt(progressBarItem, "progress", 1, 1000)
+
+
 
         init {
             mAdView.blockId = AppConstants.YANDEX_RTB_ID_ACTION
