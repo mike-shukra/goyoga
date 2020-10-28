@@ -21,7 +21,6 @@ import com.squareup.picasso.Picasso
 import com.yandex.mobile.ads.AdRequest
 import com.yandex.mobile.ads.AdSize
 import com.yandex.mobile.ads.AdView
-import kotlinx.coroutines.*
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
@@ -30,14 +29,9 @@ import ru.yogago.goyoga.data.BillingState
 import ru.yogago.goyoga.service.OkHttpClientFactory
 import ru.yogago.goyoga.service.StickyBannerEventListener
 import java.util.*
-import kotlin.coroutines.CoroutineContext
 
 
-class ActionFragment : Fragment(), CoroutineScope {
-
-    private val job = SupervisorJob()
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO + job
+class ActionFragment : Fragment() {
     private var isPlay: Boolean = false
     private val isRussianLanguage: Boolean = Locale.getDefault().language == "ru"
     private lateinit var viewPager: ViewPager2
@@ -48,18 +42,16 @@ class ActionFragment : Fragment(), CoroutineScope {
     private val ttsCheckCode = 0
     private lateinit var asanaList: List<Asana>
     private val myPageHashMap = hashMapOf<Int, PagerViewHolder>()
-    var currentAsana: Int = 0
-    private var myPageHolder: PagerViewHolder? = null
+    private var currentAsana: Int = 0
+    private lateinit var myPageHolder: PagerViewHolder
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         actionViewModel = ViewModelProvider(this).get(ActionViewModel::class.java)
         arguments?.let {
-            currentAsana = it.getLong("id").toInt()
-        }
-        savedInstanceState?.let {
-            currentAsana = it.getLong("id").toInt()
+            currentAsana = (it.getLong("id").toInt() - 1)
+            it.remove("id")
         }
 
         val checkTTSIntent = Intent()
@@ -97,11 +89,15 @@ class ActionFragment : Fragment(), CoroutineScope {
             compoundButton.startAnimation(animForButtonStart)
             isPlay = b
             if (b) {
+                actionViewModel.setIsPause(false)
+                isDoAnimationProgressItem(true)
                 actionViewModel.waitAsana()
-                myPageHolder?.animatorForProgressItem?.start()
             }
             if (!b) {
                 myTTS?.stop()
+                actionViewModel.setIsPause(true)
+                actionViewModel.cancelBackgroundWork()
+                isDoAnimationProgressItem(false)
             }
         }
 
@@ -111,38 +107,26 @@ class ActionFragment : Fragment(), CoroutineScope {
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                Log.d(LOG_TAG, "ScreenSlidePagerAdapter - onPageSelected position: $position")
-                currentAsana = position
-                arguments?.let {
-                    it.putLong("id", currentAsana.toLong())
-                }
-                myPageHolder = myPageHashMap[position]
-
-                myPageHolder?.animatorForProgressItem?.duration = asanaList[currentAsana].times * 1000.toLong()
-
-
-                if (isPlay) {
-                    myPageHolder?.animatorForProgressItem?.start()
-                }
+                Log.d(LOG_TAG, "ScreenSlidePagerAdapter - onPageSelected position: $position isPlay: $isPlay")
                 actionViewModel.setTime(asanaList[currentAsana].times*10)
                 actionViewModel.setIsPause(false)
+                myPageHolder = myPageHashMap[position]!!
+                isDoAnimationProgressItem(isPlay)
             }
         })
 
         actionViewModel.go.observe(viewLifecycleOwner, {
-            if (isPlay) {
-                currentAsana++
-                viewPager.currentItem = (currentAsana)
-            }
+            currentAsana++
+            viewPager.setCurrentItem(currentAsana, false)
+            isDoAnimationProgressItem(isPlay)
         })
 
-        actionViewModel.isFinish.observe(viewLifecycleOwner, {
-//            progressBarAll.setProgress(1000, true)
-//            buttonStart.isChecked = !it
-        })
+        //            progressBarAll.setProgress(1000, true)
+        //            buttonStart.isChecked = !it
 
         actionViewModel.asanas.observe(viewLifecycleOwner, {
             asanaList = it
+
         })
 
         actionViewModel.userData.observe(viewLifecycleOwner, {
@@ -151,6 +135,10 @@ class ActionFragment : Fragment(), CoroutineScope {
             // The pager adapter, which provides the pages to the view pager widget.
             val pagerAdapter = ScreenSlidePagerAdapter()
             viewPager.adapter = pagerAdapter
+
+            viewPager.setCurrentItem(currentAsana, false)
+
+            if (isPlay) isDoAnimationProgressItem(true)
 
         })
 
@@ -162,6 +150,35 @@ class ActionFragment : Fragment(), CoroutineScope {
         myTTS?.shutdown()
         actionViewModel.cancelBackgroundWork()
         super.onDestroy()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("id", currentAsana)
+        outState.putBoolean("isPlay", isPlay)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        savedInstanceState?.let {
+            currentAsana = it.getInt("id")
+            isPlay = it.getBoolean("isPlay")
+        }
+    }
+
+    private fun isDoAnimationProgressItem(flag: Boolean) {
+        Log.d(LOG_TAG, "isDoAnimationProgressItem - flag: $flag")
+        if (flag) {
+            myPageHolder.animatorForProgressItem.duration =
+                asanaList[currentAsana].times * 1000.toLong()
+            myPageHolder.animatorForProgressItem.start()
+        }
+        else {
+            myPageHolder.animatorForProgressItem.duration =
+                asanaList[currentAsana].times * 1000.toLong()
+            myPageHolder.animatorForProgressItem.cancel()
+
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -207,13 +224,9 @@ class ActionFragment : Fragment(), CoroutineScope {
             holder.countTextView.text = count.toString()
             holder.progressBarAll.setProgress(1000 / count * (position + 1), true)
 
-
-
-
             val adRequest = AdRequest.Builder().build()
             holder.mAdView.adEventListener = StickyBannerEventListener()
             holder.mAdView.loadAd(adRequest)
-
 
             BillingState.isAds.observe(viewLifecycleOwner, {
                 if (it) holder.advertisingBox.visibility = View.VISIBLE
@@ -242,6 +255,8 @@ class ActionFragment : Fragment(), CoroutineScope {
             holder.image.startAnimation(holder.animFadeOut)
 
             myPageHashMap[position] = holder
+            Log.d(LOG_TAG, "onBindViewHolder - position: $position holder: ${holder.hashCode()}")
+
         }
     }
 
@@ -260,8 +275,6 @@ class ActionFragment : Fragment(), CoroutineScope {
         val animFadeOut: Animation = AnimationUtils.loadAnimation(context, R.anim.alpha_out)
 
         val animatorForProgressItem: ObjectAnimator = ObjectAnimator.ofInt(progressBarItem, "progress", 1, 1000)
-
-
 
         init {
             mAdView.blockId = AppConstants.YANDEX_RTB_ID_ACTION
