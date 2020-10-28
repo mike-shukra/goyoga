@@ -1,6 +1,5 @@
 package ru.yogago.goyoga.ui.action
 
-import android.animation.ObjectAnimator
 import android.content.Intent
 import android.media.SoundPool
 import android.os.Bundle
@@ -10,20 +9,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.ProgressBar
 import android.widget.Toast
 import android.widget.ToggleButton
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import kotlinx.android.synthetic.main.page_action.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
 import ru.yogago.goyoga.data.Asana
+import java.lang.reflect.Field
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
@@ -101,7 +104,12 @@ class ActionFragment : Fragment(), CoroutineScope {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 Log.d(LOG_TAG, "ScreenSlidePagerAdapter - onPageSelected position: $position")
-                actionViewModel.saveActionState((position + 1), true)
+//                actionViewModel.saveActionState((position + 1), true)
+                Toast.makeText(context, asanas[position].name, Toast.LENGTH_LONG).show()
+
+//                val test = viewPager.adapter.
+//                test?.title?.text = "position: $position"
+
             }
         })
 
@@ -112,8 +120,9 @@ class ActionFragment : Fragment(), CoroutineScope {
 
             if (!buttonSound.isChecked)
                 myTTS?.speak(descriptionText, TextToSpeech.QUEUE_FLUSH, null, asana.id.toString())
-
-            viewPager.currentItem = (actionViewModel.id - 1).toInt()
+            viewPager.post {
+                viewPager.setCurrentItem((actionViewModel.id - 1).toInt(), false)
+            }
         })
 
         actionViewModel.isFinish.observe(viewLifecycleOwner, {
@@ -123,16 +132,13 @@ class ActionFragment : Fragment(), CoroutineScope {
 
         actionViewModel.asans.observe(viewLifecycleOwner, {
             asanas = it
+            // The pager adapter, which provides the pages to the view pager widget.
+            val pagerAdapter = ScreenSlidePagerAdapter()
+            viewPager.adapter = pagerAdapter
         })
 
         actionViewModel.userData.observe(viewLifecycleOwner, {
             count = it.allCount
-
-            // The pager adapter, which provides the pages to the view pager widget.
-            val pagerAdapter = ScreenSlidePagerAdapter()
-            viewPager.adapter = pagerAdapter
-
-
         })
 
         actionViewModel.loadData()
@@ -171,6 +177,7 @@ class ActionFragment : Fragment(), CoroutineScope {
     }
 
     private inner class ScreenSlidePagerAdapter(fa: FragmentActivity = this.requireActivity()) : FragmentStateAdapter(fa) {
+
         override fun getItemCount(): Int {
             return count
         }
@@ -184,7 +191,6 @@ class ActionFragment : Fragment(), CoroutineScope {
             args.putBoolean("isRussianLanguage", isRussianLanguage)
             args.putBoolean("isPlay", actionViewModel.isPlay)
             pageFragment.arguments = args
-
 
             return pageFragment
         }

@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso
 import com.yandex.mobile.ads.AdRequest
 import com.yandex.mobile.ads.AdSize
 import com.yandex.mobile.ads.AdView
+import kotlinx.android.synthetic.main.page_action.*
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
@@ -51,6 +52,12 @@ class PageFragment : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.page_action, container, false)
     }
+
+//    override fun onResume() {
+//        super.onResume()
+//        val text = title.text.toString()
+//        Toast.makeText(context, text, Toast.LENGTH_LONG).show()
+//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
