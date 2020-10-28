@@ -57,9 +57,10 @@ class ActionFragment : Fragment(), CoroutineScope {
         actionViewModel = ViewModelProvider(this).get(ActionViewModel::class.java)
         arguments?.let {
             currentAsana = it.getLong("id").toInt()
-            savedInstanceState?.putLong("id", currentAsana.toLong())
         }
-        currentAsana = savedInstanceState?.getLong("id")?.toInt()!!
+        savedInstanceState?.let {
+            currentAsana = it.getLong("id").toInt()
+        }
 
         val checkTTSIntent = Intent()
         checkTTSIntent.action = TextToSpeech.Engine.ACTION_CHECK_TTS_DATA
@@ -112,7 +113,9 @@ class ActionFragment : Fragment(), CoroutineScope {
                 super.onPageSelected(position)
                 Log.d(LOG_TAG, "ScreenSlidePagerAdapter - onPageSelected position: $position")
                 currentAsana = position
-                savedInstanceState?.putLong("id", currentAsana.toLong())
+                arguments?.let {
+                    it.putLong("id", currentAsana.toLong())
+                }
                 myPageHolder = myPageHashMap[position]
 
                 myPageHolder?.animatorForProgressItem?.duration = asanaList[currentAsana].times * 1000.toLong()
