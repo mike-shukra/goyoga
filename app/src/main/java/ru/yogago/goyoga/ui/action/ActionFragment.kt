@@ -107,7 +107,7 @@ class ActionFragment : Fragment(), CoroutineScope {
 //                actionViewModel.saveActionState((position + 1), true)
                 Toast.makeText(context, asanas[position].name, Toast.LENGTH_LONG).show()
 
-//                val test = viewPager.adapter.
+                val test = viewPager.adapter
 //                test?.title?.text = "position: $position"
 
             }
