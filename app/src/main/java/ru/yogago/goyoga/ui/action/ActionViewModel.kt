@@ -7,6 +7,7 @@ import kotlinx.coroutines.*
 import ru.yogago.goyoga.data.ActionState
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
 import ru.yogago.goyoga.data.Asana
+import ru.yogago.goyoga.data.Data
 import ru.yogago.goyoga.data.UserData
 import ru.yogago.goyoga.service.DataBase
 import kotlin.coroutines.CoroutineContext
@@ -16,10 +17,9 @@ class ActionViewModel : ViewModel(), CoroutineScope {
     private val job = SupervisorJob()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
-    private lateinit var actionState: ActionState
-    val userData: MutableLiveData<UserData> = MutableLiveData()
+    private lateinit var data: Data
     val go: MutableLiveData<Boolean> = MutableLiveData()
-    val asanas: MutableLiveData<List<Asana>> = MutableLiveData()
+    val mData: MutableLiveData<Data> = MutableLiveData()
     private val dbDao = DataBase.db.getDBDao()
     private lateinit var asanasList: List<Asana>
     private var time: Int = 0
@@ -71,7 +71,6 @@ class ActionViewModel : ViewModel(), CoroutineScope {
         }
     }
 
-
     fun loadData() = launch {
 
         val settings = dbDao.getSettings()
@@ -82,11 +81,12 @@ class ActionViewModel : ViewModel(), CoroutineScope {
         asanasList.forEach {
             it.times = it.times * proportionately + addTime
         }
-        asanas.postValue(asanasList)
-        val data: UserData? = loadDataFromDB()
-        if (data != null) userData.postValue(loadDataFromDB())
+        val userData: UserData? = loadDataFromDB()
+        val aState: ActionState? = dbDao.getActionState()
+        Log.d(LOG_TAG, "ActionViewModel - loadActionStateFromDB aState: $aState")
+        data = Data(asanas = asanasList, userData = userData, actionState = aState)
+        mData.postValue(data)
     }
-
 
     private fun loadAsanasFromDB(): List<Asana> {
         val asanas = dbDao.getAsanas()
@@ -100,16 +100,11 @@ class ActionViewModel : ViewModel(), CoroutineScope {
         return userData
     }
 
-    private fun loadActionStateFromDB(): ActionState {
-        var actionState: ActionState? = dbDao.getActionState()
-        Log.d(LOG_TAG, "ActionViewModel - loadActionStateFromDB actionState: $actionState")
-        if (actionState == null) actionState = ActionState()
-        return actionState
-    }
-
-    private fun saveActionState() {
-        val result = dbDao.insertActionState(actionState)
-        Log.d(LOG_TAG, "ActionViewModel - saveActionStateToDB result: $result")
+    fun saveActionState(actionState: ActionState) {
+        launch {
+            val result = dbDao.insertActionState(actionState)
+            Log.d(LOG_TAG, "ActionViewModel - saveActionStateToDB actionState: $actionState result: $result")
+        }
     }
 
     fun cancelBackgroundWork() {
