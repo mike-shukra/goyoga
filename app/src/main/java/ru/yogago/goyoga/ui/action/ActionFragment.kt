@@ -42,9 +42,9 @@ class ActionFragment : Fragment() {
     private val ttsCheckCode = 0
     private lateinit var asanaList: List<Asana>
     private var currentAsana: Int = 0
-    private val myPageHashMap = hashMapOf<Int, PagerViewHolder>()
-    private lateinit var myPageHolder: PagerViewHolder
-
+    private var myPageHashMap = hashMapOf<Int, PagerViewHolder>()
+    private var myPageHolder: PagerViewHolder? = null
+    private var animatorItemCurrentTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,6 +90,7 @@ class ActionFragment : Fragment() {
             isPlay = b
             if (b) {
                 actionViewModel.setIsPause(false)
+                viewPager.setCurrentItem(currentAsana, false)
                 isDoAnimationProgressItem(true)
                 actionViewModel.waitAsana()
             }
@@ -97,6 +98,7 @@ class ActionFragment : Fragment() {
                 myTTS?.stop()
                 actionViewModel.setIsPause(true)
                 actionViewModel.cancelBackgroundWork()
+                viewPager.setCurrentItem(currentAsana, false)
                 isDoAnimationProgressItem(false)
             }
         }
@@ -106,6 +108,7 @@ class ActionFragment : Fragment() {
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
+                currentAsana = position
                 Log.d(LOG_TAG, "ScreenSlidePagerAdapter - onPageSelected position: $position isPlay: $isPlay")
                 actionViewModel.setTime(asanaList[currentAsana].times*10)
                 actionViewModel.setIsPause(false)
@@ -144,10 +147,28 @@ class ActionFragment : Fragment() {
         actionViewModel.loadData()
     }
 
+    private fun isDoAnimationProgressItem(flag: Boolean) {
+        Log.d(LOG_TAG, "isDoAnimationProgressItem - flag: $flag")
+        if (flag) {
+            myPageHolder?.animatorForProgressItem?.duration =
+                asanaList[currentAsana].times * 1000.toLong()
+            myPageHolder?.animatorForProgressItem?.currentPlayTime = animatorItemCurrentTime
+            myPageHolder?.animatorForProgressItem?.start()
+        }
+        else {
+            myPageHolder?.animatorForProgressItem?.currentPlayTime?.let {
+                animatorItemCurrentTime = it
+            }
+            myPageHolder?.animatorForProgressItem?.cancel()
+        }
+    }
+
     override fun onDestroy() {
+        Log.d(LOG_TAG, "ActionFragment - onDestroy")
         myTTS?.stop()
         myTTS?.shutdown()
         actionViewModel.cancelBackgroundWork()
+        myPageHashMap.clear()
         super.onDestroy()
     }
 
@@ -155,6 +176,7 @@ class ActionFragment : Fragment() {
         super.onSaveInstanceState(outState)
         outState.putInt("id", currentAsana)
         outState.putBoolean("isPlay", isPlay)
+//        outState.putLong("animatorItemCurrentTime", animatorItemCurrentTime)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -162,21 +184,7 @@ class ActionFragment : Fragment() {
         savedInstanceState?.let {
             currentAsana = it.getInt("id")
             isPlay = it.getBoolean("isPlay")
-        }
-    }
-
-    private fun isDoAnimationProgressItem(flag: Boolean) {
-        Log.d(LOG_TAG, "isDoAnimationProgressItem - flag: $flag")
-        if (flag) {
-            myPageHolder.animatorForProgressItem.duration =
-                asanaList[currentAsana].times * 1000.toLong()
-            myPageHolder.animatorForProgressItem.start()
-        }
-        else {
-            myPageHolder.animatorForProgressItem.duration =
-                asanaList[currentAsana].times * 1000.toLong()
-            myPageHolder.animatorForProgressItem.cancel()
-
+//            animatorItemCurrentTime = it.getLong("animatorItemCurrentTime")
         }
     }
 
@@ -218,6 +226,11 @@ class ActionFragment : Fragment() {
 
         override fun onBindViewHolder(holder: PagerViewHolder, position: Int) {
             myPageHashMap[position] = holder
+            if (position == currentAsana) {
+                myPageHolder = myPageHashMap[position]!!
+                isDoAnimationProgressItem(isPlay)
+            }
+
             Log.d(LOG_TAG, "onBindViewHolder - position: $position holder: ${holder.hashCode()}")
 
             holder.title.text = if (isRussianLanguage) asanaList[position].name else asanaList[position].eng
@@ -256,11 +269,6 @@ class ActionFragment : Fragment() {
                 .into(holder.image)
 
             holder.image.startAnimation(holder.animFadeOut)
-
-            if (position == currentAsana) {
-                myPageHolder = myPageHashMap[position]!!
-                isDoAnimationProgressItem(isPlay)
-            }
 
         }
     }
