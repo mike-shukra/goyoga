@@ -19,29 +19,26 @@ class ActionViewModel : ViewModel(), CoroutineScope {
     private lateinit var actionState: ActionState
     val userData: MutableLiveData<UserData> = MutableLiveData()
     val go: MutableLiveData<Boolean> = MutableLiveData()
-    val isPlay: MutableLiveData<Boolean> = MutableLiveData()
     val asanas: MutableLiveData<List<Asana>> = MutableLiveData()
     private val dbDao = DataBase.db.getDBDao()
     private lateinit var asanasList: List<Asana>
     private var time: Int = 0
-    var isPause: Boolean = false
+    private var isPause: Boolean = false
 
     fun setTime(t: Int) {
         time = t
-//        Log.d(LOG_TAG, "setTime - time: $time, isPause: $isPause")
+        Log.d(LOG_TAG, "setTime - time: $time, isPause: $isPause")
     }
 
     fun setIsPause(flag: Boolean) {
-        isPlay.postValue(false)
         launch {
             delay(150)
-//            Log.d(LOG_TAG, "setIsPause - time: $time, isPause: $isPause")
+            Log.d(LOG_TAG, "setIsPause - time: $time, isPause: $isPause")
             isPause = flag
         }
     }
 
     fun waitAsana() {
-        isPlay.postValue(true)
         launch {
             play()
         }
@@ -51,7 +48,7 @@ class ActionViewModel : ViewModel(), CoroutineScope {
         while (true) {
             while (time > 0) {
                 delay(100)
-//                Log.d(LOG_TAG, "play - time: $time")
+                Log.d(LOG_TAG, "play - time: $time")
                 time--
             }
             go.postValue(true)
@@ -62,13 +59,13 @@ class ActionViewModel : ViewModel(), CoroutineScope {
 
     private suspend fun pauseIfIsPause(){
         while (true){
-//            Log.d(LOG_TAG, "pauseIfIsPause - true isPause: $isPause time: $time")
+            Log.d(LOG_TAG, "pauseIfIsPause - true isPause: $isPause time: $time")
             if (isPause) {
                     delay(100)
-//                    Log.d(LOG_TAG, "pauseIfIsPause - isPause: $isPause time: $time")
+                    Log.d(LOG_TAG, "pauseIfIsPause - isPause: $isPause time: $time")
             }
             else {
-//                Log.d(LOG_TAG, "pauseIfIsPause - return isPause: $isPause time: $time")
+                Log.d(LOG_TAG, "pauseIfIsPause - return isPause: $isPause time: $time")
                 return
             }
         }
