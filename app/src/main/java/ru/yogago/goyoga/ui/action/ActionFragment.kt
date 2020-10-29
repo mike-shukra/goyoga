@@ -41,8 +41,8 @@ class ActionFragment : Fragment() {
     private var myTTS: TextToSpeech? = null
     private val ttsCheckCode = 0
     private lateinit var asanaList: List<Asana>
-    private val myPageHashMap = hashMapOf<Int, PagerViewHolder>()
     private var currentAsana: Int = 0
+    private val myPageHashMap = hashMapOf<Int, PagerViewHolder>()
     private lateinit var myPageHolder: PagerViewHolder
 
 
@@ -101,7 +101,6 @@ class ActionFragment : Fragment() {
             }
         }
 
-        // Instantiate a ViewPager2 and a PagerAdapter.
         viewPager = view.findViewById(R.id.pager)
         viewPager.setPageTransformer(ZoomOutPageTransformer())
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -110,8 +109,14 @@ class ActionFragment : Fragment() {
                 Log.d(LOG_TAG, "ScreenSlidePagerAdapter - onPageSelected position: $position isPlay: $isPlay")
                 actionViewModel.setTime(asanaList[currentAsana].times*10)
                 actionViewModel.setIsPause(false)
-                myPageHolder = myPageHashMap[position]!!
-                isDoAnimationProgressItem(isPlay)
+
+
+                myPageHashMap[position]?.let {
+                    myPageHolder = myPageHashMap[position]!!
+                    isDoAnimationProgressItem(isPlay)
+                }
+
+
             }
         })
 
@@ -126,20 +131,14 @@ class ActionFragment : Fragment() {
 
         actionViewModel.asanas.observe(viewLifecycleOwner, {
             asanaList = it
-
         })
 
         actionViewModel.userData.observe(viewLifecycleOwner, {
             count = it.allCount
-
-            // The pager adapter, which provides the pages to the view pager widget.
             val pagerAdapter = ScreenSlidePagerAdapter()
             viewPager.adapter = pagerAdapter
-
             viewPager.setCurrentItem(currentAsana, false)
-
             if (isPlay) isDoAnimationProgressItem(true)
-
         })
 
         actionViewModel.loadData()
@@ -213,10 +212,14 @@ class ActionFragment : Fragment() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PagerViewHolder {
+            Log.d(LOG_TAG, "onCreateViewHolder - parent: ${parent.hashCode()} viewType: $viewType")
             return PagerViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.page_action, parent, false))
         }
 
         override fun onBindViewHolder(holder: PagerViewHolder, position: Int) {
+            myPageHashMap[position] = holder
+            Log.d(LOG_TAG, "onBindViewHolder - position: $position holder: ${holder.hashCode()}")
+
             holder.title.text = if (isRussianLanguage) asanaList[position].name else asanaList[position].eng
             val descriptionText = if (isRussianLanguage) asanaList[position].description else asanaList[position].description_en
             holder.description.text = descriptionText
@@ -254,8 +257,10 @@ class ActionFragment : Fragment() {
 
             holder.image.startAnimation(holder.animFadeOut)
 
-            myPageHashMap[position] = holder
-            Log.d(LOG_TAG, "onBindViewHolder - position: $position holder: ${holder.hashCode()}")
+            if (position == currentAsana) {
+                myPageHolder = myPageHashMap[position]!!
+                isDoAnimationProgressItem(isPlay)
+            }
 
         }
     }
