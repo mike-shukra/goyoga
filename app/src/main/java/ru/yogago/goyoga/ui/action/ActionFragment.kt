@@ -124,13 +124,10 @@ class ActionFragment : Fragment() {
         })
 
         actionViewModel.go.observe(viewLifecycleOwner, {
-            currentAsana++
-            viewPager.setCurrentItem(currentAsana, false)
+            sp.play(mSp, 1F, 1F, 1, 0, 1F)
+            viewPager.setCurrentItem(currentAsana + 1, false)
             isDoAnimationProgressItem(isPlay)
         })
-
-        //            progressBarAll.setProgress(1000, true)
-        //            buttonStart.isChecked = !it
 
         actionViewModel.asanas.observe(viewLifecycleOwner, {
             asanaList = it
