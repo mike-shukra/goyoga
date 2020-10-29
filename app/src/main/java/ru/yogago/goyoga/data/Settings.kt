@@ -8,5 +8,6 @@ data class Settings (
     @PrimaryKey val id: Long = 0,
     val language: String = "",
     val proportionately: Float = 1F,
-    val addTime: Int = 0
+    val addTime: Int = 0,
+    val isSpeakAsanaName: Boolean = false
 )
