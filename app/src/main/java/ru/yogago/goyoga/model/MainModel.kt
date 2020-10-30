@@ -117,7 +117,7 @@ class MainModel: CoroutineScope {
 
     private suspend fun createData(level: String, knee: String, loins: String, neck: String){
         return withContext(TokenProvider.coroutineContext) {
-            dbDao.insertActionState(ActionState(currentId = 1))
+            dbDao.insertActionState(ActionState())
             val requestMessageCreate = service.createAsync(
                 level = level,
                 knee = knee,
