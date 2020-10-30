@@ -18,6 +18,8 @@ class ActionViewModel : ViewModel(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
     private lateinit var data: Data
+    val currentAsana: MutableLiveData<Int> = MutableLiveData()
+    val isHolder: MutableLiveData<Boolean> = MutableLiveData()
     val go: MutableLiveData<Boolean> = MutableLiveData()
     val mData: MutableLiveData<Data> = MutableLiveData()
     private val dbDao = DataBase.db.getDBDao()
