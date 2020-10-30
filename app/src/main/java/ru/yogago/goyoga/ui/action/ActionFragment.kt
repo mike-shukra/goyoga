@@ -85,10 +85,7 @@ class ActionFragment : Fragment() {
 
         buttonSound.setOnCheckedChangeListener { compoundButton, b ->
             compoundButton.startAnimation(animForButtonStart)
-            if (b) {
-                myTTS?.stop()
-                myTTS?.shutdown()
-            }
+            if (b) myTTS?.stop()
         }
 
         buttonStart.setOnCheckedChangeListener { compoundButton, b ->
@@ -102,7 +99,6 @@ class ActionFragment : Fragment() {
             }
             if (!b) {
                 myTTS?.stop()
-                myTTS?.shutdown()
                 actionViewModel.setIsPause(true)
                 actionViewModel.cancelBackgroundWork()
                 viewPager.setCurrentItem(currentAsana, false)
