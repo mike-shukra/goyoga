@@ -267,25 +267,25 @@
             android:padding="8dp">
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="36dp"
+                android:layout_height="56dp"
                 android:layout_margin="4dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_weight="10"
+                android:gravity="center"
                 android:orientation="vertical"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:src="@drawable/logo"
+                    android:layout_width="86dp"
+                    android:layout_height="86dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/logo"
                     android:contentDescription="@string/icon"
                     android:adjustViewBounds="true"
                     android:scaleType="centerCrop"
-                    android:scaleX="2"
-                    android:scaleY="2"
                      />
 
 

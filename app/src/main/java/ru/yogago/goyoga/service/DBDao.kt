@@ -65,6 +65,9 @@ interface DBDao {
     @Query("UPDATE settings SET language = :language WHERE id = 0")
     fun updateSettingsLanguage(language: String): Int
 
+    @Query("UPDATE settings SET isSpeakAsanaName = :isSpeakAsanaName WHERE id = 0")
+    fun updateSettingsIsSpeakAsanaName(isSpeakAsanaName: Boolean): Int
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertPurchase(purchase: PurchaseItem): Long
 

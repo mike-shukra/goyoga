@@ -71,6 +71,8 @@
     <string name="sec">сек.</string>
     <string name="times">раз</string>
     <string name="time_control_head">Контроль времени</string>
+    <string name="training_head">Тренировка</string>
+    <string name="switch_is_name_talk">Озвучивать название асаны</string>
 
 
 </resources>

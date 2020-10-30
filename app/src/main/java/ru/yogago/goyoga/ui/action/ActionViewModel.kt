@@ -84,7 +84,7 @@ class ActionViewModel : ViewModel(), CoroutineScope {
         val userData: UserData? = loadDataFromDB()
         val aState: ActionState? = dbDao.getActionState()
         Log.d(LOG_TAG, "ActionViewModel - loadActionStateFromDB aState: $aState")
-        data = Data(asanas = asanasList, userData = userData, actionState = aState)
+        data = Data(asanas = asanasList, userData = userData, actionState = aState, settings = settings)
         mData.postValue(data)
     }
 

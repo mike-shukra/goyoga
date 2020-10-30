@@ -23,11 +23,8 @@ import com.yandex.mobile.ads.AdRequest
 import com.yandex.mobile.ads.AdSize
 import com.yandex.mobile.ads.AdView
 import ru.yogago.goyoga.R
-import ru.yogago.goyoga.data.ActionState
-import ru.yogago.goyoga.data.AppConstants
+import ru.yogago.goyoga.data.*
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
-import ru.yogago.goyoga.data.Asana
-import ru.yogago.goyoga.data.BillingState
 import ru.yogago.goyoga.service.OkHttpClientFactory
 import ru.yogago.goyoga.service.StickyBannerEventListener
 import java.util.*
@@ -50,6 +47,7 @@ class ActionFragment : Fragment() {
     private var animatorItemCurrentTime: Long = 0
     private lateinit var buttonStart: ToggleButton
     private lateinit var buttonSound: ToggleButton
+    private var settings: Settings? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,7 +85,10 @@ class ActionFragment : Fragment() {
 
         buttonSound.setOnCheckedChangeListener { compoundButton, b ->
             compoundButton.startAnimation(animForButtonStart)
-            if (b) myTTS?.stop()
+            if (b) {
+                myTTS?.stop()
+                myTTS?.shutdown()
+            }
         }
 
         buttonStart.setOnCheckedChangeListener { compoundButton, b ->
@@ -101,6 +102,7 @@ class ActionFragment : Fragment() {
             }
             if (!b) {
                 myTTS?.stop()
+                myTTS?.shutdown()
                 actionViewModel.setIsPause(true)
                 actionViewModel.cancelBackgroundWork()
                 viewPager.setCurrentItem(currentAsana, false)
@@ -143,6 +145,7 @@ class ActionFragment : Fragment() {
             viewPager.adapter = pagerAdapter
             viewPager.setCurrentItem(currentAsana, false)
             if (isPlay) isDoAnimationProgressItem(true)
+            settings = it.settings
         })
 
         actionViewModel.loadData()
@@ -152,7 +155,7 @@ class ActionFragment : Fragment() {
         Log.d(LOG_TAG, "isDoAnimationProgressItem - flag: $flag")
         myPageHolder?.animatorForProgressItem?.let { animator ->
             if (flag) {
-                animator.duration = asanaList[currentAsana].times * 1000.toLong()
+                animator.duration = asanaList[currentAsana].times * 1000.toLong() //java.lang.ArrayIndexOutOfBoundsException: length=43; index=-1
                 animator.currentPlayTime = animatorItemCurrentTime
                 animator.doOnStart {
                     textToSpeech()
@@ -177,9 +180,17 @@ class ActionFragment : Fragment() {
     }
     private fun textToSpeech() {
         if (!buttonSound.isChecked) {
+            var name = ""
+            var eng = ""
+            settings?.let {
+                if (it.isSpeakAsanaName) {
+                    name = asanaList[currentAsana].name + ". "
+                    eng = asanaList[currentAsana].eng + ". "
+                }
+            }
             val descriptionText =
-                if (isRussianLanguage) asanaList[currentAsana].name + ". " + asanaList[currentAsana].description
-                else asanaList[currentAsana].eng + ". " + asanaList[currentAsana].description_en
+                if (isRussianLanguage) name + asanaList[currentAsana].description
+                else eng + asanaList[currentAsana].description_en
             myTTS?.speak(
                 descriptionText,
                 TextToSpeech.QUEUE_FLUSH,
