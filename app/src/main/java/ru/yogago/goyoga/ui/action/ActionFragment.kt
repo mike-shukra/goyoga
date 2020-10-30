@@ -125,8 +125,15 @@ class ActionFragment : Fragment() {
             })
 
             actionViewModel.go.observe(viewLifecycleOwner, {
-                sp.play(mSp, 1F, 1F, 1, 0, 1F)
-                actionViewModel.mCurrentAsana.postValue((currentAsana + 1))
+                Log.d(LOG_TAG, "ActionFragment - onViewCreated - go currentAsana: $currentAsana asanaList.size: ${asanaList.size}" )
+                if  (currentAsana == (asanaList.size - 1)) {
+                    Log.d(LOG_TAG, "ActionFragment - onViewCreated - go currentAsana: if  (currentAsana == asanaList.size" )
+                    buttonStart.isChecked = false
+                }
+                else  {
+                    actionViewModel.mCurrentAsana.postValue((currentAsana + 1))
+                    sp.play(mSp, 1F, 1F, 1, 0, 1F)
+                }
             })
 
         })
@@ -164,11 +171,6 @@ class ActionFragment : Fragment() {
                 if (flag) {
                     animator.duration = asanaList[currentAsana].times * 1000.toLong() //java.lang.ArrayIndexOutOfBoundsException: length=43; index=-1
                     animator.start()
-                    if (currentAsana + 1 == count) {
-                        animator.doOnEnd {
-                            buttonStart.isChecked = false
-                        }
-                    }
                 } else {
                     animator.cancel()
                 }
