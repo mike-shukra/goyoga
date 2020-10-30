@@ -71,5 +71,7 @@
     <string name="sec">sec.</string>
     <string name="times">times</string>
     <string name="time_control_head">Time control</string>
+    <string name="training_head">Training</string>
+    <string name="switch_is_name_talk">Voice the name of the asana</string>
 
 </resources>

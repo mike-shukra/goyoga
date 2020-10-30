@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineScope
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 import ru.yogago.goyoga.MainActivity
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
+import ru.yogago.goyoga.data.Settings
 import ru.yogago.goyoga.service.DataBase
 import java.util.*
 import kotlin.coroutines.CoroutineContext
@@ -28,7 +30,7 @@ class SettingsFragment : Fragment(), CoroutineScope {
     private val job = SupervisorJob()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
-    private val language: MutableLiveData<String> = MutableLiveData()
+    private val settings: MutableLiveData<Settings> = MutableLiveData()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,6 +47,13 @@ class SettingsFragment : Fragment(), CoroutineScope {
         val checkBoxEnglish = view.findViewById<RadioButton>(R.id.checkBoxEnglish)
         val checkBoxRussian = view.findViewById<RadioButton>(R.id.checkBoxRussian)
         val restartButton = view.findViewById<Button>(R.id.restartButton)
+        val switchIsSpeakAsanaName = view.findViewById<SwitchCompat>(R.id.switchIsSpeakAsanaName)
+
+        switchIsSpeakAsanaName.setOnCheckedChangeListener { _, b ->
+            launch {
+                DataBase.db.getDBDao().updateSettingsIsSpeakAsanaName(b)
+            }
+        }
 
         restartButton.setOnClickListener {
             launch {
@@ -68,15 +77,8 @@ class SettingsFragment : Fragment(), CoroutineScope {
 
         }
 
-        launch {
-            val settings = DataBase.db.getDBDao().getSettings()
-            settings?.language.let {
-                language.postValue(it)
-            }
-        }
-
-        language.observe(viewLifecycleOwner, {
-            when (it) {
+        settings.observe(viewLifecycleOwner, {
+            when (it.language) {
                 "Russian" -> {
                     checkBoxRussian.isChecked = true
                 }
@@ -84,7 +86,7 @@ class SettingsFragment : Fragment(), CoroutineScope {
                     checkBoxEnglish.isChecked = true
                 }
             }
-
+            switchIsSpeakAsanaName.isChecked = it.isSpeakAsanaName
         })
 
         languageRadioGroup.setOnCheckedChangeListener { radioGroup, i ->
@@ -98,6 +100,11 @@ class SettingsFragment : Fragment(), CoroutineScope {
             }
         }
 
+        launch {
+            val settingsData = DataBase.db.getDBDao().getSettings()
+            settingsData?.let {
+                settings.postValue(it)
+            }
+        }
     }
-
 }
