@@ -31,6 +31,7 @@ import java.util.*
 
 
 class ActionFragment : Fragment() {
+    private var isInstanceState: Boolean = false
     private val isRussianLanguage: Boolean = Locale.getDefault().language == "ru"
     private lateinit var viewPager: ViewPager2
     private lateinit var actionViewModel: ActionViewModel
@@ -79,7 +80,11 @@ class ActionFragment : Fragment() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 Log.d(LOG_TAG, "ActionFragment - onViewCreated - registerOnPageChangeCallback - onPageSelected position: $position buttonStart.isChecked: ${buttonStart.isChecked}")
-                actionViewModel.currentAsana.postValue(position)
+                actionViewModel.mCurrentAsana.postValue(position)
+                if (!isInstanceState) {
+                    actionViewModel.mCurrentAsana.postValue(currentAsana)
+                    isInstanceState = true
+                }
             }
         })
 
@@ -92,12 +97,13 @@ class ActionFragment : Fragment() {
             val pagerAdapter = ScreenSlidePagerAdapter()
             viewPager.adapter = pagerAdapter
 
-            actionViewModel.currentAsana.observe(viewLifecycleOwner, { currentA ->
+            actionViewModel.mCurrentAsana.observe(viewLifecycleOwner, { currentA ->
                 Log.d(LOG_TAG, "ActionFragment - onViewCreated - currentAsana.observe it: $currentA")
 
-                sp.play(mSp, 1F, 1F, 1, 0, 1F)
 
                 currentAsana = currentA
+                actionViewModel.saveActionState(ActionState(currentId = currentAsana))
+
                 viewPager.setCurrentItem(currentAsana, false)
 
                 actionViewModel.setTime(asanaList[currentAsana].times*10)
@@ -119,8 +125,8 @@ class ActionFragment : Fragment() {
             })
 
             actionViewModel.go.observe(viewLifecycleOwner, {
-                actionViewModel.currentAsana.postValue((currentAsana + 1))
-                actionViewModel.saveActionState(ActionState(currentId = (currentAsana + 1)))
+                sp.play(mSp, 1F, 1F, 1, 0, 1F)
+                actionViewModel.mCurrentAsana.postValue((currentAsana + 1))
             })
 
         })
@@ -146,7 +152,7 @@ class ActionFragment : Fragment() {
 
         buttonStart.setOnCheckedChangeListener { compoundButton, _ ->
             compoundButton.startAnimation(animForButtonStart)
-            actionViewModel.currentAsana.postValue(currentAsana)
+            actionViewModel.mCurrentAsana.postValue(currentAsana)
         }
 
     }
