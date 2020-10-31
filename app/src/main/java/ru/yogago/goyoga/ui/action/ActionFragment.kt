@@ -69,6 +69,11 @@ class ActionFragment : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_action, container, false)
 
+        buttonStart = view.findViewById(R.id.buttonStart)
+        buttonSound = view.findViewById(R.id.buttonSound)
+
+        val animForButtonStart = AnimationUtils.loadAnimation(context, R.anim.button_anim)
+
         val sp = SoundPool.Builder()
             .setMaxStreams(5)
             .build()
@@ -79,36 +84,42 @@ class ActionFragment : Fragment() {
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                Log.d(LOG_TAG, "onPageSelected position: $position buttonStart.isChecked: ${buttonStart.isChecked} isInstanceState: $isInstanceState currentAsana: $currentAsana")
-                actionViewModel.mCurrentAsana.postValue(position)
+                Log.d(LOG_TAG, "ActionFragment - onCreateView - registerOnPageChangeCallback - onPageSelected position: $position buttonStart.isChecked: ${buttonStart.isChecked}")
                 if (!isInstanceState) {
+                    Log.d(LOG_TAG, "ActionFragment - isInstanceState")
                     actionViewModel.mCurrentAsana.postValue(currentAsana)
-                    isInstanceState = true
+                } else {
+                    currentAsana = position
+                    actionViewModel.saveActionState(ActionState(currentId = position))
+                    actionViewModel.mCurrentAsana.postValue(currentAsana)
                 }
+                isInstanceState = true
             }
         })
 
-        actionViewModel.mData.observe(viewLifecycleOwner, { data ->
-            actionState = data.actionState!!
+        actionViewModel.mData.observe(viewLifecycleOwner, {
+            actionState = it.actionState!!
             currentAsana = actionState.currentId
-            asanaList = data.asanas!!
-            settings = data.settings
-            count = data.userData?.allCount!!
+            asanaList = it.asanas!!
+            settings = it.settings
+            count = it.userData?.allCount!!
             val pagerAdapter = ScreenSlidePagerAdapter()
             viewPager.adapter = pagerAdapter
 
-            actionViewModel.mCurrentAsana.observe(viewLifecycleOwner, {
-                Log.d(LOG_TAG, "ActionFragment - onViewCreated - currentAsana.observe it: $it")
+            actionViewModel.mCurrentAsana.observe(viewLifecycleOwner, { currentA ->
+                Log.d(LOG_TAG, "ActionFragment - onCreateView - currentAsana.observe it: $currentA")
 
-                actionViewModel.saveActionState(ActionState(currentId = it))
-                Log.d(LOG_TAG, "ActionFragment - onViewCreated - saveActionState currentId: $it")
 
-                viewPager.setCurrentItem(it, false)
+                currentAsana = currentA
+                actionViewModel.saveActionState(ActionState(currentId = currentAsana))
 
-                actionViewModel.setTime(asanaList[it].times*10)
+                viewPager.setCurrentItem(currentAsana, false)
+
+                actionViewModel.setTime(asanaList[currentAsana].times*10)
 
                 if (buttonStart.isChecked) {
                     textToSpeech()
+                    actionViewModel.cancelBackgroundWork()
                     isDoAnimationProgressItem(true)
                     actionViewModel.waitAsana()
                 } else {
@@ -120,16 +131,28 @@ class ActionFragment : Fragment() {
             })
 
             actionViewModel.go.observe(viewLifecycleOwner, {
-                Log.d(LOG_TAG, "ActionFragment - onViewCreated - go currentAsana: $currentAsana i: $it" )
+                Log.d(LOG_TAG, "ActionFragment - onCreateView - go currentAsana: $currentAsana asanaList.size: ${asanaList.size}" )
                 if  (currentAsana == (asanaList.size - 1)) {
-                    Log.d(LOG_TAG, "ActionFragment - onViewCreated - go currentAsana: if  (currentAsana == asanaList.size" )
+                    Log.d(LOG_TAG, "ActionFragment - onCreateView - go currentAsana: if  (currentAsana == asanaList.size" )
                     buttonStart.isChecked = false
                 }
                 else  {
-                    actionViewModel.mCurrentAsana.postValue(it)
+                    actionViewModel.mCurrentAsana.postValue((currentAsana + 1))
                     sp.play(mSp, 1F, 1F, 1, 0, 1F)
                 }
             })
+
+            buttonSound.setOnCheckedChangeListener { compoundButton, b ->
+                compoundButton.startAnimation(animForButtonStart)
+                if (b) myTTS?.stop()
+            }
+
+            buttonStart.setOnCheckedChangeListener { compoundButton, _ ->
+                compoundButton.startAnimation(animForButtonStart)
+                actionViewModel.mCurrentAsana.postValue(currentAsana)
+                Log.d(LOG_TAG, "ActionFragment - onViewCreated - currentAsana: $currentAsana")
+
+            }
 
         })
 
@@ -138,33 +161,11 @@ class ActionFragment : Fragment() {
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        buttonStart = view.findViewById(R.id.buttonStart)
-        buttonSound = view.findViewById(R.id.buttonSound)
-
-        val animForButtonStart = AnimationUtils.loadAnimation(context, R.anim.button_anim)
-
-
-        buttonSound.setOnCheckedChangeListener { compoundButton, b ->
-            compoundButton.startAnimation(animForButtonStart)
-            if (b) myTTS?.stop()
-        }
-
-        buttonStart.setOnCheckedChangeListener { compoundButton, _ ->
-            compoundButton.startAnimation(animForButtonStart)
-            actionViewModel.mCurrentAsana.postValue(currentAsana)
-        }
-
-    }
-
     private fun isDoAnimationProgressItem(flag: Boolean) {
-        Log.d(LOG_TAG, "ActionFragment - isDoAnimationProgressItem - flag: $flag")
         actionViewModel.isHolder.observe(viewLifecycleOwner, {
             myPageHashMap[currentAsana]?.animatorForProgressItem?.let { animator ->
                 if (flag) {
-                    animator.duration = asanaList[currentAsana].times * 1000.toLong()
+                    animator.duration = asanaList[currentAsana].times * 1000.toLong() //java.lang.ArrayIndexOutOfBoundsException: length=43; index=-1
                     animator.start()
                 } else {
                     animator.cancel()
@@ -237,15 +238,12 @@ class ActionFragment : Fragment() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PagerViewHolder {
-            Log.d(LOG_TAG, "ActionFragment - onCreateViewHolder - parent: ${parent.hashCode()} viewType: $viewType")
             return PagerViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.page_action, parent, false))
         }
 
         override fun onBindViewHolder(holder: PagerViewHolder, position: Int) {
             myPageHashMap[position] = holder
             actionViewModel.isHolder.postValue(true)
-
-            Log.d(LOG_TAG, "ActionFragment - onBindViewHolder - position: $position holder: ${holder.hashCode()}")
 
             holder.title.text = if (isRussianLanguage) asanaList[position].name else asanaList[position].eng
             val descriptionText = if (isRussianLanguage) asanaList[position].description else asanaList[position].description_en
