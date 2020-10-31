@@ -20,56 +20,28 @@ class ActionViewModel : ViewModel(), CoroutineScope {
     private lateinit var data: Data
     val mCurrentAsana: MutableLiveData<Int> = MutableLiveData()
     val isHolder: MutableLiveData<Boolean> = MutableLiveData()
-    val go: MutableLiveData<Boolean> = MutableLiveData()
+    val go: MutableLiveData<Int> = MutableLiveData()
     val mData: MutableLiveData<Data> = MutableLiveData()
     private val dbDao = DataBase.db.getDBDao()
     private lateinit var asanasList: List<Asana>
     private var time: Int = 0
-    private var isPause: Boolean = false
 
     fun setTime(t: Int) {
         time = t
-        Log.d(LOG_TAG, "setTime - time: $time, isPause: $isPause")
-    }
-
-    fun setIsPause(flag: Boolean) {
-        launch {
-            delay(150)
-            Log.d(LOG_TAG, "setIsPause - time: $time, isPause: $isPause")
-            isPause = flag
-        }
+        Log.d(LOG_TAG, "ActionViewModel - setTime - time: $time")
     }
 
     fun waitAsana() {
+        Log.d(LOG_TAG, "ActionViewModel - waitAsana this: ${this.hashCode()}")
         launch {
-            play()
-        }
-    }
-
-    private suspend fun play(){
-        while (true) {
+            Log.d(LOG_TAG, "ActionViewModel - waitAsana launch this: ${this.hashCode()}")
             while (time > 0) {
                 delay(100)
-                Log.d(LOG_TAG, "play - time: $time")
+                Log.d(LOG_TAG, "ActionViewModel - play - time: $time")
                 time--
             }
-            go.postValue(true)
-            isPause = true
-            pauseIfIsPause()
-        }
-    }
-
-    private suspend fun pauseIfIsPause(){
-        while (true){
-            Log.d(LOG_TAG, "pauseIfIsPause - true isPause: $isPause time: $time")
-            if (isPause) {
-                    delay(100)
-                    Log.d(LOG_TAG, "pauseIfIsPause - isPause: $isPause time: $time")
-            }
-            else {
-                Log.d(LOG_TAG, "pauseIfIsPause - return isPause: $isPause time: $time")
-                return
-            }
+            go.postValue((mCurrentAsana.value!! + 1))
+            Log.d(LOG_TAG, "ActionViewModel - play go")
         }
     }
 
@@ -83,7 +55,7 @@ class ActionViewModel : ViewModel(), CoroutineScope {
         asanasList.forEach {
             it.times = it.times * proportionately + addTime
         }
-        val userData: UserData? = loadDataFromDB()
+        val userData: UserData? = loadUserDataFromDB()
         val aState: ActionState? = dbDao.getActionState()
         Log.d(LOG_TAG, "ActionViewModel - loadActionStateFromDB aState: $aState")
         data = Data(asanas = asanasList, userData = userData, actionState = aState, settings = settings)
@@ -96,7 +68,7 @@ class ActionViewModel : ViewModel(), CoroutineScope {
         return asanas
     }
 
-    private fun loadDataFromDB(): UserData {
+    private fun loadUserDataFromDB(): UserData {
         val userData = dbDao.getUserData()
         Log.d(LOG_TAG, "ActionViewModel - loadDataFromDB userData: $userData")
         return userData
@@ -110,7 +82,6 @@ class ActionViewModel : ViewModel(), CoroutineScope {
     }
 
     fun cancelBackgroundWork() {
-        isPause = true
         coroutineContext.cancelChildren()
         Log.d(LOG_TAG, "ActionViewModel - cancelBackgroundWork this: ${this.hashCode()}")
     }
