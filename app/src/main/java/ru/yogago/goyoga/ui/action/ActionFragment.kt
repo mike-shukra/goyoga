@@ -13,7 +13,6 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.squareup.picasso.OkHttp3Downloader
@@ -48,12 +47,14 @@ class ActionFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        actionViewModel = ViewModelProvider(this).get(ActionViewModel::class.java)
-        arguments?.let {
-            currentAsana = (it.getLong("id").toInt() - 1)
-            it.remove("id")
-            actionViewModel.saveActionState(ActionState(currentId = currentAsana))
-            Log.d(LOG_TAG, "ActionFragment - onCreate - arguments?.let - currentAsana: $currentAsana")
+        actionViewModel = ActionViewModel()
+        arguments?.getLong("id")?.let {
+            if (it != 0L) {
+                currentAsana = (it.toInt() - 1)
+                actionViewModel.saveActionState(ActionState(currentId = currentAsana))
+                Log.d(LOG_TAG, "ActionFragment - onCreate - arguments?.let - currentAsana: $currentAsana")
+            }
+            arguments?.remove("id")
         }
         val checkTTSIntent = Intent()
         checkTTSIntent.action = TextToSpeech.Engine.ACTION_CHECK_TTS_DATA
@@ -78,7 +79,7 @@ class ActionFragment : Fragment() {
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                Log.d(LOG_TAG, "ActionFragment - onViewCreated - registerOnPageChangeCallback - onPageSelected position: $position buttonStart.isChecked: ${buttonStart.isChecked}")
+                Log.d(LOG_TAG, "onPageSelected position: $position buttonStart.isChecked: ${buttonStart.isChecked} isInstanceState: $isInstanceState currentAsana: $currentAsana")
                 actionViewModel.mCurrentAsana.postValue(position)
                 if (!isInstanceState) {
                     actionViewModel.mCurrentAsana.postValue(currentAsana)
@@ -87,36 +88,31 @@ class ActionFragment : Fragment() {
             }
         })
 
-        actionViewModel.mData.observe(viewLifecycleOwner, {
-            actionState = it.actionState!!
+        actionViewModel.mData.observe(viewLifecycleOwner, { data ->
+            actionState = data.actionState!!
             currentAsana = actionState.currentId
-            asanaList = it.asanas!!
-            settings = it.settings
-            count = it.userData?.allCount!!
+            asanaList = data.asanas!!
+            settings = data.settings
+            count = data.userData?.allCount!!
             val pagerAdapter = ScreenSlidePagerAdapter()
             viewPager.adapter = pagerAdapter
 
-            actionViewModel.mCurrentAsana.observe(viewLifecycleOwner, { currentA ->
-                Log.d(LOG_TAG, "ActionFragment - onViewCreated - currentAsana.observe it: $currentA")
+            actionViewModel.mCurrentAsana.observe(viewLifecycleOwner, {
+                Log.d(LOG_TAG, "ActionFragment - onViewCreated - currentAsana.observe it: $it")
 
+                actionViewModel.saveActionState(ActionState(currentId = it))
+                Log.d(LOG_TAG, "ActionFragment - onViewCreated - saveActionState currentId: $it")
 
-                currentAsana = currentA
-                actionViewModel.saveActionState(ActionState(currentId = currentAsana))
+                viewPager.setCurrentItem(it, false)
 
-                viewPager.setCurrentItem(currentAsana, false)
-
-                actionViewModel.setTime(asanaList[currentAsana].times*10)
-                actionViewModel.setIsPause(false)
+                actionViewModel.setTime(asanaList[it].times*10)
 
                 if (buttonStart.isChecked) {
                     textToSpeech()
-                    actionViewModel.cancelBackgroundWork()
-                    actionViewModel.setIsPause(false)
                     isDoAnimationProgressItem(true)
                     actionViewModel.waitAsana()
                 } else {
                     myTTS?.stop()
-                    actionViewModel.setIsPause(true)
                     actionViewModel.cancelBackgroundWork()
                     isDoAnimationProgressItem(false)
                 }
@@ -124,13 +120,13 @@ class ActionFragment : Fragment() {
             })
 
             actionViewModel.go.observe(viewLifecycleOwner, {
-                Log.d(LOG_TAG, "ActionFragment - onViewCreated - go currentAsana: $currentAsana asanaList.size: ${asanaList.size}" )
+                Log.d(LOG_TAG, "ActionFragment - onViewCreated - go currentAsana: $currentAsana i: $it" )
                 if  (currentAsana == (asanaList.size - 1)) {
                     Log.d(LOG_TAG, "ActionFragment - onViewCreated - go currentAsana: if  (currentAsana == asanaList.size" )
                     buttonStart.isChecked = false
                 }
                 else  {
-                    actionViewModel.mCurrentAsana.postValue((currentAsana + 1))
+                    actionViewModel.mCurrentAsana.postValue(it)
                     sp.play(mSp, 1F, 1F, 1, 0, 1F)
                 }
             })
@@ -168,7 +164,7 @@ class ActionFragment : Fragment() {
         actionViewModel.isHolder.observe(viewLifecycleOwner, {
             myPageHashMap[currentAsana]?.animatorForProgressItem?.let { animator ->
                 if (flag) {
-                    animator.duration = asanaList[currentAsana].times * 1000.toLong() //java.lang.ArrayIndexOutOfBoundsException: length=43; index=-1
+                    animator.duration = asanaList[currentAsana].times * 1000.toLong()
                     animator.start()
                 } else {
                     animator.cancel()
