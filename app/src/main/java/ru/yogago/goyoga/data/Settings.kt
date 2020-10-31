@@ -9,5 +9,5 @@ data class Settings (
     val language: String = "",
     val proportionately: Float = 1F,
     val addTime: Int = 0,
-    val isSpeakAsanaName: Boolean = false
+    val isSpeakAsanaName: Boolean = true
 )
