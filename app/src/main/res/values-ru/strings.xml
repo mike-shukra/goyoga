@@ -38,8 +38,8 @@
     <string name="months">месяцев</string>
     <string name="year">год</string>
     <string name="years">лет</string>
-    <string name="subscribe">Подсаться</string>
-    <string name="manage_subscription_label">Управлять подпиской</string>
+    <string name="subscribe">Подписаться</string>
+    <string name="manage_subscription_label">Управлять подписками</string>
     <string name="google_play_subscriptions">Подписки Google Play</string>
     <string name="manage_subscription_message">Управлять подписками в Google Play</string>
     <string name="info_head">Информация</string>
