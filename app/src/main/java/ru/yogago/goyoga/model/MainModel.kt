@@ -83,7 +83,7 @@ class MainModel: CoroutineScope {
         Log.d(LOG_TAG, "MainModel - isTokenDB: $response")
         return if (response != null) {
             TokenProvider.token = response
-            TokenProvider.cookieString = "id_user=${TokenProvider.token.userId}; code_user=${TokenProvider.token.token}"
+            ApiFactory.createApi()
             true
         } else {
             Log.d(LOG_TAG, "MainModel - isTokenDB: no token")
@@ -105,24 +105,26 @@ class MainModel: CoroutineScope {
         }
     }
 
-    fun create(level: String, knee: String, loins: String, neck: String) {
+    fun create(level: String, knee: String, loins: String, neck: String, inverted: String) {
         launch {
             createData(level = level,
                 knee = knee,
                 loins = loins,
-                neck = neck
+                neck = neck,
+                inverted = inverted
             )
         }
     }
 
-    private suspend fun createData(level: String, knee: String, loins: String, neck: String){
+    private suspend fun createData(level: String, knee: String, loins: String, neck: String, inverted: String){
         return withContext(TokenProvider.coroutineContext) {
             dbDao.insertActionState(ActionState())
             val requestMessageCreate = service.createAsync(
                 level = level,
                 knee = knee,
                 loins = loins,
-                neck = neck
+                neck = neck,
+                inverted = inverted
             )
             try {
                 val responseMessage = requestMessageCreate.await()
@@ -159,7 +161,8 @@ class MainModel: CoroutineScope {
                 createData(level = "0",
                     knee = "0",
                     loins = "0",
-                    neck = "0"
+                    neck = "0",
+                    inverted = "0"
                 )
             }
             val settings = dbDao.getSettings()

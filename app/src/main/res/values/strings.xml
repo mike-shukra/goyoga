@@ -89,5 +89,6 @@
     <string name="info_head_finished">When finished, do relaxation techniques</string>
     <string name="info_head_side_group">The algorithm groups asanas on each side</string>
     <string name="info_head_remember">Please remember!</string>
+    <string name="inverted">Inverted</string>
 
 </resources>

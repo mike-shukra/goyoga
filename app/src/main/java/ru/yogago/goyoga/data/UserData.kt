@@ -15,5 +15,6 @@ data class UserData (
     val dangerknee: Int = 0,
     val dangerloins: Int = 0,
     val dangerneck: Int = 0,
+    val inverted: Int = 0,
     val date: String? = null
 )
