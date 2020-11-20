@@ -121,7 +121,7 @@ class ProfileFragment : Fragment() {
         mAdView.loadAd(adRequest)
 
         profileWebButton.setOnClickListener {
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://yoga-go.ru"))
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://yoga-go.ru/KnowlegeBase/yogaTechniques"))
             startActivity(browserIntent)
         }
 
