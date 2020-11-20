@@ -58,6 +58,7 @@ class ProfileFragment : Fragment() {
         val levelSpinner = view.findViewById<Spinner>(R.id.levelSpinner)
         val checkBoxKnee = view.findViewById<CheckBox>(R.id.checkBoxKnee)
         val checkBoxNeck = view.findViewById<CheckBox>(R.id.checkBoxNeck)
+        val checkBoxInverted = view.findViewById<CheckBox>(R.id.checkBoxInverted)
         val checkBoxLoins = view.findViewById<CheckBox>(R.id.checkBoxLoins)
         val loading = view.findViewById<ProgressBar>(R.id.loading)
         val topLayout = view.findViewById<LinearLayout>(R.id.topLayout)
@@ -170,7 +171,8 @@ class ProfileFragment : Fragment() {
                 levelSpinner.selectedItemId.toString(),
                 checkBoxKnee.isChecked,
                 checkBoxLoins.isChecked,
-                checkBoxNeck.isChecked
+                checkBoxNeck.isChecked,
+                checkBoxInverted.isChecked
             )
             profileViewModel.done.observe(viewLifecycleOwner, {
                 if (it) findNavController().navigate(R.id.nav_select)
@@ -196,6 +198,7 @@ class ProfileFragment : Fragment() {
             checkBoxKnee.isChecked = it.dangerknee == 1
             checkBoxNeck.isChecked = it.dangerneck == 1
             checkBoxLoins.isChecked = it.dangerloins == 1
+            checkBoxInverted.isChecked = it.inverted == 1
 
             loading.visibility = View.GONE
 

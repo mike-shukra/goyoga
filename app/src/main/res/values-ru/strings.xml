@@ -89,6 +89,7 @@
     <string name="info_head_finished">По окончании выполните релаксационные техники</string>
     <string name="info_head_side_group">Алгоритм группирует асаны на каждую сторону</string>
     <string name="info_head_remember">Пожалуйста помните!</string>
+    <string name="inverted">Перевёрнутые</string>
 
 
 </resources>

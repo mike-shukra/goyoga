@@ -1,14 +1,17 @@
 package ru.yogago.goyoga.service
 
-import okhttp3.Interceptor
-import okhttp3.JavaNetCookieJar
-import okhttp3.OkHttpClient
+import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import ru.yogago.goyoga.BuildConfig
-import java.net.CookieManager
 import java.util.concurrent.TimeUnit
 
 class OkHttpClientFactory {
+
+    var requestBody: RequestBody = MultipartBody.Builder()
+        .setType(MultipartBody.FORM)
+        .addFormDataPart("id_user", TokenProvider.token?.userId.toString())
+        .addFormDataPart("code_user", TokenProvider.token?.token.toString())
+        .build()
 
     private val authInterceptor = Interceptor {chain->
         val newUrl = chain
@@ -21,7 +24,7 @@ class OkHttpClientFactory {
             .request()
             .newBuilder()
             .url(newUrl)
-            .addHeader("Cookie", TokenProvider.cookieString)
+            .post(requestBody)
             .build()
 
         chain.proceed(newRequest)
@@ -30,8 +33,6 @@ class OkHttpClientFactory {
     private val loggingInterceptor =  HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
-
-    private val cookieJar = JavaNetCookieJar(CookieManager())
 
     private val client =
         if (BuildConfig.DEBUG) {
@@ -42,7 +43,6 @@ class OkHttpClientFactory {
                 .writeTimeout(7, TimeUnit.SECONDS)
                 .addInterceptor(authInterceptor)
                 .addInterceptor(loggingInterceptor)
-                .cookieJar(cookieJar)
                 .build()
         } else {
             OkHttpClient()

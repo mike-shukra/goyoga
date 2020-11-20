@@ -8,7 +8,7 @@ import ru.yogago.goyoga.data.*
 
 interface Api {
 
-    @GET("Api/data")
+    @GET("Api/dataTest")
     fun getDataAsync(): Deferred<Response<Data>>
 
     @FormUrlEncoded
@@ -19,23 +19,25 @@ interface Api {
     ): Deferred<Response<Message>>
 
     @FormUrlEncoded
-    @POST("Api/login")
+    @POST("Api/loginTest")
     fun authAsync(
         @Field("login") login: String,
         @Field("passwd") password: String,
         @Field("level") level: String,
         @Field("knee") knee: String,
         @Field("loins") loins: String,
-        @Field("neck") neck: String
+        @Field("neck") neck: String,
+        @Field("inverted") inverted: String
     ): Deferred<Response<Token>>
 
     @FormUrlEncoded
-    @POST("Api/create")
+    @POST("Api/createTest")
     fun createAsync(
         @Field("level") level: String,
         @Field("knee") knee: String,
         @Field("loins") loins: String,
-        @Field("neck") neck: String
+        @Field("neck") neck: String,
+        @Field("inverted") inverted: String
     ): Deferred<Response<Message>>
 
 }
