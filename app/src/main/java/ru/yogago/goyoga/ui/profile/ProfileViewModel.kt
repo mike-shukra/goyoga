@@ -34,6 +34,10 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         model.loadUserData()
     }
 
+    fun deleteToken() {
+        model.deleteTokenAndUserData()
+    }
+
     fun handleBilling() {
         val onSuccess: (List<Purchase>) -> Unit = { purchases ->
             Log.d(LOG_TAG_BILLING, "ProfileViewModel - MyBilling - handleBilling - purchasesList: $purchases")
