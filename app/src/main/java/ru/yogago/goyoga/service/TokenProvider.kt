@@ -11,13 +11,12 @@ object TokenProvider: CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
     private const val LOG_TAG: String = "myLog"
-    val service = ApiFactory.API
     var token: Token? = null
     lateinit var error: String
 
-    suspend fun getToken(login: String, password: String) : Token{
+    suspend fun getToken(login: String, appToken: String) : Token{
         return withContext(coroutineContext) {
-            val tokenResponse = service.authAsync(login, password, 0.toString(), 0.toString(), 0.toString(), 0.toString(), 0.toString())
+            val tokenResponse = ApiFactory.API.authAsync(login, appToken, 0.toString(), 0.toString(), 0.toString(), 0.toString(), 0.toString())
             try {
                 val response = tokenResponse.await()
                 if (response.isSuccessful) {

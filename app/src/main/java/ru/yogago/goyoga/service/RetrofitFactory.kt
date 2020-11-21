@@ -9,13 +9,7 @@ import ru.yogago.goyoga.BuildConfig
 import java.util.concurrent.TimeUnit
 
 
-class RetrofitFactory{
-
-    var requestBody: RequestBody = MultipartBody.Builder()
-        .setType(MultipartBody.FORM)
-        .addFormDataPart("id_user", TokenProvider.token?.userId.toString())
-        .addFormDataPart("code_user", TokenProvider.token?.token.toString())
-        .build()
+object RetrofitFactory{
 
     private val authInterceptor = Interceptor { chain->
         val newUrl = chain
@@ -28,7 +22,6 @@ class RetrofitFactory{
             .request()
             .newBuilder()
             .url(newUrl)
-            .post(requestBody)
             .build()
 
         chain.proceed(newRequest)
