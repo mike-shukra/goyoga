@@ -19,7 +19,6 @@ class MainModel: CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
     private val dbDao = DataBase.db.getDBDao()
-    private val service = ApiFactory.API
     private lateinit var selectViewModel: SelectViewModel
     private lateinit var profileViewModel: ProfileViewModel
 
@@ -56,7 +55,9 @@ class MainModel: CoroutineScope {
     }
 
     private suspend fun getRemoteData(): Data {
-        val request = service.getDataAsync()
+        val idUser = TokenProvider.token?.userId.toString()
+        val codeUser = TokenProvider.token?.token.toString()
+        val request = ApiFactory.API.getDataAsync(idUser = idUser, codeUser = codeUser)
         try {
             val response = request.await()
             return if(response.isSuccessful) {
@@ -78,30 +79,19 @@ class MainModel: CoroutineScope {
         }
     }
 
-    private fun isTokenDB(): Boolean {
-        val response: Token? = dbDao.getToken()
-        Log.d(LOG_TAG, "MainModel - isTokenDB: $response")
-        return if (response != null) {
-            TokenProvider.token = response
-            ApiFactory.createApi()
+    private suspend fun tryTokenDB(): Boolean {
+        val responseTokenDB: Token? = dbDao.getToken()
+        Log.d(LOG_TAG, "MainModel - isTokenDB: $responseTokenDB")
+        return if (responseTokenDB != null) {
+            TokenProvider.token = responseTokenDB
             true
         } else {
             Log.d(LOG_TAG, "MainModel - isTokenDB: no token")
+            val uniqueID: String = UUID.randomUUID().toString()
+            val token = TokenProvider.getToken(uniqueID, APP_TOKEN)
+            val response = dbDao.insertToken(token)
+            Log.d(LOG_TAG, "MainModel - loadUserData - saveTokenDB response: $response")
             false
-        }
-    }
-
-    private suspend fun registerAnonymousUser(uniqueID: String) {
-        val request = service.registerAnonymousUserAsync(uniqueID, APP_TOKEN)
-        try {
-            val response = request.await()
-            val message = response.body()!!
-            if (message.error == null) {
-                Log.d(LOG_TAG, "MainModel - registerRemote message: $message")
-            }
-        }
-        catch (e: java.lang.Exception){
-            Log.d(LOG_TAG, "MainModel - registerRemote Exception: $e")
         }
     }
 
@@ -117,9 +107,13 @@ class MainModel: CoroutineScope {
     }
 
     private suspend fun createData(level: String, knee: String, loins: String, neck: String, inverted: String){
+        val idUser = TokenProvider.token?.userId.toString()
+        val codeUser = TokenProvider.token?.token.toString()
         return withContext(TokenProvider.coroutineContext) {
             dbDao.insertActionState(ActionState())
-            val requestMessageCreate = service.createAsync(
+            val requestMessageCreate = ApiFactory.API.createAsync(
+                idUser = idUser,
+                codeUser = codeUser,
                 level = level,
                 knee = knee,
                 loins = loins,
@@ -150,15 +144,10 @@ class MainModel: CoroutineScope {
     }
     fun loadUserData() {
         launch {
-            if(!isTokenDB()) {
-                val uniqueID: String = UUID.randomUUID().toString()
-                registerAnonymousUser(uniqueID)
-                val token = TokenProvider.getToken(uniqueID, APP_TOKEN)
-                val response = dbDao.insertToken(token)
-                Log.d(LOG_TAG, "MainModel - loadUserData - saveTokenDB response: $response")
-                isTokenDB()
+            if(!tryTokenDB()) {
                 dbDao.insertSettings(Settings())
-                createData(level = "0",
+                createData(
+                    level = "0",
                     knee = "0",
                     loins = "0",
                     neck = "0",
