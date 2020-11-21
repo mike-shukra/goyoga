@@ -70,6 +70,7 @@
         \nBe careful and good luck!
     </string>
     <string name="wait">Wait</string>
+    <string name="no_auth">Authorized</string>
     <string name="tts_error">Text to speech error</string>
     <string name="ads">ADVERTISING</string>
     <string name="language_head">Language</string>

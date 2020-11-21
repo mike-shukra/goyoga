@@ -95,6 +95,16 @@ class MainModel: CoroutineScope {
         }
     }
 
+    fun deleteTokenAndUserData(){
+        launch {
+            val responseDeleteTokenDB = dbDao.deleteToken()
+            Log.d(LOG_TAG, "MainModel - deleteTokenAndUserData responseDeleteTokenDB: $responseDeleteTokenDB")
+            val responseDeleteUserData = dbDao.deleteUserData()
+            Log.d(LOG_TAG, "MainModel - deleteTokenAndUserData responseDeleteUserData: $responseDeleteUserData")
+            tryTokenDB()
+        }
+    }
+
     fun create(level: String, knee: String, loins: String, neck: String, inverted: String) {
         launch {
             createData(level = level,
