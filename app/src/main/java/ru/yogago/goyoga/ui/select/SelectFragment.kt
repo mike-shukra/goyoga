@@ -88,10 +88,13 @@ class SelectFragment : Fragment() {
 
         selectViewModel.error.observe(viewLifecycleOwner, {
             var text = it
-            if (it.contains("UnknownHostException")) text = getString(R.string.no_internet)
-            if (it.contains("Не авторизовано")) {
+            if (it.contains("UnknownHostException"))
+                text = getString(R.string.no_internet)
+            if (it.contains("Не авторизовано"))
                 text = getString(R.string.not_created_yet)
-            }
+            if (it.contains("ksd2564kLJdisda82fd3498"))
+                text = getString(R.string.version_is_out_of_date)
+
             Toast.makeText(context, text, Toast.LENGTH_LONG).show()
         })
 

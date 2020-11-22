@@ -208,8 +208,13 @@ class ProfileFragment : Fragment() {
             if (it.contains("UnknownHostException")) text = getString(R.string.no_internet)
             if (it.contains("Не авторизовано")) {
                 text = getString(R.string.no_auth)
-                profileViewModel.deleteToken()
+                profileViewModel.deleteTokenAndUserData()
             }
+            if (it.contains("ksd2564kLJdisda82fd3498")) {
+                text = getString(R.string.version_is_out_of_date)
+                profileViewModel.deleteTokenAndUserData()
+            }
+
             Toast.makeText(context, text, Toast.LENGTH_LONG).show()
         })
 

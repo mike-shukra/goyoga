@@ -91,5 +91,6 @@
     <string name="info_head_side_group">The algorithm groups asanas on each side</string>
     <string name="info_head_remember">Please remember!</string>
     <string name="inverted">Inverted</string>
+    <string name="version_is_out_of_date">The version is out of date. Update the app please.</string>
 
 </resources>

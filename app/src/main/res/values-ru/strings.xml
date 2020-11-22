@@ -70,6 +70,7 @@
         \nБудьте осторожны и удачи!
     </string>
     <string name="wait">Подождите</string>
+    <string name="no_auth">Авторизация</string>
     <string name="tts_error">Ошибка синтезатора речи</string>
     <string name="ads">РЕКЛАМА</string>
     <string name="language_head">Язык</string>
@@ -90,7 +91,7 @@
     <string name="info_head_side_group">Алгоритм группирует асаны на каждую сторону</string>
     <string name="info_head_remember">Пожалуйста помните!</string>
     <string name="inverted">Перевёрнутые</string>
-    <string name="no_auth">Авторизация</string>
+    <string name="version_is_out_of_date">Версия устарела. Обновите приложение, пожалуйста.</string>
 
 
 </resources>

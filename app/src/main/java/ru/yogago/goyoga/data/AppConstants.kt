@@ -8,7 +8,7 @@ class AppConstants {
         const val PHOTO_URL = "https://yoga-go.ru/Image/getImage/?image="
         const val LOG_TAG: String = "myLog"
         const val LOG_TAG_BILLING: String = "billingLog"
-        const val APP_TOKEN = "9aHKJkgjk9ajhuiK53DF7683hy35sgSjkasd3898jkasd8LHGf9"
+        const val APP_TOKEN_B = "dwfl56JghKKdGnjde3lsfsKllk05sgSsdfsd3898jkasd8LHGf5"
         const val API_key = "6e39ab29-3de3-4c18-88fc-ef061f56f4d6"
         const val YANDEX_RTB_ID_PROFILE = "R-M-648245-3"
         const val YANDEX_RTB_ID_ACTION = "R-M-648245-5"
