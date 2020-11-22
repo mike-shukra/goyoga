@@ -55,11 +55,13 @@ class ActionViewModel : ViewModel(), CoroutineScope {
         asanasList.forEach {
             it.times = it.times * proportionately + addTime
         }
-        val userData: UserData? = loadUserDataFromDB()
         val aState: ActionState? = dbDao.getActionState()
         Log.d(LOG_TAG, "ActionViewModel - loadActionStateFromDB aState: $aState")
-        data = Data(asanas = asanasList, userData = userData, actionState = aState, settings = settings)
-        mData.postValue(data)
+        val userData: UserData? = loadUserDataFromDB()
+        userData?.let {
+            data = Data(asanas = asanasList, userData = userData, actionState = aState, settings = settings)
+            mData.postValue(data)
+        }
     }
 
     private fun loadAsanasFromDB(): List<Asana> {

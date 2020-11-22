@@ -34,7 +34,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         model.loadUserData()
     }
 
-    fun deleteToken() {
+    fun deleteTokenAndUserData() {
         model.deleteTokenAndUserData()
     }
 

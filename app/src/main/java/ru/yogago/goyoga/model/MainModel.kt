@@ -3,7 +3,7 @@ package ru.yogago.goyoga.model
 import android.util.Log
 import kotlinx.coroutines.*
 import ru.yogago.goyoga.data.*
-import ru.yogago.goyoga.data.AppConstants.Companion.APP_TOKEN
+import ru.yogago.goyoga.data.AppConstants.Companion.APP_TOKEN_B
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
 import ru.yogago.goyoga.service.ApiFactory
 import ru.yogago.goyoga.service.DataBase
@@ -42,15 +42,16 @@ class MainModel: CoroutineScope {
                 Log.d(LOG_TAG, "MainModel - loadData error: ${data.error}")
                 selectViewModel.error.postValue(data.error)
             }
+            val settings = dbDao.getSettings()
             val asanas: List<Asana>? = dbDao.getAsanas()
             val userData: UserData? = dbDao.getUserData()
-            val settings = dbDao.getSettings()
-            userData?.allTime = (userData?.allTime!! * settings?.proportionately!!).toInt() + (settings.addTime * userData.allCount)
-            selectViewModel.asanas.postValue(asanas?.filter {
-                it.side != "second"
-            })
-            selectViewModel.userData.postValue(userData)
-
+            userData?.let {
+                it.allTime = (it.allTime * settings?.proportionately!!).toInt() + (settings.addTime * it.allCount)
+                selectViewModel.userData.postValue(userData)
+                selectViewModel.asanas.postValue(asanas?.filter {asana ->
+                    asana.side != "second"
+                })
+            }
         }
     }
 
@@ -86,11 +87,15 @@ class MainModel: CoroutineScope {
             TokenProvider.token = responseTokenDB
             true
         } else {
-            Log.d(LOG_TAG, "MainModel - isTokenDB: no token")
+            Log.d(LOG_TAG, "MainModel - tryTokenDB: no token")
             val uniqueID: String = UUID.randomUUID().toString()
-            val token = TokenProvider.getToken(uniqueID, APP_TOKEN)
+            val token = TokenProvider.getToken(uniqueID, APP_TOKEN_B)
+            Log.d(LOG_TAG, "MainModel - loadUserData - tryTokenDB token: $token")
+            token.error?.let {
+                profileViewModel.error.postValue(token.error)
+            }
             val response = dbDao.insertToken(token)
-            Log.d(LOG_TAG, "MainModel - loadUserData - saveTokenDB response: $response")
+            Log.d(LOG_TAG, "MainModel - tryTokenDB - saveTokenDB response: $response")
             false
         }
     }
@@ -177,6 +182,7 @@ class MainModel: CoroutineScope {
                 val responseInsertUserData = dbDao.insertUserData(data.userData!!)
                 Log.d(LOG_TAG, "MainModel - loadUserData responseInsertUserData: $responseInsertUserData")
             } else {
+                Log.d(LOG_TAG, "MainModel - loadUserData data.error: ${data.error}")
                 profileViewModel.error.postValue(data.error)
             }
             var user: UserData? = dbDao.loadUserData()
