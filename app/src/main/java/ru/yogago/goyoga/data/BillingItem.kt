@@ -1,12 +1,12 @@
 package ru.yogago.goyoga.data
 
 data class BillingItem (
-    val sku: String,
-    val title: String,
-    val type: String,
-    val price: String,
-    val price_currency_code: String,
-    val subscriptionPeriod: String,
-    val description: String,
-    val activated: Boolean = false
+    var sku: String,
+    var title: String,
+    var type: String,
+    var price: String,
+    var price_currency_code: String,
+    var subscriptionPeriod: String,
+    var description: String,
+    var activated: Boolean = false
 )

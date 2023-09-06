@@ -14,16 +14,16 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.yandex.mobile.ads.AdRequest
-import com.yandex.mobile.ads.AdSize
-import com.yandex.mobile.ads.AdView
+//import com.yandex.mobile.ads.AdRequest
+//import com.yandex.mobile.ads.AdSize
+//import com.yandex.mobile.ads.AdView
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
 import ru.yogago.goyoga.data.AppConstants.Companion.YANDEX_RTB_ID_PROFILE
 import ru.yogago.goyoga.data.BillingState
 import ru.yogago.goyoga.data.SelectedIndexArray
 import ru.yogago.goyoga.model.MyBilling
-import ru.yogago.goyoga.service.StickyBannerEventListener
+//import ru.yogago.goyoga.service.StickyBannerEventListener
 
 
 class ProfileFragment : Fragment() {
@@ -114,12 +114,12 @@ class ProfileFragment : Fragment() {
         })
 
 
-        val mAdView = view.findViewById<AdView>(R.id.ad_view)
-        mAdView.blockId = YANDEX_RTB_ID_PROFILE
-        mAdView.adSize = AdSize.stickySize(AdSize.FULL_WIDTH)
-        val adRequest = AdRequest.Builder().build()
-        mAdView.adEventListener = StickyBannerEventListener()
-        mAdView.loadAd(adRequest)
+//        val mAdView = view.findViewById<AdView>(R.id.ad_view)
+//        mAdView.blockId = YANDEX_RTB_ID_PROFILE
+//        mAdView.adSize = AdSize.stickySize(AdSize.FULL_WIDTH)
+//        val adRequest = AdRequest.Builder().build()
+//        mAdView.adEventListener = StickyBannerEventListener()
+//        mAdView.loadAd(adRequest)
 
         profileWebButton.setOnClickListener {
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://yoga-go.ru/KnowlegeBase/yogaTechniques"))

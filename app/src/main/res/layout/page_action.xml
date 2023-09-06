@@ -131,10 +131,10 @@
                 android:layout_margin="8dp"
                 android:gravity="center">
 
-                <com.yandex.mobile.ads.AdView
-                    android:id="@+id/ad_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+<!--                <com.yandex.mobile.ads.AdView-->
+<!--                    android:id="@+id/ad_view"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content" />-->
             </LinearLayout>
 
             <LinearLayout

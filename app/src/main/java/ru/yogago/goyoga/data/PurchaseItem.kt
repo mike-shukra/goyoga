@@ -5,9 +5,9 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class PurchaseItem (
-    @PrimaryKey(autoGenerate = true) val id: Long? = null,
-    val productId: String,
-    val purchaseToken: String,
-    val purchaseState: Int,
-    val acknowledged: Boolean
+    @PrimaryKey(autoGenerate = true) var id: Long? = null,
+    var productId: String,
+    var purchaseToken: String,
+    var purchaseState: Int,
+    var acknowledged: Boolean
 )

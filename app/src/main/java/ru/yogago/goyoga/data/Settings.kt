@@ -5,9 +5,9 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Settings (
-    @PrimaryKey val id: Long = 0,
-    val language: String = "",
-    val proportionately: Float = 1F,
-    val addTime: Int = 0,
-    val isSpeakAsanaName: Boolean = true
+    @PrimaryKey var id: Long = 0,
+    var language: String = "",
+    var proportionately: Float = 1F,
+    var addTime: Int = 0,
+    var isSpeakAsanaName: Boolean = true
 )

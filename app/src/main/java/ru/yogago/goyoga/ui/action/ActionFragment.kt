@@ -17,14 +17,14 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.squareup.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
-import com.yandex.mobile.ads.AdRequest
-import com.yandex.mobile.ads.AdSize
-import com.yandex.mobile.ads.AdView
+//import com.yandex.mobile.ads.AdRequest
+//import com.yandex.mobile.ads.AdSize
+//import com.yandex.mobile.ads.AdView
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.*
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
 import ru.yogago.goyoga.service.OkHttpClientFactory
-import ru.yogago.goyoga.service.StickyBannerEventListener
+//import ru.yogago.goyoga.service.StickyBannerEventListener
 import java.util.*
 
 
@@ -255,9 +255,9 @@ class ActionFragment : Fragment() {
                 holder.progressBarAll.setProgress(1000, true)
             }
 
-            val adRequest = AdRequest.Builder().build()
-            holder.mAdView.adEventListener = StickyBannerEventListener()
-            holder.mAdView.loadAd(adRequest)
+//            val adRequest = AdRequest.Builder().build()
+//            holder.mAdView.adEventListener = StickyBannerEventListener()
+//            holder.mAdView.loadAd(adRequest)
 
             BillingState.isAds.observe(viewLifecycleOwner, {
                 if (it) holder.advertisingBox.visibility = View.VISIBLE
@@ -299,15 +299,15 @@ class ActionFragment : Fragment() {
         val currentTextView: TextView = itemView.findViewById(R.id.current)
         val description: TextView = itemView.findViewById(R.id.description)
         val advertisingBox: LinearLayout = itemView.findViewById(R.id.advertising_box)
-        val mAdView: AdView = itemView.findViewById(R.id.ad_view)
+//        val mAdView: AdView = itemView.findViewById(R.id.ad_view)
         val animFadeOut: Animation = AnimationUtils.loadAnimation(context, R.anim.alpha_out)
 
         val animatorForProgressItem: ObjectAnimator = ObjectAnimator.ofInt(progressBarItem, "progress", 1, 1000)
 
-        init {
-            mAdView.blockId = AppConstants.YANDEX_RTB_ID_ACTION
-            mAdView.adSize = AdSize.stickySize(AdSize.FULL_WIDTH)
-        }
+//        init {
+//            mAdView.blockId = AppConstants.YANDEX_RTB_ID_ACTION
+//            mAdView.adSize = AdSize.stickySize(AdSize.FULL_WIDTH)
+//        }
     }
 
 }
