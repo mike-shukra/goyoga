@@ -5,16 +5,16 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class UserData (
-    @PrimaryKey val id: Long,
-    val email: String? = null,
+    @PrimaryKey var id: Long,
+    var email: String? = null,
     var first_name: String? = null,
-    val now: Int = 1,
+    var now: Int = 1,
     var allTime: Int = 0,
-    val allCount: Int = 0,
-    val level: Int = 0,
-    val dangerknee: Int = 0,
-    val dangerloins: Int = 0,
-    val dangerneck: Int = 0,
-    val inverted: Int = 0,
-    val date: String? = null
+    var allCount: Int = 0,
+    var level: Int = 0,
+    var dangerknee: Int = 0,
+    var dangerloins: Int = 0,
+    var dangerneck: Int = 0,
+    var inverted: Int = 0,
+    var date: String? = null
 )

@@ -5,13 +5,13 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Asana (
-    @PrimaryKey val id: Long,
-    val name: String,
-    val eng: String,
-    val description: String,
-    val description_en: String,
-    val photo: String,
-    val symmetric: String,
-    val side: String,
+    @PrimaryKey var id: Long,
+    var name: String,
+    var eng: String,
+    var description: String,
+    var description_en: String,
+    var photo: String,
+    var symmetric: String,
+    var side: String,
     var times: Int
 )

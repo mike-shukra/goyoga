@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "449419884731",
+    "project_id": "goyoga-3ffa6",
+    "storage_bucket": "goyoga-3ffa6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:449419884731:android:1014bd685fe95f4730519e",
+        "android_client_info": {
+          "package_name": "ru.yogago.goyoga"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "449419884731-j8iouprbnapv7hs489f4jjlqbkrb8nb1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvR_YjDEY0qh6RTz5Haj-4jxO11AcK_P0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "449419884731-j8iouprbnapv7hs489f4jjlqbkrb8nb1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

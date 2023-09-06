@@ -13,15 +13,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
-import com.yandex.mobile.ads.AdRequest
-import com.yandex.mobile.ads.AdSize
-import com.yandex.mobile.ads.AdView
+//import com.yandex.mobile.ads.AdRequest
+//import com.yandex.mobile.ads.AdSize
+//import com.yandex.mobile.ads.AdView
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants.Companion.YANDEX_RTB_ID_SELECT_320X100
 import ru.yogago.goyoga.data.AppConstants.Companion.YANDEX_RTB_ID_SELECT_VERTICAL
 import ru.yogago.goyoga.data.BillingState
 import ru.yogago.goyoga.service.OkHttpClientFactory
-import ru.yogago.goyoga.service.StickyBannerEventListener
+//import ru.yogago.goyoga.service.StickyBannerEventListener
 
 class SelectFragment : Fragment() {
 
@@ -46,19 +46,19 @@ class SelectFragment : Fragment() {
         rvAsanas.layoutManager = glm
         val advertisingBox = view.findViewById<FrameLayout>(R.id.advertising_box)
 
-        val mAdView = view.findViewById<AdView>(R.id.ad_view)
-        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            mAdView.blockId = YANDEX_RTB_ID_SELECT_VERTICAL
-            mAdView.adSize = AdSize.BANNER_240x400
-        }
-        else {
-            mAdView.blockId = YANDEX_RTB_ID_SELECT_320X100
-            mAdView.adSize = AdSize.stickySize(AdSize.FULL_WIDTH)
-        }
-
-        val adRequest = AdRequest.Builder().build()
-        mAdView.adEventListener = StickyBannerEventListener()
-        mAdView.loadAd(adRequest)
+//        val mAdView = view.findViewById<AdView>(R.id.ad_view)
+//        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            mAdView.blockId = YANDEX_RTB_ID_SELECT_VERTICAL
+//            mAdView.adSize = AdSize.BANNER_240x400
+//        }
+//        else {
+//            mAdView.blockId = YANDEX_RTB_ID_SELECT_320X100
+//            mAdView.adSize = AdSize.stickySize(AdSize.FULL_WIDTH)
+//        }
+//
+//        val adRequest = AdRequest.Builder().build()
+//        mAdView.adEventListener = StickyBannerEventListener()
+//        mAdView.loadAd(adRequest)
 
         BillingState.isAds.observe(viewLifecycleOwner, {
             if (it) advertisingBox.visibility = View.VISIBLE

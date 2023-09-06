@@ -6,9 +6,9 @@ import androidx.room.PrimaryKey
 @Entity
 data class Token(
     @PrimaryKey(autoGenerate = false)
-    val id: Long = 0,
-    val token: String = "no",
-    val userId: Long? = null,
-    val message: String? = null,
-    val error: String? = null
+    var id: Long = 0,
+    var token: String = "no",
+    var userId: Long? = null,
+    var message: String? = null,
+    var error: String? = null
 )

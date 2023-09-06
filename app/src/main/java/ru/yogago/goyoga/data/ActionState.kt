@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class ActionState(
-    @PrimaryKey val id: Long = 0,
+    @PrimaryKey var id: Long = 0,
     var currentId: Int = 0,
     var isPlay: Boolean = false
 )
