@@ -129,7 +129,8 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone"
                 android:layout_margin="8dp"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
 
 <!--                <com.yandex.mobile.ads.AdView-->
 <!--                    android:id="@+id/ad_view"-->

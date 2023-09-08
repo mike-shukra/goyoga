@@ -1,10 +1,9 @@
-@file:Suppress("unused", "unused", "unused", "unused")
-
 package ru.yogago.goyoga
 
 import android.app.Application
 
 import android.util.Log
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
 //import com.yandex.metrica.YandexMetrica
 //import com.yandex.metrica.YandexMetricaConfig
 import ru.yogago.goyoga.data.AppConstants.Companion.API_key
@@ -43,6 +42,9 @@ class MyCustomApplication : Application()  {
                 }
                 MainActivity.dLocale = Locale(change)
             }
+
+
     }
+
 
 }

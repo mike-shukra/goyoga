@@ -92,5 +92,13 @@
     <string name="info_head_remember">Please remember!</string>
     <string name="inverted">Inverted</string>
     <string name="version_is_out_of_date">The version is out of date. Update the app please.</string>
+    <string name="your_web_client_id" translatable="false">1095319247800-2geo5024149lnm6vodmgrp7m66j9upmo.apps.googleusercontent.com</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
+    <string name="confirm_password">confirm password</string>
+    <string name="signed">signed</string>
+    <string name="already_have_an_account_login">already have an account login</string>
+    <string name="login">login</string>
+    <string name="don_t_have_an_account_sign_in">don\'t have an account sign in</string>
 
 </resources>
