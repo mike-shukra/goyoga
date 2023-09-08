@@ -1,13 +1,17 @@
 package ru.yogago.goyoga
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import ru.yogago.goyoga.data.AppConstants
+
 
 class LoginActivity : AppCompatActivity() {
 
@@ -53,10 +57,30 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(this) {
             if (it.isSuccessful) {
                 Toast.makeText(this, "Successfully LoggedIn", Toast.LENGTH_SHORT).show()
-                println(auth.getAccessToken(true))
+                getToken()
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                // using finish() to end the activity
+                finish()
+
             } else
                 Toast.makeText(this, "Log In failed ", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun getToken() {
+        val mUser = FirebaseAuth.getInstance().currentUser
+        mUser!!.getIdToken(true)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val idToken: String? = task.result.token
+                    // Send token to your backend via HTTPS
+                    Log.d(AppConstants.LOG_TAG, "token: $idToken")
+                    // ...
+                } else {
+                    // Handle error -> task.getException();
+                }
+            }
     }
 
 }
