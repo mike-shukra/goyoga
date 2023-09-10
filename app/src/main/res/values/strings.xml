@@ -100,5 +100,7 @@
     <string name="already_have_an_account_login">already have an account login</string>
     <string name="login">login</string>
     <string name="don_t_have_an_account_sign_in">don\'t have an account sign in</string>
+    <string name="google_sign_in">Google Sign In</string>
+    <string name="logout">Logout</string>
 
 </resources>

@@ -9,13 +9,18 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import android.widget.Toast
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import ru.yogago.goyoga.LoginActivity
 import ru.yogago.goyoga.MainActivity
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
@@ -47,8 +52,24 @@ class SettingsFragment : Fragment(), CoroutineScope {
         val checkBoxEnglish = view.findViewById<RadioButton>(R.id.checkBoxEnglish)
         val checkBoxRussian = view.findViewById<RadioButton>(R.id.checkBoxRussian)
         val restartButton = view.findViewById<Button>(R.id.restartButton)
+        val logOutButton = view.findViewById<Button>(R.id.btnLogout)
         val switchIsSpeakAsanaName = view.findViewById<SwitchCompat>(R.id.switchIsSpeakAsanaName)
 
+        // call requestIdToken as follows
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        val mGoogleSignInClient = activity?.let { GoogleSignIn.getClient(it, gso) }
+
+        logOutButton.setOnClickListener {
+            mGoogleSignInClient?.signOut()?.addOnCompleteListener {
+                val intent = Intent(activity, LoginActivity::class.java)
+                Toast.makeText(activity, "Logging Out", Toast.LENGTH_SHORT).show()
+                startActivity(intent)
+                activity?.finish()
+            }
+        }
         switchIsSpeakAsanaName.setOnCheckedChangeListener { _, b ->
             launch {
                 DataBase.db.getDBDao().updateSettingsIsSpeakAsanaName(b)
