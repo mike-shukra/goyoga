@@ -12,6 +12,7 @@ object TokenProvider: CoroutineScope {
         get() = Dispatchers.IO + job
     private const val LOG_TAG: String = "myLog"
     var token: Token? = null
+    var firebaseToken: String? = null
     lateinit var error: String
 
     suspend fun getToken(login: String, appToken: String) : Token{

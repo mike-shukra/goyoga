@@ -49,17 +49,17 @@ class MainModel: CoroutineScope {
                 it.allTime = (it.allTime * settings?.proportionately!!).toInt() + (settings.addTime * it.allCount)
                 selectViewModel.userData.postValue(userData)
                 selectViewModel.asanas.postValue(asanas?.filter {asana ->
-                    asana.side != "second"
+                    asana.side != "first"
                 })
             }
         }
     }
 
     private suspend fun getRemoteData(): Data {
-        val idUser = TokenProvider.token?.userId.toString()
-        val codeUser = TokenProvider.token?.token.toString()
-        val request = ApiFactory.API.getDataAsync(idUser = idUser, codeUser = codeUser)
         try {
+            val idUser = TokenProvider.token?.userId.toString()
+            val codeUser = TokenProvider.token?.token.toString()
+            val request = ApiFactory.API_2.getDataAsyncTwo(header = TokenProvider.firebaseToken!!, codeUser = codeUser)
             val response = request.await()
             return if(response.isSuccessful) {
                 val data = response.body()!!
