@@ -65,7 +65,6 @@ class LoginActivity : AppCompatActivity() {
 
         btnSignInGoogle.setOnClickListener { view: View? ->
             Toast.makeText(this, "Logging In", Toast.LENGTH_SHORT).show()
-            getToken()
             signInGoogle()
         }
 
@@ -134,7 +133,6 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(this) {
             if (it.isSuccessful) {
                 Toast.makeText(this, "Successfully LoggedIn", Toast.LENGTH_SHORT).show()
-                getToken()
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 // using finish() to end the activity
@@ -146,19 +144,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun getToken() {
-        val mUser = auth.currentUser
-        mUser!!.getIdToken(true)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val idToken: String? = task.result.token
-                    // Send token to your backend via HTTPS
-                    Log.d(AppConstants.LOG_TAG, "token: $idToken")
 
-                } else {
-                    // Handle error -> task.getException();
-                }
-            }
-    }
 
 }

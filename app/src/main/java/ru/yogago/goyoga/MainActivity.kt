@@ -3,6 +3,7 @@ package ru.yogago.goyoga
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
@@ -19,6 +20,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import ru.yogago.goyoga.data.AppConstants
+import ru.yogago.goyoga.service.TokenProvider
 import java.util.*
 
 
@@ -89,26 +92,37 @@ class MainActivity : AppCompatActivity() {
 
         if (isLandSpace()) navView.visibility = View.GONE
 
-        // call requestIdToken as follows
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+//        // call requestIdToken as follows
+//        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//            .requestIdToken(getString(R.string.default_web_client_id))
+//            .requestEmail()
+//            .build()
+//        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
 
-
+        getToken()
     }
 
-    fun logOut() {
-        mGoogleSignInClient.signOut().addOnCompleteListener {
-            val intent = Intent(this, LoginActivity::class.java)
-            Toast.makeText(this, "Logging Out", Toast.LENGTH_SHORT).show()
-            startActivity(intent)
-            finish()
-        }
-
+//    fun logOut() {
+//        mGoogleSignInClient.signOut().addOnCompleteListener {
+//            val intent = Intent(this, LoginActivity::class.java)
+//            Toast.makeText(this, "Logging Out", Toast.LENGTH_SHORT).show()
+//            startActivity(intent)
+//            finish()
+//        }
+//
+//    }
+    private fun getToken() {
+        auth.currentUser!!.getIdToken(true)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    TokenProvider.firebaseToken = task.result.token
+                    // Send token to your backend via HTTPS
+                    Log.d(AppConstants.LOG_TAG, "token: " + TokenProvider.firebaseToken)
+                } else {
+                    // Handle error -> task.getException();
+                }
+            }
     }
-
     private fun isLandSpace(): Boolean {
         return when (resources.configuration.orientation) {
             Configuration.ORIENTATION_PORTRAIT -> false
