@@ -55,7 +55,7 @@ class MainModel: CoroutineScope {
 
     private suspend fun getRemoteData(): Data {
         try {
-            val request = ApiFactory.API_2.getDataAsync(header = TokenProvider.firebaseToken!!)
+            val request = ApiFactory.API.getDataAsync(header = TokenProvider.firebaseToken!!)
             val response = request.await()
             return if(response.isSuccessful) {
                 val data = response.body()!!
@@ -117,7 +117,7 @@ class MainModel: CoroutineScope {
             dangerNeck = neck,
             inverted = inverted
         )
-        val call = ApiFactory.API_2.createAsyncTwo(TokenProvider.firebaseToken!!, parametersDTO)
+        val call = ApiFactory.API.createAsyncTwo(TokenProvider.firebaseToken!!, parametersDTO)
         call.enqueue(object : Callback<Data> {
             override fun onResponse(call: Call<Data>, response: Response<Data>) {
                 if (response.isSuccessful) {

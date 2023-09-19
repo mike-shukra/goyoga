@@ -24,7 +24,7 @@ class OkHttpClientFactory {
             .request()
             .newBuilder()
             .url(newUrl)
-            .post(requestBody)
+            .get()
             .header("X-Authorization-Firebase", TokenProvider.firebaseToken!!)
             .build()
 

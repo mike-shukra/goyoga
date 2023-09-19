@@ -3,9 +3,10 @@ package ru.yogago.goyoga.data
 class AppConstants {
 
     companion object {
-        const val BASE_URL = "https://yoga-go.ru/"
-        const val SMALL_PHOTO_URL = "https://yoga-go.ru/asana/"
-        const val PHOTO_URL = "https://yoga-go.ru/Image/getImage/?image="
+        private const val DEVELOP_URL = "http://10.0.2.2:8080/"
+        const val BASE_URL = DEVELOP_URL
+        const val SMALL_PHOTO_URL = BASE_URL + "api/image/get/"
+        const val PHOTO_URL = BASE_URL + "api/image/get/"
         const val LOG_TAG: String = "myLog"
         const val LOG_TAG_BILLING: String = "billingLog"
         const val APP_TOKEN_B = "dwfl56JghKKdGnjde3lsfsKllk05sgSsdfsd3898jkasd8LHGf5"
