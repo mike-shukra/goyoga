@@ -89,13 +89,13 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun create(level: String, knee: Boolean, loins: Boolean, neck: Boolean, inverted: Boolean) {
+    fun create(level: Long, knee: Boolean, loins: Boolean, neck: Boolean, inverted: Boolean) {
         model.create(
             level = level,
-            knee = if (knee) 1.toString() else 0.toString(),
-            loins = if (loins) 1.toString() else 0.toString(),
-            neck = if (neck) 1.toString() else 0.toString(),
-            inverted = if (inverted) 1.toString() else 0.toString()
+            knee = knee,
+            loins = loins,
+            neck = neck,
+            inverted = inverted
         )
     }
 

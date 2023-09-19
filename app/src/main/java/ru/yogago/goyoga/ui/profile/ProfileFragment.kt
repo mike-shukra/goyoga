@@ -19,7 +19,6 @@ import androidx.navigation.fragment.findNavController
 //import com.yandex.mobile.ads.AdView
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
-import ru.yogago.goyoga.data.AppConstants.Companion.YANDEX_RTB_ID_PROFILE
 import ru.yogago.goyoga.data.BillingState
 import ru.yogago.goyoga.data.SelectedIndexArray
 import ru.yogago.goyoga.model.MyBilling
@@ -104,14 +103,14 @@ class ProfileFragment : Fragment() {
 
         })
 
-        profileViewModel.proportionately.observe(viewLifecycleOwner, {
+        profileViewModel.proportionately.observe(viewLifecycleOwner) {
             val f = (500 * (it - 1))
             Log.d(LOG_TAG, "ProfileFragment f: $f")
             seekBarProportionally.progress = f.toInt()
-        })
-        profileViewModel.addTime.observe(viewLifecycleOwner, {
+        }
+        profileViewModel.addTime.observe(viewLifecycleOwner) {
             seekBarAddTime.progress = it
-        })
+        }
 
 
 //        val mAdView = view.findViewById<AdView>(R.id.ad_view)
@@ -168,23 +167,23 @@ class ProfileFragment : Fragment() {
         }
         createButton.setOnClickListener {
             profileViewModel.create(
-                levelSpinner.selectedItemId.toString(),
+                levelSpinner.selectedItemId,
                 checkBoxKnee.isChecked,
                 checkBoxLoins.isChecked,
                 checkBoxNeck.isChecked,
                 checkBoxInverted.isChecked
             )
-            profileViewModel.done.observe(viewLifecycleOwner, {
+            profileViewModel.done.observe(viewLifecycleOwner) {
                 if (it) findNavController().navigate(R.id.nav_select)
-            })
+            }
         }
 
-        BillingState.isAds.observe(viewLifecycleOwner, {
+        BillingState.isAds.observe(viewLifecycleOwner) {
             if (it) advertisingBox.visibility = View.VISIBLE
             else advertisingBox.visibility = View.GONE
-        })
+        }
 
-        profileViewModel.userData.observe(viewLifecycleOwner, {
+        profileViewModel.userData.observe(viewLifecycleOwner) {
             val levels = resources.getStringArray(R.array.levels)
             val selectedIndex = SelectedIndexArray(selectedIndex = it.level, arr = levels)
             val adapter = ArrayAdapter(
@@ -202,8 +201,8 @@ class ProfileFragment : Fragment() {
 
             loading.visibility = View.GONE
 
-        })
-        profileViewModel.error.observe(viewLifecycleOwner, {
+        }
+        profileViewModel.error.observe(viewLifecycleOwner) {
             var text = it
             if (it.contains("UnknownHostException")) text = getString(R.string.no_internet)
             if (it.contains("Не авторизовано")) {
@@ -216,7 +215,7 @@ class ProfileFragment : Fragment() {
             }
 
             Toast.makeText(context, text, Toast.LENGTH_LONG).show()
-        })
+        }
 
         profileViewModel.handleBilling()
         profileViewModel.loadUserData()
