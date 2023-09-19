@@ -60,17 +60,17 @@ class SelectFragment : Fragment() {
 //        mAdView.adEventListener = StickyBannerEventListener()
 //        mAdView.loadAd(adRequest)
 
-        BillingState.isAds.observe(viewLifecycleOwner, {
+        BillingState.isAds.observe(viewLifecycleOwner) {
             if (it) advertisingBox.visibility = View.VISIBLE
             else advertisingBox.visibility = View.GONE
-        })
+        }
 
-        selectViewModel.userData.observe(viewLifecycleOwner, {
+        selectViewModel.userData.observe(viewLifecycleOwner) {
             time.text = (it.allTime / 60).toString()
             count.text = it.allCount.toString()
-        })
+        }
 
-        selectViewModel.asanas.observe(viewLifecycleOwner, {
+        selectViewModel.asanas.observe(viewLifecycleOwner) {
             loading.visibility = View.GONE
             val picasso = Picasso.Builder(this.requireContext())
                 .downloader(OkHttp3Downloader(OkHttpClientFactory().getClient()))
@@ -84,9 +84,9 @@ class SelectFragment : Fragment() {
                 args.putLong("id", asana.id)
                 findNavController().navigate(R.id.nav_action, args)
             }
-        })
+        }
 
-        selectViewModel.error.observe(viewLifecycleOwner, {
+        selectViewModel.error.observe(viewLifecycleOwner) {
             var text = it
             if (it.contains("UnknownHostException"))
                 text = getString(R.string.no_internet)
@@ -96,7 +96,7 @@ class SelectFragment : Fragment() {
                 text = getString(R.string.version_is_out_of_date)
 
             Toast.makeText(context, text, Toast.LENGTH_LONG).show()
-        })
+        }
 
         selectViewModel.setModel()
         selectViewModel.loadAsanas()
