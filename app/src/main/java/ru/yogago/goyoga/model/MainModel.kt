@@ -2,6 +2,7 @@ package ru.yogago.goyoga.model
 
 import android.util.Log
 import kotlinx.coroutines.*
+import retrofit2.Call
 import ru.yogago.goyoga.data.*
 import ru.yogago.goyoga.data.AppConstants.Companion.APP_TOKEN_B
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
@@ -12,6 +13,8 @@ import ru.yogago.goyoga.ui.profile.ProfileViewModel
 import ru.yogago.goyoga.ui.select.SelectViewModel
 import java.util.*
 import kotlin.coroutines.CoroutineContext
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainModel: CoroutineScope {
 
@@ -25,12 +28,7 @@ class MainModel: CoroutineScope {
     fun loadData() {
         launch {
             delay(300)
-
-            var data = getRemoteData()
-            if (data.error != "no") {
-                delay(1000)
-                data = getRemoteData()
-            }
+            val data = getRemoteData()
             if (data.error == "no") {
                 val responseDelete = dbDao.deleteAsanas()
                 Log.d(LOG_TAG, "MainModel - loadData responseDelete: $responseDelete")
@@ -57,9 +55,7 @@ class MainModel: CoroutineScope {
 
     private suspend fun getRemoteData(): Data {
         try {
-            val idUser = TokenProvider.token?.userId.toString()
-            val codeUser = TokenProvider.token?.token.toString()
-            val request = ApiFactory.API_2.getDataAsyncTwo(header = TokenProvider.firebaseToken!!, codeUser = codeUser)
+            val request = ApiFactory.API_2.getDataAsync(header = TokenProvider.firebaseToken!!)
             val response = request.await()
             return if(response.isSuccessful) {
                 val data = response.body()!!
@@ -110,31 +106,53 @@ class MainModel: CoroutineScope {
         }
     }
 
-    fun create(level: String, knee: String, loins: String, neck: String, inverted: String) {
-        launch {
-            createData(level = level,
-                knee = knee,
-                loins = loins,
-                neck = neck,
-                inverted = inverted
-            )
-        }
+    fun create(level: Long, knee: Boolean, loins: Boolean, neck: Boolean, inverted: Boolean) {
+        val parametersDTO = ParametersDTO(
+            now = 1,
+            allTime = 0,
+            allCount = 0,
+            level = Level.values()[level.toInt()].toString(),
+            dangerKnee = knee,
+            dangerLoins = loins,
+            dangerNeck = neck,
+            inverted = inverted
+        )
+        val call = ApiFactory.API_2.createAsyncTwo(TokenProvider.firebaseToken!!, parametersDTO)
+        call.enqueue(object : Callback<Data> {
+            override fun onResponse(call: Call<Data>, response: Response<Data>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    Log.d(LOG_TAG, "MainModel - create - message: ${responseBody.toString()}")
+                    profileViewModel.done.postValue(true)
+                } else {
+                    val errorMessage = response.message()
+                    Log.d(LOG_TAG, "MainModel - create - message error: $errorMessage")
+                    profileViewModel.error.postValue(errorMessage)
+                }
+            }
+
+            override fun onFailure(call: Call<Data>, t: Throwable) {
+                // Request failed due to a network error or other issues
+                // Handle the failure
+            }
+        })
+
     }
 
-    private suspend fun createData(level: String, knee: String, loins: String, neck: String, inverted: String){
-        val idUser = TokenProvider.token?.userId.toString()
-        val codeUser = TokenProvider.token?.token.toString()
+    private suspend fun createData(level: Level, knee: Boolean, loins: Boolean, neck: Boolean, inverted: Boolean){
         return withContext(TokenProvider.coroutineContext) {
             dbDao.insertActionState(ActionState())
-            val requestMessageCreate = ApiFactory.API.createAsync(
-                idUser = idUser,
-                codeUser = codeUser,
-                level = level,
-                knee = knee,
-                loins = loins,
-                neck = neck,
+            val parametersDTO = ParametersDTO(
+                now = 1,
+                allTime = 0,
+                allCount = 0,
+                level = level.toString(),
+                dangerKnee = knee,
+                dangerLoins = loins,
+                dangerNeck = neck,
                 inverted = inverted
             )
+            val requestMessageCreate = ApiFactory.API.createAsync(TokenProvider.firebaseToken!!, parametersDTO)
             try {
                 val responseMessage = requestMessageCreate.await()
                 if(responseMessage.isSuccessful) {
@@ -162,11 +180,11 @@ class MainModel: CoroutineScope {
             if(!tryTokenDB()) {
                 dbDao.insertSettings(Settings())
                 createData(
-                    level = "0",
-                    knee = "0",
-                    loins = "0",
-                    neck = "0",
-                    inverted = "0"
+                    level = Level.NOT_SPECIFIED,
+                    knee = false,
+                    loins = false,
+                    neck = false,
+                    inverted = false
                 )
             }
             val settings = dbDao.getSettings()
