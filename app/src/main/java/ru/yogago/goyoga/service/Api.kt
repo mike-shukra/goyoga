@@ -10,28 +10,10 @@ import ru.yogago.goyoga.data.*
 interface Api {
 
     @GET("api/dataN")
-    fun getDataAsync(@Header("X-Authorization-Firebase") header: String): Deferred<Response<Data>>
-
-    @FormUrlEncoded
-    @POST("Api/loginN")
-    fun authAsync(
-        @Field("login") login: String,
-        @Field("appToken") appToken: String,
-        @Field("level") level: String,
-        @Field("knee") knee: String,
-        @Field("loins") loins: String,
-        @Field("neck") neck: String,
-        @Field("inverted") inverted: String
-    ): Deferred<Response<Token>>
+    fun getDataAsync(@Header("X-Authorization-Firebase") header: String): Call<Data>
 
     @POST("api/createN")
     fun createAsync(
-        @Header("X-Authorization-Firebase") header: String,
-        @Body parametersDTO: ParametersDTO
-    ): Deferred<Response<Message>>
-
-    @POST("api/createN")
-    fun createAsyncTwo(
         @Header("X-Authorization-Firebase") header: String,
         @Body parametersDTO: ParametersDTO
     ): Call<Data>

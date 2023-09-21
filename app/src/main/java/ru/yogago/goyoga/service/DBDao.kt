@@ -34,16 +34,7 @@ interface DBDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertActionState(actionState: ActionState): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertToken(token: Token): Long
-
-    @Query("SELECT * FROM Token WHERE id = 0")
-    fun getToken(): Token?
-
-    @Query("DELETE FROM Token")
-    fun deleteToken(): Int
-
+    
     @Query("DELETE FROM ActionState")
     fun deleteActionState(): Int
 
@@ -52,6 +43,9 @@ interface DBDao {
 
     @Query("DELETE FROM UserData")
     fun deleteUserData(): Int
+
+    @Query("DELETE FROM Settings")
+    fun deleteSettings(): Int
 
     @Query("UPDATE userdata SET first_name = :name WHERE id = :id")
     fun insertUserName(name: String, id: Long): Int
@@ -65,7 +59,7 @@ interface DBDao {
     @Query("UPDATE settings SET language = :language WHERE id = 0")
     fun updateSettingsLanguage(language: String): Int
 
-    @Query("UPDATE settings SET isSpeakAsanaName = :isSpeakAsanaName WHERE id = 0")
+    @Query("UPDATE settings SET speakAsanaName = :isSpeakAsanaName WHERE id = 0")
     fun updateSettingsIsSpeakAsanaName(isSpeakAsanaName: Boolean): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

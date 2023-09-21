@@ -7,12 +7,6 @@ import java.util.concurrent.TimeUnit
 
 class OkHttpClientFactory {
 
-    var requestBody: RequestBody = MultipartBody.Builder()
-        .setType(MultipartBody.FORM)
-        .addFormDataPart("id_user", TokenProvider.token?.userId.toString())
-        .addFormDataPart("code_user", TokenProvider.token?.token.toString())
-        .build()
-
     private val authInterceptor = Interceptor {chain->
         val newUrl = chain
             .request()

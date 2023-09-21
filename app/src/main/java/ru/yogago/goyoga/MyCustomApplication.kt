@@ -8,6 +8,7 @@ import com.google.android.gms.auth.api.identity.BeginSignInRequest
 //import com.yandex.metrica.YandexMetricaConfig
 import ru.yogago.goyoga.data.AppConstants.Companion.API_key
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
+import ru.yogago.goyoga.data.Settings
 import ru.yogago.goyoga.service.DataBase
 import java.util.*
 
@@ -26,23 +27,25 @@ class MyCustomApplication : Application()  {
 
         DataBase.createDataBase(this)
 
-        val settings = DataBase.createDataBaseToMainTread(this).getDBDao().getSettings()
-            val lang= settings?.language
-            if (lang != null) {
-                val change = when (lang) {
-                    "Russian" -> {
-                        "ru"
-                    }
-                    "English" -> {
-                        "en"
-                    }
-                    else -> {
-                        ""
-                    }
-                }
-                MainActivity.dLocale = Locale(change)
+        val dBMainThreadDao = DataBase.createDataBaseToMainTread(this).getDBDao()
+        var settings = dBMainThreadDao.getSettings()
+        if (settings == null) {
+            settings = Settings()
+            dBMainThreadDao.insertSettings(settings)
+        }
+        val lang = settings.language
+        val change = when (lang) {
+            "Russian" -> {
+                "ru"
             }
-
+            "English" -> {
+                "en"
+            }
+            else -> {
+                ""
+            }
+        }
+        MainActivity.dLocale = Locale(change)
 
     }
 

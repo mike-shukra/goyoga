@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import ru.yogago.goyoga.data.AppConstants
+import ru.yogago.goyoga.service.TokenProvider
 
 
 class LoginActivity : AppCompatActivity() {
@@ -114,13 +115,22 @@ class LoginActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         if (GoogleSignIn.getLastSignedInAccount(this) != null) {
-            startActivity(
-                Intent(
-                    this, MainActivity
-                    ::class.java
-                )
-            )
-            finish()
+            auth.currentUser!!.getIdToken(true)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        TokenProvider.firebaseToken = task.result.token
+                        // Send token to your backend via HTTPS
+                        Log.d(AppConstants.LOG_TAG, "token: " + TokenProvider.firebaseToken)
+                        startActivity(
+                            Intent(
+                                this, MainActivity::class.java
+                            )
+                        )
+                        finish()
+                    } else {
+//                     Handle error -> task.getException();
+                    }
+                }
         }
     }
 

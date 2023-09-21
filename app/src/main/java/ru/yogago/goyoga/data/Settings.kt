@@ -9,5 +9,6 @@ data class Settings (
     var language: String = "",
     var proportionately: Float = 1F,
     var addTime: Int = 0,
-    var isSpeakAsanaName: Boolean = true
+    var speakAsanaName: Boolean = true,
+    var timeOfFiltered: Long = 0
 )
