@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -107,7 +106,7 @@ class SettingsFragment : Fragment(), CoroutineScope {
                     checkBoxEnglish.isChecked = true
                 }
             }
-            switchIsSpeakAsanaName.isChecked = it.isSpeakAsanaName
+            switchIsSpeakAsanaName.isChecked = it.speakAsanaName
         })
 
         languageRadioGroup.setOnCheckedChangeListener { radioGroup, i ->

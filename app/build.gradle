@@ -9,7 +9,6 @@ apply plugin: 'kotlin-kapt'
 android {
     defaultConfig {
         applicationId "ru.yogago.goyoga"
-        buildToolsVersion "33.0.1"
         compileSdk 33
         minSdkVersion 31
         targetSdkVersion 33

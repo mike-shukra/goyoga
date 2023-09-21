@@ -34,8 +34,12 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         model.loadUserData()
     }
 
-    fun deleteTokenAndUserData() {
-        model.deleteTokenAndUserData()
+//    viewModelScope.launch {
+//        liveData.postValue("Новое значение")
+//    }
+
+    fun deleteUserData() {
+        model.deleteUserData()
     }
 
     fun handleBilling() {

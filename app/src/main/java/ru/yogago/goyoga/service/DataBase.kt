@@ -9,14 +9,14 @@ object DataBase {
     lateinit var db: AppDatabase
 
     fun createDataBase(application: Application) : DataBase {
-        this.db = Room.databaseBuilder(application, AppDatabase::class.java, "database")
+        this.db = Room.databaseBuilder(application, AppDatabase::class.java, "databaseNew")
             .fallbackToDestructiveMigration()
             .build()
         Log.d(LOG_TAG, "DataBase - createDataBase: " + this.db)
         return this
     }
     fun createDataBaseToMainTread(application: Application) : AppDatabase {
-        return Room.databaseBuilder(application, AppDatabase::class.java, "database")
+        return Room.databaseBuilder(application, AppDatabase::class.java, "databaseMainTrade")
             .fallbackToDestructiveMigration()
             .allowMainThreadQueries()
             .build()

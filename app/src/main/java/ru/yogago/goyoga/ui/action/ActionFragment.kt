@@ -97,7 +97,7 @@ class ActionFragment : Fragment() {
             }
         })
 
-        actionViewModel.mData.observe(viewLifecycleOwner, {
+        actionViewModel.mData.observe(viewLifecycleOwner) {
             actionState = it.actionState!!
             currentAsana = actionState.currentId
             asanaList = it.asanas!!
@@ -106,7 +106,7 @@ class ActionFragment : Fragment() {
             val pagerAdapter = ScreenSlidePagerAdapter()
             viewPager.adapter = pagerAdapter
 
-            actionViewModel.mCurrentAsana.observe(viewLifecycleOwner, { currentA ->
+            actionViewModel.mCurrentAsana.observe(viewLifecycleOwner) { currentA ->
                 Log.d(LOG_TAG, "ActionFragment - onCreateView - currentAsana.observe it: $currentA")
 
 
@@ -115,7 +115,7 @@ class ActionFragment : Fragment() {
 
                 viewPager.setCurrentItem(currentAsana, false)
 
-                actionViewModel.setTime(asanaList[currentAsana].times*10)
+                actionViewModel.setTime(asanaList[currentAsana].times * 10)
 
                 if (buttonStart.isChecked) {
                     textToSpeech()
@@ -128,19 +128,24 @@ class ActionFragment : Fragment() {
                     isDoAnimationProgressItem(false)
                 }
 
-            })
+            }
 
-            actionViewModel.go.observe(viewLifecycleOwner, {
-                Log.d(LOG_TAG, "ActionFragment - onCreateView - go currentAsana: $currentAsana asanaList.size: ${asanaList.size}" )
-                if  (currentAsana == (asanaList.size - 1)) {
-                    Log.d(LOG_TAG, "ActionFragment - onCreateView - go currentAsana: if  (currentAsana == asanaList.size" )
+            actionViewModel.go.observe(viewLifecycleOwner) {
+                Log.d(
+                    LOG_TAG,
+                    "ActionFragment - onCreateView - go currentAsana: $currentAsana asanaList.size: ${asanaList.size}"
+                )
+                if (currentAsana == (asanaList.size - 1)) {
+                    Log.d(
+                        LOG_TAG,
+                        "ActionFragment - onCreateView - go currentAsana: if  (currentAsana == asanaList.size"
+                    )
                     buttonStart.isChecked = false
-                }
-                else  {
+                } else {
                     actionViewModel.mCurrentAsana.postValue((currentAsana + 1))
                     sp.play(mSp, 1F, 1F, 1, 0, 1F)
                 }
-            })
+            }
 
             buttonSound.setOnCheckedChangeListener { compoundButton, b ->
                 compoundButton.startAnimation(animForButtonStart)
@@ -154,7 +159,7 @@ class ActionFragment : Fragment() {
 
             }
 
-        })
+        }
 
         actionViewModel.loadData()
 
@@ -162,16 +167,17 @@ class ActionFragment : Fragment() {
     }
 
     private fun isDoAnimationProgressItem(flag: Boolean) {
-        actionViewModel.isHolder.observe(viewLifecycleOwner, {
+        actionViewModel.isHolder.observe(viewLifecycleOwner) {
             myPageHashMap[currentAsana]?.animatorForProgressItem?.let { animator ->
                 if (flag) {
-                    animator.duration = asanaList[currentAsana].times * 1000.toLong() //java.lang.ArrayIndexOutOfBoundsException: length=43; index=-1
+                    animator.duration =
+                        asanaList[currentAsana].times * 1000.toLong() //java.lang.ArrayIndexOutOfBoundsException: length=43; index=-1
                     animator.start()
                 } else {
                     animator.cancel()
                 }
             }
-        })
+        }
     }
 
     private fun textToSpeech() {
@@ -180,7 +186,7 @@ class ActionFragment : Fragment() {
             var name = ""
             var eng = ""
             settings?.let {
-                if (it.isSpeakAsanaName) {
+                if (it.speakAsanaName) {
                     name = asanaList[currentAsana].name + ". "
                     eng = asanaList[currentAsana].eng + ". "
                 }
@@ -259,10 +265,10 @@ class ActionFragment : Fragment() {
 //            holder.mAdView.adEventListener = StickyBannerEventListener()
 //            holder.mAdView.loadAd(adRequest)
 
-            BillingState.isAds.observe(viewLifecycleOwner, {
+            BillingState.isAds.observe(viewLifecycleOwner) {
                 if (it) holder.advertisingBox.visibility = View.VISIBLE
                 else holder.advertisingBox.visibility = View.GONE
-            })
+            }
 
             if (asanaList[position].side == "second") holder.repeatIcon.visibility = View.VISIBLE
             else holder.repeatIcon.visibility = View.GONE
