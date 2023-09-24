@@ -102,9 +102,7 @@ class MainModel: CoroutineScope {
                             profileViewModel.userData.postValue(data.userData!!)
                         }
                     } else {
-                        val errorMessage = response.message()
-                        Log.d(LOG_TAG, "MainModel - getRemoteData - message error: $errorMessage")
-                        profileViewModel.error.postValue(errorMessage)
+                        profileViewModel.error.postValue(response.toString())
                     }
                 }
                 override fun onFailure(call: Call<Data>, t: Throwable) {

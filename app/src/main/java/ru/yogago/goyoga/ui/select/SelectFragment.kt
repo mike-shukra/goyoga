@@ -80,6 +80,8 @@ class SelectFragment : Fragment() {
             rvAsanas.adapter = adapter
 
             adapter.onItemClick = { asana ->
+                if (asana.side == "second")
+                    asana.id--
                 val args = Bundle()
                 args.putLong("id", asana.id)
                 findNavController().navigate(R.id.nav_action, args)

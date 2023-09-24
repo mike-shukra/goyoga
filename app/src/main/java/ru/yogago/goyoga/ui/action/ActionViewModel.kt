@@ -37,7 +37,6 @@ class ActionViewModel : ViewModel(), CoroutineScope {
             Log.d(LOG_TAG, "ActionViewModel - waitAsana launch this: ${this.hashCode()}")
             while (time > 0) {
                 delay(100)
-                Log.d(LOG_TAG, "ActionViewModel - play - time: $time")
                 time--
             }
             go.postValue((mCurrentAsana.value!! + 1))
@@ -48,20 +47,17 @@ class ActionViewModel : ViewModel(), CoroutineScope {
     fun loadData() = launch {
 
         val settings = dbDao.getSettings()
-        val proportionately = settings?.proportionately!!.toInt()
-        val addTime = settings.addTime
+        val proportionately = settings!!.proportionately.toInt()
 
         asanasList = loadAsanasFromDB()
         asanasList.forEach {
-            it.times = it.times * proportionately + addTime
+            it.times = it.times * proportionately + settings.addTime
         }
-        val aState: ActionState? = dbDao.getActionState()
-        Log.d(LOG_TAG, "ActionViewModel - loadActionStateFromDB aState: $aState")
-        val userData: UserData? = loadUserDataFromDB()
-        userData?.let {
-            data = Data(asanas = asanasList, userData = userData, actionState = aState, settings = settings)
-            mData.postValue(data)
-        }
+        val aState: ActionState = dbDao.getActionState()
+        val userData: UserData = loadUserDataFromDB()
+
+        data = Data(asanas = asanasList, userData = userData, actionState = aState, settings = settings)
+        mData.postValue(data)
     }
 
     private fun loadAsanasFromDB(): List<Asana> {
