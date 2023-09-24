@@ -30,7 +30,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var btnSignInGoogle: Button
     private val Req_Code: Int = 123
     private lateinit var mGoogleSignInClient: GoogleSignInClient
-    // Creating firebaseAuth object
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +53,6 @@ class LoginActivity : AppCompatActivity() {
         tvRedirectSignUp.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
-            // using finish() to end the activity
             finish()
         }
 

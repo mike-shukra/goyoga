@@ -9,10 +9,10 @@ import ru.yogago.goyoga.data.*
 
 interface Api {
 
-    @GET("api/dataN")
+    @GET("api/data")
     fun getDataAsync(@Header("X-Authorization-Firebase") header: String): Call<Data>
 
-    @POST("api/createN")
+    @POST("api/create")
     fun createAsync(
         @Header("X-Authorization-Firebase") header: String,
         @Body parametersDTO: ParametersDTO
