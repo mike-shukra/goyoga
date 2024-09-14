@@ -16,8 +16,6 @@ import retrofit2.Response
 
 class MainModel: CoroutineScope {
 
-//    private scope = CoroutineScope(Job() + Dispatchers.Default)
-
     private val job = SupervisorJob()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
@@ -50,7 +48,7 @@ class MainModel: CoroutineScope {
     }
 
     fun create(level: Long, proportionally: Float, addTime: Int, knee: Boolean, loins: Boolean,
-               neck: Boolean, inverted: Boolean, sideBySideSort: Boolean) {
+                       neck: Boolean, inverted: Boolean, sideBySideSort: Boolean) {
         val parametersDTO = ParametersDTO(
             now = 1,
             allTime = 0,
@@ -65,110 +63,79 @@ class MainModel: CoroutineScope {
             sideBySideSort = sideBySideSort,
             System.currentTimeMillis()
         )
-        val call = ApiFactory.API.createAsync(TokenProvider.firebaseToken!!, parametersDTO)
-        call.enqueue(object : Callback<Data> {
-            override fun onResponse(call: Call<Data>, response: Response<Data>) {
-                if (response.isSuccessful) {
-                    val data = response.body()!!
-                    launch {
-                        val del = dbDao.deleteAsanas()
-                        val insA = dbDao.insertAsanas(data.asanas!!)
-                        val insS = dbDao.insertSettings(data.settings!!)
-                        val insAs = dbDao.insertActionState(data.actionState!!)
-                        val insD = dbDao.insertUserData(data.userData!!)
-                        Log.d(LOG_TAG, "MainModel - updateDB del: $del, insA: $insA, insS: $insS, idsD: $insD")
-                        profileViewModel.done.postValue(true)
-                    }
-                } else {
-                    val errorMessage = response.message()
-                    Log.d(LOG_TAG, "MainModel - create - message error: $errorMessage")
-                    profileViewModel.error.postValue(errorMessage)
-                }
+        launch {
+            try {
+                val deferred =
+                    ApiFactory.API.createAsync(TokenProvider.firebaseToken!!, parametersDTO)
+                val data: Data = deferred.await()
+
+                val del = dbDao.deleteAsanas()
+                val insA = dbDao.insertAsanas(data.asanas!!)
+                val insS = dbDao.insertSettings(data.settings!!)
+                val insAs = dbDao.insertActionState(data.actionState!!)
+                val insD = dbDao.insertUserData(data.userData!!)
+                Log.d(
+                    LOG_TAG,
+                    "MainModel - updateDB del: $del, insA: $insA, insS: $insS, idsD: $insD"
+                )
+                profileViewModel.done.postValue(true)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                val errorMessage = e.message
+                Log.d(LOG_TAG, "MainModel - create - message error: $errorMessage")
+                profileViewModel.error.postValue(errorMessage)
             }
-            override fun onFailure(call: Call<Data>, t: Throwable) {
-                // Request failed due to a network error or other issues
-                // Handle the failure
-            }
-        })
+        }
     }
 
-    private fun updateParameters(parametersDTO: ParametersDTO) {
-        val call = ApiFactory.API.updateParameters(TokenProvider.firebaseToken!!, parametersDTO)
-        call.enqueue(object : Callback<Data> {
-            override fun onResponse(call: Call<Data>, response: Response<Data>) {
-                if (response.isSuccessful) {
-                    val data = response.body()!!
-                    Log.d(LOG_TAG, "MainModel - updateParameters data: $data")
-                    launch {
-                        dbDao.deleteAsanas()
-                        dbDao.insertAsanas(data.asanas!!)
-                    }
-                } else {
-                    val errorMessage = response.message()
-                    Log.d(LOG_TAG, "MainModel - updateParameters - message error: $errorMessage")
-                    profileViewModel.error.postValue(errorMessage)
-                }
-            }
-            override fun onFailure(call: Call<Data>, t: Throwable) {
-                // Request failed due to a network error or other issues
-                // Handle the failure
-            }
-        })
-    }
-//    private suspend fun updateParameters(parametersDTO: ParametersDTO) {
-//        try {
-//            val deferred = ApiFactory.API.updateParameters(TokenProvider.firebaseToken!!, parametersDTO)
-//            val data: Data = deferred.await()
-//            Log.d(LOG_TAG, "MainModel - updateParameters data: $data")
-//            dbDao.deleteAsanas()
-//            dbDao.insertAsanas(data.asanas!!)
-//
-//        } catch (e :Exception) {
-//            e.printStackTrace()
-//            Log.d(LOG_TAG, "MainModel - updateParameters - message error: " + e.message)
-//        }
+    private suspend fun updateParameters(parametersDTO: ParametersDTO) {
+        try {
+            val deferred = ApiFactory.API.updateParameters(TokenProvider.firebaseToken!!, parametersDTO)
+            val data: Data = deferred.await()
+            Log.d(LOG_TAG, "MainModel - updateParameters data: $data")
+            dbDao.deleteAsanas()
+            dbDao.insertAsanas(data.asanas!!)
 
-//    }
+        } catch (e :Exception) {
+            e.printStackTrace()
+            Log.d(LOG_TAG, "MainModel - updateParameters - message error: " + e.message)
+        }
+
+    }
 
     fun loadUserData() {
-            val call = ApiFactory.API.getDataAsync(TokenProvider.firebaseToken!!)
-            call.enqueue(object : Callback<Data> {
-                override fun onResponse(call: Call<Data>, response: Response<Data>) {
-                    if (response.isSuccessful) {
-                        val data = response.body()!!
-                        launch {
-                            val settings = dbDao.getSettings()
-                            if (settings != null) {
-                                if (settings.timeOfFiltered < data.settings!!.timeOfFiltered) {
-                                    dbDao.deleteAsanas()
-                                    dbDao.deleteUserData()
-                                    dbDao.deleteSettings()
-                                    dbDao.deleteActionState()
-                                    dbDao.insertAsanas(data.asanas!!)
-                                    dbDao.insertSettings(data.settings!!)
-                                    dbDao.insertUserData(data.userData!!)
-                                    dbDao.insertActionState(data.actionState!!)
-                                }
-                            } else {
-                                dbDao.insertAsanas(data.asanas!!)
-                                dbDao.insertSettings(data.settings!!)
-                                dbDao.insertUserData(data.userData!!)
-                                dbDao.insertActionState(data.actionState!!)
-                            }
-                            profileViewModel.proportionately.postValue(data.settings!!.proportionately)
-                            profileViewModel.addTime.postValue(data.settings!!.addTime)
-                            profileViewModel.userData.postValue(data.userData!!)
-                        }
-                    } else {
-                        profileViewModel.error.postValue(response.toString())
+        launch {
+            try {
+
+                val deferred = ApiFactory.API.getDataAsync(TokenProvider.firebaseToken!!)
+                val data = deferred.await()
+
+                val settings = dbDao.getSettings()
+                if (settings != null) {
+                    if (settings.timeOfFiltered < data.settings!!.timeOfFiltered) {
+                        dbDao.deleteAsanas()
+                        dbDao.deleteUserData()
+                        dbDao.deleteSettings()
+                        dbDao.deleteActionState()
+                        dbDao.insertAsanas(data.asanas!!)
+                        dbDao.insertSettings(data.settings!!)
+                        dbDao.insertUserData(data.userData!!)
+                        dbDao.insertActionState(data.actionState!!)
                     }
+                } else {
+                    dbDao.insertAsanas(data.asanas!!)
+                    dbDao.insertSettings(data.settings!!)
+                    dbDao.insertUserData(data.userData!!)
+                    dbDao.insertActionState(data.actionState!!)
                 }
-                override fun onFailure(call: Call<Data>, t: Throwable) {
-                    // Request failed due to a network error or other issues
-                    // Handle the failure
-                    profileViewModel.error.postValue(t.message)
-                }
-            })
+                profileViewModel.proportionately.postValue(data.settings!!.proportionately)
+                profileViewModel.addTime.postValue(data.settings!!.addTime)
+                profileViewModel.userData.postValue(data.userData!!)
+            } catch (e: Exception) {
+                profileViewModel.error.postValue(e.message)
+            }
+        }
     }
 
     fun setViewModel(m: SelectViewModel) : MainModel {

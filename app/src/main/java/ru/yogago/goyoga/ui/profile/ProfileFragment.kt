@@ -182,7 +182,7 @@ class ProfileFragment : Fragment() {
             }
         }
         createButton.setOnClickListener {
-            profileViewModel.create(
+    profileViewModel.create(
                 levelSpinner.selectedItemId,
                 seekBarProportionallyValue.text.toString().toFloat(),
                 seekBarAddTimeValue.text.toString().toInt(),
