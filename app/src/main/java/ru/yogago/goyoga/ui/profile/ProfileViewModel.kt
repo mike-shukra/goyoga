@@ -53,15 +53,15 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             else {
                 purchases.forEach {
                     myBilling.acknowledgedPurchase(it)
-                    Log.d(LOG_TAG_BILLING, "ProfileViewModel - purchase.sku: ${it.sku}")
+                    Log.d(LOG_TAG_BILLING, "ProfileViewModel - purchase.sku: ${it.skus}")
                     Log.d(LOG_TAG_BILLING, "ProfileViewModel - purchase.purchaseState: ${it.purchaseState}")
                     Log.d(LOG_TAG_BILLING, "ProfileViewModel - purchase.isAcknowledged: ${it.isAcknowledged}")
 
                     if ((it.purchaseState == Purchase.PurchaseState.PURCHASED) && (it.isAcknowledged)) {
-                        BillingState.setFlagByString(it.sku, false)
+                        BillingState.setFlagByString("it.sku", false)
                     }
                     else {
-                        BillingState.setFlagByString(it.sku, true)
+                        BillingState.setFlagByString("it.sku", true)
                     }
                 }
                 checkContain(purchases)
@@ -80,7 +80,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         val subscribesList = BillingState.getSubscribesList()
         val purchaseStrings = arrayListOf<String>()
         purchases.forEach {
-            purchaseStrings.add(it.sku)
+            purchaseStrings.add("it.sku")
         }
         subscribesList.forEach {
             if (!purchaseStrings.contains(it)) {
@@ -93,13 +93,16 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun create(level: Long, knee: Boolean, loins: Boolean, neck: Boolean, inverted: Boolean) {
+    fun create(level: Long, seekBarProportionally: Float, seekBarAddTime: Int, knee: Boolean, loins: Boolean, neck: Boolean, inverted: Boolean, sideBySideSort: Boolean) {
         model.create(
             level = level,
+            proportionally = seekBarProportionally,
+            addTime = seekBarAddTime,
             knee = knee,
             loins = loins,
             neck = neck,
-            inverted = inverted
+            inverted = inverted,
+            sideBySideSort = sideBySideSort
         )
     }
 
@@ -113,5 +116,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     fun updateSettingsProportionately(value: Float) {
         model.updateSettingsProportionately(value)
+    }
+    fun updateSettingsHowToSort(value: Boolean) {
+        model.updateSettingsHowToSort(value)
     }
 }

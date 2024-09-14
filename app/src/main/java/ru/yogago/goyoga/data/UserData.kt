@@ -12,9 +12,10 @@ data class UserData (
     var allTime: Int = 0,
     var allCount: Int = 0,
     var level: Int = 0,
-    var dangerknee: Int = 0,
-    var dangerloins: Int = 0,
-    var dangerneck: Int = 0,
-    var inverted: Int = 0,
+    var dangerknee: Boolean,
+    var dangerloins: Boolean,
+    var dangerneck: Boolean,
+    var inverted: Boolean,
+    var sideBySideSort: Boolean,
     var date: String? = null
 )

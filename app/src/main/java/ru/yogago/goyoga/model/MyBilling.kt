@@ -70,17 +70,25 @@ class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdate
         onSuccess: (List<Purchase>) -> Unit,
         onError: (message: String) -> Unit
     ) {
-        if (isSubscriptionPurchaseSupported()) {
-            val purchasesResult = billingClient.queryPurchases(BillingClient.SkuType.SUBS)
-            if (purchasesResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                onSuccess(purchasesResult.purchasesList!!)
-                Log.d(LOG_TAG_BILLING, "MyBilling - startQueryPurchases - purchasesResult.purchasesList: ${purchasesResult.purchasesList}")
+        launch {
+            if (isSubscriptionPurchaseSupported()) {
+                val params = QueryPurchasesParams.newBuilder()
+                    .setProductType(BillingClient.ProductType.SUBS)
+
+                // uses queryPurchasesAsync Kotlin extension function
+                val purchasesResult = billingClient.queryPurchasesAsync(params.build())
+
+//            val purchasesResult = billingClient.queryPurchases(BillingClient.SkuType.SUBS)
+                if (purchasesResult.billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    onSuccess(purchasesResult.purchasesList!!)
+                    Log.d(LOG_TAG_BILLING, "MyBilling - startQueryPurchases - purchasesResult.purchasesList: ${purchasesResult.purchasesList}")
+                } else {
+                    Log.d(LOG_TAG_BILLING, "Error trying to query purchases: $purchasesResult")
+                    onError(purchasesResult.toString())
+                }
             } else {
-                Log.d(LOG_TAG_BILLING, "Error trying to query purchases: $purchasesResult")
-                onError(purchasesResult.toString())
+                onSuccess(emptyList())
             }
-        } else {
-            onSuccess(emptyList())
         }
     }
 
@@ -175,7 +183,7 @@ class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdate
                         billingClient.acknowledgePurchase(acknowledgePurchaseParams.build())
                     }
                     Log.d(LOG_TAG_BILLING,"MyBilling - acknowledgedPurchase - ackPurchaseResult: $ackPurchaseResult")
-                    BillingState.setFlagByString(purchase.sku, false)
+//                    BillingState.setFlagByString(purchase.sku, false)
                 }
             }
         }
