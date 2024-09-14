@@ -16,23 +16,29 @@ import retrofit2.Response
 
 class MainModel: CoroutineScope {
 
+//    private scope = CoroutineScope(Job() + Dispatchers.Default)
+
     private val job = SupervisorJob()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
+    private val coroutineExceptionHandler = CoroutineExceptionHandler { context, throwable ->
+        println("Error: $throwable в $context")
+    }
     private val dbDao = DataBase.db.getDBDao()
     private lateinit var selectViewModel: SelectViewModel
     private lateinit var profileViewModel: ProfileViewModel
 
-    fun loadData() {
+    fun loadDataFromDB() {
         launch {
             val settings = dbDao.getSettings()
             val asanas: List<Asana> = dbDao.getAsanas()
             val userData: UserData = dbDao.getUserData()
             userData.allTime = (userData.allTime * settings?.proportionately!!).toInt() + (settings.addTime * userData.allCount)
             selectViewModel.userData.postValue(userData)
-            selectViewModel.asanas.postValue(asanas.filter { asana ->
-                asana.side != "first"
-            })
+            selectViewModel.asanas.postValue(asanas)
+//            selectViewModel.asanas.postValue(asanas.filter { asana ->
+//                asana.side != "first"
+//            })
         }
     }
 
@@ -43,16 +49,21 @@ class MainModel: CoroutineScope {
         }
     }
 
-    fun create(level: Long, knee: Boolean, loins: Boolean, neck: Boolean, inverted: Boolean) {
+    fun create(level: Long, proportionally: Float, addTime: Int, knee: Boolean, loins: Boolean,
+               neck: Boolean, inverted: Boolean, sideBySideSort: Boolean) {
         val parametersDTO = ParametersDTO(
             now = 1,
             allTime = 0,
             allCount = 0,
             level = Level.values()[level.toInt()].toString(),
+            proportionally = proportionally,
+            addTime = addTime,
             dangerKnee = knee,
             dangerLoins = loins,
             dangerNeck = neck,
-            inverted = inverted
+            inverted = inverted,
+            sideBySideSort = sideBySideSort,
+            System.currentTimeMillis()
         )
         val call = ApiFactory.API.createAsync(TokenProvider.firebaseToken!!, parametersDTO)
         call.enqueue(object : Callback<Data> {
@@ -63,6 +74,7 @@ class MainModel: CoroutineScope {
                         val del = dbDao.deleteAsanas()
                         val insA = dbDao.insertAsanas(data.asanas!!)
                         val insS = dbDao.insertSettings(data.settings!!)
+                        val insAs = dbDao.insertActionState(data.actionState!!)
                         val insD = dbDao.insertUserData(data.userData!!)
                         Log.d(LOG_TAG, "MainModel - updateDB del: $del, insA: $insA, insS: $insS, idsD: $insD")
                         profileViewModel.done.postValue(true)
@@ -78,8 +90,45 @@ class MainModel: CoroutineScope {
                 // Handle the failure
             }
         })
-
     }
+
+    private fun updateParameters(parametersDTO: ParametersDTO) {
+        val call = ApiFactory.API.updateParameters(TokenProvider.firebaseToken!!, parametersDTO)
+        call.enqueue(object : Callback<Data> {
+            override fun onResponse(call: Call<Data>, response: Response<Data>) {
+                if (response.isSuccessful) {
+                    val data = response.body()!!
+                    Log.d(LOG_TAG, "MainModel - updateParameters data: $data")
+                    launch {
+                        dbDao.deleteAsanas()
+                        dbDao.insertAsanas(data.asanas!!)
+                    }
+                } else {
+                    val errorMessage = response.message()
+                    Log.d(LOG_TAG, "MainModel - updateParameters - message error: $errorMessage")
+                    profileViewModel.error.postValue(errorMessage)
+                }
+            }
+            override fun onFailure(call: Call<Data>, t: Throwable) {
+                // Request failed due to a network error or other issues
+                // Handle the failure
+            }
+        })
+    }
+//    private suspend fun updateParameters(parametersDTO: ParametersDTO) {
+//        try {
+//            val deferred = ApiFactory.API.updateParameters(TokenProvider.firebaseToken!!, parametersDTO)
+//            val data: Data = deferred.await()
+//            Log.d(LOG_TAG, "MainModel - updateParameters data: $data")
+//            dbDao.deleteAsanas()
+//            dbDao.insertAsanas(data.asanas!!)
+//
+//        } catch (e :Exception) {
+//            e.printStackTrace()
+//            Log.d(LOG_TAG, "MainModel - updateParameters - message error: " + e.message)
+//        }
+
+//    }
 
     fun loadUserData() {
             val call = ApiFactory.API.getDataAsync(TokenProvider.firebaseToken!!)
@@ -89,14 +138,23 @@ class MainModel: CoroutineScope {
                         val data = response.body()!!
                         launch {
                             val settings = dbDao.getSettings()
-                            if (settings!!.timeOfFiltered < data.settings!!.timeOfFiltered) {
-                                dbDao.deleteAsanas()
+                            if (settings != null) {
+                                if (settings.timeOfFiltered < data.settings!!.timeOfFiltered) {
+                                    dbDao.deleteAsanas()
+                                    dbDao.deleteUserData()
+                                    dbDao.deleteSettings()
+                                    dbDao.deleteActionState()
+                                    dbDao.insertAsanas(data.asanas!!)
+                                    dbDao.insertSettings(data.settings!!)
+                                    dbDao.insertUserData(data.userData!!)
+                                    dbDao.insertActionState(data.actionState!!)
+                                }
+                            } else {
                                 dbDao.insertAsanas(data.asanas!!)
+                                dbDao.insertSettings(data.settings!!)
+                                dbDao.insertUserData(data.userData!!)
+                                dbDao.insertActionState(data.actionState!!)
                             }
-                            dbDao.deleteUserData()
-                            dbDao.deleteSettings()
-                            dbDao.insertSettings(data.settings!!)
-                            dbDao.insertUserData(data.userData!!)
                             profileViewModel.proportionately.postValue(data.settings!!.proportionately)
                             profileViewModel.addTime.postValue(data.settings!!.addTime)
                             profileViewModel.userData.postValue(data.userData!!)
@@ -131,13 +189,35 @@ class MainModel: CoroutineScope {
     fun updateSettingsAddTime(value: Int) {
         launch {
             dbDao.updateSettingsAddTime(value)
+            val actionState = dbDao.getActionState()
+            val userData = dbDao.getUserData()
+            val settings = dbDao.getSettings()
+            val parametersDTO = ParametersDTO(actionState, userData, settings)
+            updateParameters(parametersDTO)
         }
     }
 
     fun updateSettingsProportionately(value: Float) {
         launch {
             dbDao.updateSettingsProportionately(value)
+            val actionState = dbDao.getActionState()
+            val userData = dbDao.getUserData()
+            val settings = dbDao.getSettings()
+            val parametersDTO = ParametersDTO(actionState, userData, settings)
+            updateParameters(parametersDTO)
         }
+    }
+
+    fun updateSettingsHowToSort(value: Boolean) {
+        launch {
+            val ud = dbDao.updateHowToSort(value)
+            val actionState = dbDao.getActionState()
+            val userData = dbDao.getUserData()
+            val settings = dbDao.getSettings()
+            val parametersDTO = ParametersDTO(actionState, userData, settings)
+            updateParameters(parametersDTO)
+        }
+
     }
 
 }

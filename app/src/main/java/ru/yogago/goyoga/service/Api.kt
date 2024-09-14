@@ -18,4 +18,16 @@ interface Api {
         @Body parametersDTO: ParametersDTO
     ): Call<Data>
 
+    @POST("api/update-parameters")
+    fun updateParameters(
+        @Header("X-Authorization-Firebase") header: String,
+        @Body parametersDTO: ParametersDTO
+    ): Call<Data>
+
+//    @POST("api/update-parameters")
+//    fun updateParameters(
+//        @Header("X-Authorization-Firebase") header: String,
+//        @Body parametersDTO: ParametersDTO
+//    ): Deferred<Data>
+
 }

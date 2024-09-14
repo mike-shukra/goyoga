@@ -14,6 +14,7 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.launch
 //import com.yandex.mobile.ads.AdRequest
 //import com.yandex.mobile.ads.AdSize
 //import com.yandex.mobile.ads.AdView
@@ -22,6 +23,8 @@ import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
 import ru.yogago.goyoga.data.BillingState
 import ru.yogago.goyoga.data.SelectedIndexArray
 import ru.yogago.goyoga.model.MyBilling
+import ru.yogago.goyoga.service.DataBase
+
 //import ru.yogago.goyoga.service.StickyBannerEventListener
 
 
@@ -59,6 +62,11 @@ class ProfileFragment : Fragment() {
         val checkBoxNeck = view.findViewById<CheckBox>(R.id.checkBoxNeck)
         val checkBoxInverted = view.findViewById<CheckBox>(R.id.checkBoxInverted)
         val checkBoxLoins = view.findViewById<CheckBox>(R.id.checkBoxLoins)
+
+        val sideBySideSortRadioGroup = view.findViewById<RadioGroup>(R.id.sideBySideSort)
+        val radioButtonLong = view.findViewById<RadioButton>(R.id.checkBoxLong)
+        val radioButtonShort = view.findViewById<RadioButton>(R.id.checkBoxShort)
+
         val loading = view.findViewById<ProgressBar>(R.id.loading)
         val topLayout = view.findViewById<LinearLayout>(R.id.topLayout)
         val profileWrapper: LinearLayout = view.findViewById(R.id.profileWrapper)
@@ -69,6 +77,14 @@ class ProfileFragment : Fragment() {
         val seekBarAddTimeValue = view.findViewById<TextView>(R.id.seekBarAddTimeValue)
         val seekBarProportionally = view.findViewById<SeekBar>(R.id.seekBarProportionally)
         val seekBarAddTime = view.findViewById<SeekBar>(R.id.seekBarAddTime)
+
+
+        sideBySideSortRadioGroup.setOnCheckedChangeListener { _, checkedId ->
+            val isCheckedLong = checkedId == radioButtonLong.id
+            val isCheckedShort = checkedId == radioButtonShort.id
+
+            profileViewModel.updateSettingsHowToSort(isCheckedShort)
+        }
 
         seekBarProportionally.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
@@ -168,10 +184,13 @@ class ProfileFragment : Fragment() {
         createButton.setOnClickListener {
             profileViewModel.create(
                 levelSpinner.selectedItemId,
+                seekBarProportionallyValue.text.toString().toFloat(),
+                seekBarAddTimeValue.text.toString().toInt(),
                 checkBoxKnee.isChecked,
                 checkBoxLoins.isChecked,
                 checkBoxNeck.isChecked,
-                checkBoxInverted.isChecked
+                checkBoxInverted.isChecked,
+                radioButtonShort.isChecked
             )
             profileViewModel.done.observe(viewLifecycleOwner) {
                 if (it) findNavController().navigate(R.id.nav_select)
@@ -194,10 +213,20 @@ class ProfileFragment : Fragment() {
             levelSpinner.adapter = adapter
             levelSpinner.setSelection(selectedIndex.selectedIndex)
 
-            checkBoxKnee.isChecked = it.dangerknee == 1
-            checkBoxNeck.isChecked = it.dangerneck == 1
-            checkBoxLoins.isChecked = it.dangerloins == 1
-            checkBoxInverted.isChecked = it.inverted == 1
+            checkBoxKnee.isChecked = it.dangerknee
+            checkBoxNeck.isChecked = it.dangerneck
+            checkBoxLoins.isChecked = it.dangerloins
+            checkBoxInverted.isChecked = it.inverted
+
+            when (it.sideBySideSort) {
+                true -> {
+                    radioButtonShort.isChecked = true
+                }
+
+                false -> {
+                    radioButtonLong.isChecked = true
+                }
+            }
 
             loading.visibility = View.GONE
 

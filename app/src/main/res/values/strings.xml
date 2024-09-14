@@ -102,5 +102,8 @@
     <string name="don_t_have_an_account_sign_in">don\'t have an account sign in</string>
     <string name="google_sign_in">Google Sign In</string>
     <string name="logout">Logout</string>
+    <string name="long_for_one_side">Long for one side</string>
+    <string name="side_by_side">Side by side</string>
+    <string name="how_to_sort">How to sort</string>
 
 </resources>

@@ -20,7 +20,7 @@ class SelectViewModel : ViewModel() {
     }
 
     fun loadAsanas() {
-        model.loadData()
+        model.loadDataFromDB()
     }
 
 }

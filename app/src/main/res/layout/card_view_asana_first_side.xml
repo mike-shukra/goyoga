@@ -31,18 +31,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_alignParentStart="true"
-                android:layout_margin="8dp"
-                android:background="@drawable/round_background_accent"
-                android:contentDescription="@string/icon"
-                android:padding="4dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_baseline_repeat_24" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView

@@ -6,7 +6,7 @@ import ru.yogago.goyoga.data.*
 @Dao
 interface DBDao {
     @Query("SELECT * FROM settings")
-    fun getSettings(): Settings?
+    fun getSettings(): Settings
 
     @Query("SELECT * FROM asana")
     fun getAsanas(): List<Asana>
@@ -67,5 +67,7 @@ interface DBDao {
 
     @Query("UPDATE PurchaseItem SET purchaseToken = :purchaseToken, purchaseState = :purchaseState, acknowledged = :acknowledged WHERE productId = :productId")
     fun updatePurchase(productId: Long, purchaseToken: String, purchaseState: Int, acknowledged: Boolean): Int
+    @Query("UPDATE userdata SET sideBySideSort = :value WHERE id = 0")
+    fun updateHowToSort(value: Boolean): Int
 
 }
