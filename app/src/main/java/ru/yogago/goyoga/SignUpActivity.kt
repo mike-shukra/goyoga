@@ -3,6 +3,7 @@ package ru.yogago.goyoga
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -10,6 +11,7 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import ru.yogago.goyoga.data.AppConstants
 
 class SignUpActivity : AppCompatActivity() {
     lateinit var etEmail: EditText
@@ -62,10 +64,19 @@ class SignUpActivity : AppCompatActivity() {
 
         auth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(this) {
             if (it.isSuccessful) {
-                Toast.makeText(this, "Successfully Singed Up", Toast.LENGTH_SHORT).show()
-                finish()
+                val user = FirebaseAuth.getInstance().currentUser
+                user?.sendEmailVerification()
+                    ?.addOnCompleteListener { verifyTask ->
+                        if (verifyTask.isSuccessful) {
+                            Log.d(AppConstants.LOG_TAG, "Verification email sent." )
+                            Toast.makeText(this, "Verification email sent", Toast.LENGTH_LONG).show()
+                            val intent = Intent(this, LoginActivity::class.java)
+                            startActivity(intent)
+                        }
+                    }
             } else {
-                Toast.makeText(this, "Singed Up Failed!", Toast.LENGTH_SHORT).show()
+                Log.d(AppConstants.LOG_TAG, "Registration failed: ${it.exception}")
+                Toast.makeText(this, "Registration failed", Toast.LENGTH_SHORT).show()
             }
         }
     }
