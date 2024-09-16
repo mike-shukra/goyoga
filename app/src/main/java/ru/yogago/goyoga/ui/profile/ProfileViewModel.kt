@@ -31,7 +31,8 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun loadUserData() {
-        model.loadUserData()
+        model.createUserOnServerIfNotExist()
+//        model.loadUserData()
     }
 
 //    viewModelScope.launch {

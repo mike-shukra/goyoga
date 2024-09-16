@@ -1,5 +1,6 @@
 package ru.yogago.goyoga
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
@@ -9,9 +10,10 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 import ru.yogago.goyoga.data.AppConstants
 import ru.yogago.goyoga.service.TokenProvider
 import java.util.*
@@ -19,12 +21,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    // declare the GoogleSignInClient
-    private lateinit var mGoogleSignInClient: GoogleSignInClient
-
-    private val auth by lazy {
-        FirebaseAuth.getInstance()
-    }
+    private lateinit var auth: FirebaseAuth
 
     companion object {
         var dLocale: Locale = Locale("")
@@ -41,6 +38,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        auth = Firebase.auth
+        val currentUser = auth.currentUser
+        if (currentUser == null) {
+            navigateToSignInScreen()
+        }
+
         supportActionBar?.hide()
 
         setContentView(R.layout.activity_main)
@@ -67,6 +71,12 @@ class MainActivity : AppCompatActivity() {
             Configuration.ORIENTATION_LANDSCAPE -> true
             else -> false
         }
+    }
+
+    private fun navigateToSignInScreen() {
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
 }

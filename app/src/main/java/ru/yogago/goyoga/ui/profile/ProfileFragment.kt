@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 //import com.yandex.mobile.ads.AdSize
 //import com.yandex.mobile.ads.AdView
 import ru.yogago.goyoga.R
+import ru.yogago.goyoga.data.AppConstants
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
 import ru.yogago.goyoga.data.BillingState
 import ru.yogago.goyoga.data.SelectedIndexArray
@@ -232,13 +233,17 @@ class ProfileFragment : Fragment() {
 
         }
         profileViewModel.error.observe(viewLifecycleOwner) {
-            var text = it
-            if (it.contains("UnknownHostException")) text = getString(R.string.no_internet)
-            if (it.contains("Не авторизовано")) {
+            Log.d(AppConstants.LOG_TAG, "profileViewModel.error.observe: $it")
+            var text = ""
+            if (it != null)
+                text = it
+
+            if (text.contains("UnknownHostException")) text = getString(R.string.no_internet)
+            if (text.contains("Не авторизовано")) {
                 text = getString(R.string.no_auth)
                 profileViewModel.deleteUserData()
             }
-            if (it.contains("ksd2564kLJdisda82fd3498")) {
+            if (text.contains("ksd2564kLJdisda82fd3498")) {
                 text = getString(R.string.version_is_out_of_date)
                 profileViewModel.deleteUserData()
             }
