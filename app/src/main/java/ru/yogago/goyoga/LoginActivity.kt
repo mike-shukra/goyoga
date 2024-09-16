@@ -50,10 +50,15 @@ class LoginActivity : AppCompatActivity() {
         oneTapClient = Identity.getSignInClient(this)
 
         val currentUser = auth.currentUser
-        if (currentUser != null) {
+        if (currentUser != null && currentUser.isEmailVerified) {
+            Toast.makeText(this, "Successfully LoggedIn", Toast.LENGTH_SHORT).show()
             updateUserData()
+        } else {
+            if (currentUser != null) {
+                if (!currentUser.isEmailVerified)
+                    Toast.makeText(this, "Email not confirmed", Toast.LENGTH_LONG).show()
+            }
         }
-
         setContentView(R.layout.activity_login)
 
         tvRedirectSignUp = findViewById(R.id.tvRedirectSignUp)
@@ -138,7 +143,7 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
-    fun updateUserData() {
+    private fun updateUserData() {
         auth.currentUser!!.getIdToken(true)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -147,6 +152,7 @@ class LoginActivity : AppCompatActivity() {
                     Log.d(AppConstants.LOG_TAG, "token: " + TokenProvider.firebaseToken)
                     navigateToHomeScreen()
                 } else {
+                    //TODO
 //                     Handle error -> task.getException();
                 }
             }
@@ -160,16 +166,17 @@ class LoginActivity : AppCompatActivity() {
     private fun login() {
         val email = etEmail.text.toString()
         val pass = etPass.text.toString()
-        // calling signInWithEmailAndPassword(email, pass)
-        // function using Firebase auth object
-        // On successful response Display a Toast
+
         Log.d(AppConstants.LOG_TAG, "email: $email, pass: $pass" )
         auth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(this) {
-            Log.d(AppConstants.LOG_TAG, "try " )
             if (it.isSuccessful) {
-                Toast.makeText(this, "Successfully LoggedIn", Toast.LENGTH_SHORT).show()
-                updateUserData()
-
+                val user = FirebaseAuth.getInstance().currentUser
+                if (user != null && user.isEmailVerified) {
+                    Toast.makeText(this, "Successfully LoggedIn", Toast.LENGTH_SHORT).show()
+                    updateUserData()
+                } else {
+                    Toast.makeText(this, "Email not confirmed", Toast.LENGTH_SHORT).show()
+                }
             } else
                 Toast.makeText(this, "Log In failed ", Toast.LENGTH_SHORT).show()
         }
