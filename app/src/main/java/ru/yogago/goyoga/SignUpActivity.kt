@@ -18,35 +18,29 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var btnSignUp: Button
     lateinit var tvRedirectLogin: TextView
 
-    // create Firebase authentication object
     private lateinit var auth: FirebaseAuth
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
 
-        // View Bindings
         etEmail = findViewById(R.id.etSEmailAddress)
         etConfPass = findViewById(R.id.etSConfPassword)
         etPass = findViewById(R.id.etSPassword)
         btnSignUp = findViewById(R.id.btnSSigned)
         tvRedirectLogin = findViewById(R.id.tvRedirectLogin)
 
-        // Initialising auth object
         auth = Firebase.auth
 
         btnSignUp.setOnClickListener {
             signUpUser()
         }
 
-        // switching from signUp Activity to Login Activity
         tvRedirectLogin.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
-
     }
 
     private fun signUpUser() {
@@ -65,10 +59,7 @@ class SignUpActivity : AppCompatActivity() {
                 .show()
             return
         }
-        // If all credential are correct
-        // We call createUserWithEmailAndPassword
-        // using auth object and pass the
-        // email and pass in it.
+
         auth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(this) {
             if (it.isSuccessful) {
                 Toast.makeText(this, "Successfully Singed Up", Toast.LENGTH_SHORT).show()

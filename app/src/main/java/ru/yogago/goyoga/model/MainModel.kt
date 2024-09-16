@@ -104,7 +104,27 @@ class MainModel: CoroutineScope {
 
     }
 
-    fun loadUserData() {
+    fun createUserOnServerIfNotExist() {
+        launch {
+            try {
+                Log.d(LOG_TAG, "MainModel - createUserOnServerIfNotExist TokenProvider.firebaseToken: ${TokenProvider.firebaseToken}")
+                var deferred = ApiFactory.API.isUserExist(TokenProvider.firebaseToken!!)
+                var booleanDTO = deferred.await()
+
+                if (!booleanDTO.value) {
+                    deferred = ApiFactory.API.signUp(TokenProvider.firebaseToken!!)
+                    booleanDTO = deferred.await()
+                }
+                if (booleanDTO.value)
+                    loadUserData()
+
+            } catch (e: Exception) {
+                profileViewModel.error.postValue(e.message)
+            }
+        }
+    }
+
+    private fun loadUserData() {
         launch {
             try {
 

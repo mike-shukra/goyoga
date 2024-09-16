@@ -14,6 +14,7 @@
         android:padding="15dp"
         android:paddingTop="40dp"
         android:paddingBottom="40dp"
+        android:layout_gravity="end"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,21 +65,25 @@
 
         <Button
             android:id="@+id/btnSSigned"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:background="@drawable/btn_primary"
+            android:layout_margin="20dp"
+            android:background="@drawable/button_background"
+            android:textColor="@color/colorWhiteLite"
+            android:textSize="18sp"
+            android:padding="20dp"
+            android:layout_gravity="end"
             android:text="@string/signed" />
 
         <TextView
             android:id="@+id/tvRedirectLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
+            android:gravity="end"
             android:layout_margin="10dp"
             android:text="@string/already_have_an_account_login"
-            android:textColor="#18206F"
-            android:textSize="16sp" />
+            android:textColor="@color/colorWhiteLite"
+            android:textSize="18sp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

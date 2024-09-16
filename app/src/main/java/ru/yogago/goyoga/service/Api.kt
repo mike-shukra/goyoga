@@ -18,6 +18,16 @@ interface Api {
         @Body parametersDTO: ParametersDTO
     ): Deferred<Data>
 
+    @POST("api/public/firebase-signup")
+    fun signUp(
+        @Header("firebaseToken") header: String
+    ): Deferred<BooleanDTO>
+
+    @POST("api/public/is-exists")
+    fun isUserExist(
+        @Header("firebaseToken") header: String
+    ): Deferred<BooleanDTO>
+
     @POST("api/update-parameters")
     fun updateParameters(
         @Header("X-Authorization-Firebase") header: String,
