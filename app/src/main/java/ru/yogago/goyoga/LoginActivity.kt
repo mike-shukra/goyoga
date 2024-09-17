@@ -29,6 +29,7 @@ import ru.yogago.goyoga.service.TokenProvider
 
 /**
  * Firebase Authentication using a Google ID Token.
+ * email and password authentication
  */
 class LoginActivity : AppCompatActivity() {
 
@@ -152,8 +153,8 @@ class LoginActivity : AppCompatActivity() {
                     Log.d(AppConstants.LOG_TAG, "token: " + TokenProvider.firebaseToken)
                     navigateToHomeScreen()
                 } else {
-                    //TODO
-//                     Handle error -> task.getException();
+                    task.exception
+                    Log.d(AppConstants.LOG_TAG, "exception: " + task.exception)
                 }
             }
     }

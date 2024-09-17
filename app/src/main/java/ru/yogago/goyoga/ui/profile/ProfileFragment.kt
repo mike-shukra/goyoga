@@ -233,7 +233,7 @@ class ProfileFragment : Fragment() {
 
         }
         profileViewModel.error.observe(viewLifecycleOwner) {
-            Log.d(AppConstants.LOG_TAG, "profileViewModel.error.observe: $it")
+            Log.d(LOG_TAG, "profileViewModel.error.observe: $it")
             var text = ""
             if (it != null)
                 text = it

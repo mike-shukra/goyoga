@@ -13,18 +13,23 @@ import ru.yogago.goyoga.ui.select.SelectViewModel
 import kotlin.coroutines.CoroutineContext
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
 
 class MainModel: CoroutineScope {
 
     private val job = SupervisorJob()
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO + job
     private val coroutineExceptionHandler = CoroutineExceptionHandler { context, throwable ->
-        println("Error: $throwable в $context")
+        Log.e(LOG_TAG,"MainModel coroutineExceptionHandler Error: $throwable in $context")
     }
+    override val coroutineContext = Dispatchers.IO + job + coroutineExceptionHandler
+
     private val dbDao = DataBase.db.getDBDao()
     private lateinit var selectViewModel: SelectViewModel
     private lateinit var profileViewModel: ProfileViewModel
+
+    fun clear() {
+        job.cancel()
+    }
 
     fun loadDataFromDB() {
         launch {
@@ -80,7 +85,7 @@ class MainModel: CoroutineScope {
                 )
                 profileViewModel.done.postValue(true)
 
-            } catch (e: Exception) {
+            } catch (e: IOException) {
                 e.printStackTrace()
                 val errorMessage = e.message
                 Log.d(LOG_TAG, "MainModel - create - message error: $errorMessage")
