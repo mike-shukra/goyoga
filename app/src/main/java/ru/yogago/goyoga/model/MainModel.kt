@@ -13,10 +13,13 @@ import ru.yogago.goyoga.ui.select.SelectViewModel
 import kotlin.coroutines.CoroutineContext
 import retrofit2.Callback
 import retrofit2.Response
+import ru.yogago.goyoga.service.AndroidLogger
+import ru.yogago.goyoga.service.Logger
 import java.io.IOException
 
 class MainModel: CoroutineScope {
 
+    private val logger: Logger = AndroidLogger()
     private val job = SupervisorJob()
     private val coroutineExceptionHandler = CoroutineExceptionHandler { context, throwable ->
         Log.e(LOG_TAG,"MainModel coroutineExceptionHandler Error: $throwable in $context")
@@ -48,7 +51,7 @@ class MainModel: CoroutineScope {
     fun deleteUserData(){
         launch {
             val responseDeleteUserData = dbDao.deleteUserData()
-            Log.d(LOG_TAG, "MainModel - deleteTokenAndUserData responseDeleteUserData: $responseDeleteUserData")
+            logger.d(LOG_TAG, "MainModel - deleteTokenAndUserData responseDeleteUserData: $responseDeleteUserData")
         }
     }
 
@@ -79,7 +82,7 @@ class MainModel: CoroutineScope {
                 val insS = dbDao.insertSettings(data.settings!!)
                 val insAs = dbDao.insertActionState(data.actionState!!)
                 val insD = dbDao.insertUserData(data.userData!!)
-                Log.d(
+                logger.d(
                     LOG_TAG,
                     "MainModel - updateDB del: $del, insA: $insA, insS: $insS, idsD: $insD"
                 )
@@ -98,13 +101,13 @@ class MainModel: CoroutineScope {
         try {
             val deferred = ApiFactory.API.updateParameters(TokenProvider.firebaseToken!!, parametersDTO)
             val data: Data = deferred.await()
-            Log.d(LOG_TAG, "MainModel - updateParameters data: $data")
+            logger.d(LOG_TAG, "MainModel - updateParameters data: $data")
             dbDao.deleteAsanas()
             dbDao.insertAsanas(data.asanas!!)
 
         } catch (e :Exception) {
             e.printStackTrace()
-            Log.d(LOG_TAG, "MainModel - updateParameters - message error: " + e.message)
+            logger.d(LOG_TAG, "MainModel - updateParameters - message error: " + e.message)
         }
 
     }

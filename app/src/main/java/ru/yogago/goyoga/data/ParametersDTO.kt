@@ -15,17 +15,17 @@ data class ParametersDTO(
     var timeOfFiltered: Long
 ) {
     constructor(actionState: ActionState, userData: UserData, settings: Settings) : this(
-        actionState.currentId,
-        userData.allTime,
-        userData.allCount,
-        userData.level.toString(),
-        settings.proportionately,
-        settings.addTime,
-        userData.dangerknee,
-        userData.dangerloins,
-        userData.dangerneck,
-        userData.inverted,
-        userData.sideBySideSort,
-        settings.timeOfFiltered
+        now = actionState.currentId,
+        allTime = userData.allTime,
+        allCount = userData.allCount,
+        level = userData.level.toString(),
+        proportionally = settings.proportionately,
+        addTime = settings.addTime,
+        dangerKnee = userData.dangerknee,
+        dangerLoins = userData.dangerloins,
+        dangerNeck = userData.dangerneck,
+        inverted = userData.inverted,
+        sideBySideSort = userData.sideBySideSort,
+        timeOfFiltered = settings.timeOfFiltered
     )
 }
