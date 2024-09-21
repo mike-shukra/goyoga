@@ -60,13 +60,13 @@ class ActionViewModel : ViewModel(), CoroutineScope {
         mData.postValue(data)
     }
 
-    private fun loadAsanasFromDB(): List<Asana> {
+    private suspend fun loadAsanasFromDB(): List<Asana> {
         val asanas = dbDao.getAsanas()
         Log.d(LOG_TAG, "ActionViewModel - loadAsanasFromDB: $asanas")
         return asanas
     }
 
-    private fun loadUserDataFromDB(): UserData {
+    private suspend fun loadUserDataFromDB(): UserData {
         val userData = dbDao.getUserData()
         Log.d(LOG_TAG, "ActionViewModel - loadDataFromDB userData: $userData")
         return userData

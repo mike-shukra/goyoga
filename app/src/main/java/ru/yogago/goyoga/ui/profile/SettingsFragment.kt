@@ -1,5 +1,7 @@
 package ru.yogago.goyoga.ui.profile
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -22,12 +24,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.yogago.goyoga.LoginActivity
 import ru.yogago.goyoga.MainActivity
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
 import ru.yogago.goyoga.data.Settings
+import ru.yogago.goyoga.service.ApiFactory
 import ru.yogago.goyoga.service.DataBase
+import ru.yogago.goyoga.service.Repository
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
@@ -38,6 +43,9 @@ class SettingsFragment : Fragment(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
     private val settings: MutableLiveData<Settings> = MutableLiveData()
+
+    private val dao = DataBase.db.getDBDao()
+    private val repository = Repository(dao, ApiFactory.API)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,10 +68,6 @@ class SettingsFragment : Fragment(), CoroutineScope {
 
         logOutButton.setOnClickListener {
             Firebase.auth.signOut()
-
-//            val oneTapClient = Identity.getSignInClient(this)
-//            oneTapClient.signOut()
-
             val intent = Intent(activity, LoginActivity::class.java)
             Toast.makeText(activity, "Logging Out", Toast.LENGTH_SHORT).show()
             startActivity(intent)
@@ -72,39 +76,22 @@ class SettingsFragment : Fragment(), CoroutineScope {
         }
         switchIsSpeakAsanaName.setOnCheckedChangeListener { _, b ->
             launch {
-                DataBase.db.getDBDao().updateSettingsIsSpeakAsanaName(b)
+                repository.updateSettingsIsSpeakAsanaName(b)
             }
         }
 
         restartButton.setOnClickListener {
-            launch {
-                val settings = DataBase.db.getDBDao().getSettings()
-                val change = when (settings.language) {
-                    "Russian" -> {
-                        "ru"
-                    }
-                    "English" -> {
-                        "en"
-                    }
-                    else -> {
-                        ""
-                    }
-                }
-                MainActivity.dLocale = Locale(change)
-                val intent = Intent(context, MainActivity::class.java)
-                startActivity(intent)
-                activity?.finish()
-            }
-
+            val intent = Intent(context, MainActivity::class.java)
+            startActivity(intent)
+            activity?.finish()
         }
 
         settings.observe(viewLifecycleOwner) {
             when (it.language) {
-                "Russian" -> {
+                "ru" -> {
                     checkBoxRussian.isChecked = true
                 }
-
-                "English" -> {
+                "en" -> {
                     checkBoxEnglish.isChecked = true
                 }
             }
@@ -115,18 +102,48 @@ class SettingsFragment : Fragment(), CoroutineScope {
             val radioButton = radioGroup.findViewById<RadioButton>(i)
             var lang: String = radioButton.text as String
             Log.d(LOG_TAG, "SettingsFragment - lang: $lang")
-            if (lang == "Английский") lang = "English"
-            if (lang == "Русский") lang = "Russian"
+            if (lang == "Английский" || lang == "English") lang = "en"
+            if (lang == "Русский" || lang == "Russian") lang = "ru"
+            MainActivity.dLocale = Locale(lang)
             launch {
-                DataBase.db.getDBDao().updateSettingsLanguage(lang)
+                repository.updateSettingsLanguage(lang)
+                val sharedPreferences = context?.getSharedPreferences("settings", Context.MODE_PRIVATE)
+                val editor = sharedPreferences!!.edit()
+                editor.putString("language", lang)
+                editor.apply()
             }
         }
 
         launch {
-            val settingsData = DataBase.db.getDBDao().getSettings()
-            settingsData?.let {
-                settings.postValue(it)
-            }
+            val settingsData = repository.getSettings()
+            val sharedPreferences = context?.getSharedPreferences("settings", Context.MODE_PRIVATE)
+            val language = sharedPreferences!!.getString("language", Locale.getDefault().language)
+            settingsData.language = language!!
+            Log.d(LOG_TAG, "SettingsFragment - settingsData: $settingsData")
+            settings.postValue(settingsData)
         }
     }
+
+//    private fun updateLocale(context: Context, language: String): Context {
+//        val locale = Locale(language)
+//        Locale.setDefault(locale)
+//
+//        val resources = context.resources
+//        val config = resources.configuration
+//        config.setLocale(locale)
+//        config.setLayoutDirection(locale)
+//
+//        // Обновляем ресурсы с новой конфигурацией
+//        return context.createConfigurationContext(config)
+//    }
+//
+//    fun applyLocale(context: Context, language: String) {
+//        val updatedContext = updateLocale(context, language)
+//
+//        if (context is Activity) {
+//            (context as Activity).runOnUiThread {
+//                context.recreate()
+//            }
+//        }
+//    }
 }

@@ -16,10 +16,4 @@ object  DataBase {
         logger.d(LOG_TAG, "DataBase - createDataBase: " + this.db)
         return this
     }
-    fun createDataBaseToMainTread(application: Application) : AppDatabase {
-        return Room.databaseBuilder(application, AppDatabase::class.java, "databaseMainTrade")
-            .fallbackToDestructiveMigration()
-            .allowMainThreadQueries()
-            .build()
-    }
 }
