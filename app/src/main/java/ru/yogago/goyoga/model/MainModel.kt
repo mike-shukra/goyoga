@@ -15,6 +15,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import ru.yogago.goyoga.service.AndroidLogger
 import ru.yogago.goyoga.service.Logger
+import ru.yogago.goyoga.service.Repository
 import java.io.IOException
 
 class MainModel: CoroutineScope {
@@ -26,9 +27,11 @@ class MainModel: CoroutineScope {
     }
     override val coroutineContext = Dispatchers.IO + job + coroutineExceptionHandler
 
-    private val dbDao = DataBase.db.getDBDao()
+    private val dao = DataBase.db.getDBDao()
     private lateinit var selectViewModel: SelectViewModel
     private lateinit var profileViewModel: ProfileViewModel
+
+    private val repository = Repository(dao, ApiFactory.API)
 
     fun clear() {
         job.cancel()
@@ -36,9 +39,9 @@ class MainModel: CoroutineScope {
 
     fun loadDataFromDB() {
         launch {
-            val settings = dbDao.getSettings()
-            val asanas: List<Asana> = dbDao.getAsanas()
-            val userData: UserData = dbDao.getUserData()
+            val settings = repository.getSettings()
+            val asanas: List<Asana> = repository.getAsanas()
+            val userData: UserData = repository.getUserData()
             userData.allTime = (userData.allTime * settings?.proportionately!!).toInt() + (settings.addTime * userData.allCount)
             selectViewModel.userData.postValue(userData)
             selectViewModel.asanas.postValue(asanas)
@@ -50,44 +53,16 @@ class MainModel: CoroutineScope {
 
     fun deleteUserData(){
         launch {
-            val responseDeleteUserData = dbDao.deleteUserData()
+            val responseDeleteUserData = repository.deleteUserData()
             logger.d(LOG_TAG, "MainModel - deleteTokenAndUserData responseDeleteUserData: $responseDeleteUserData")
         }
     }
 
-    fun create(level: Long, proportionally: Float, addTime: Int, knee: Boolean, loins: Boolean,
-                       neck: Boolean, inverted: Boolean, sideBySideSort: Boolean) {
-        val parametersDTO = ParametersDTO(
-            now = 1,
-            allTime = 0,
-            allCount = 0,
-            level = Level.values()[level.toInt()].toString(),
-            proportionally = proportionally,
-            addTime = addTime,
-            dangerKnee = knee,
-            dangerLoins = loins,
-            dangerNeck = neck,
-            inverted = inverted,
-            sideBySideSort = sideBySideSort,
-            System.currentTimeMillis()
-        )
+    fun create(parametersDTO: ParametersDTO) {
         launch {
             try {
-                val deferred =
-                    ApiFactory.API.createAsync(TokenProvider.firebaseToken!!, parametersDTO)
-                val data: Data = deferred.await()
-
-                val del = dbDao.deleteAsanas()
-                val insA = dbDao.insertAsanas(data.asanas!!)
-                val insS = dbDao.insertSettings(data.settings!!)
-                val insAs = dbDao.insertActionState(data.actionState!!)
-                val insD = dbDao.insertUserData(data.userData!!)
-                logger.d(
-                    LOG_TAG,
-                    "MainModel - updateDB del: $del, insA: $insA, insS: $insS, idsD: $insD"
-                )
-                profileViewModel.done.postValue(true)
-
+                val isSuccess : Boolean = repository.createNewSequence(TokenProvider.firebaseToken!!, parametersDTO)
+                profileViewModel.done.postValue(isSuccess)
             } catch (e: IOException) {
                 e.printStackTrace()
                 val errorMessage = e.message
@@ -99,12 +74,7 @@ class MainModel: CoroutineScope {
 
     private suspend fun updateParameters(parametersDTO: ParametersDTO) {
         try {
-            val deferred = ApiFactory.API.updateParameters(TokenProvider.firebaseToken!!, parametersDTO)
-            val data: Data = deferred.await()
-            logger.d(LOG_TAG, "MainModel - updateParameters data: $data")
-            dbDao.deleteAsanas()
-            dbDao.insertAsanas(data.asanas!!)
-
+            repository.updateParameters(TokenProvider.firebaseToken!!, parametersDTO)
         } catch (e :Exception) {
             e.printStackTrace()
             logger.d(LOG_TAG, "MainModel - updateParameters - message error: " + e.message)
@@ -116,16 +86,15 @@ class MainModel: CoroutineScope {
         launch {
             try {
                 Log.d(LOG_TAG, "MainModel - createUserOnServerIfNotExist TokenProvider.firebaseToken: ${TokenProvider.firebaseToken}")
-                var deferred = ApiFactory.API.isUserExist(TokenProvider.firebaseToken!!)
-                var booleanDTO = deferred.await()
+                var booleanDTO = repository.isUserExist(TokenProvider.firebaseToken!!)
 
-                if (!booleanDTO.value) {
-                    deferred = ApiFactory.API.signUp(TokenProvider.firebaseToken!!)
-                    booleanDTO = deferred.await()
-                }
+                if (!booleanDTO.value)
+                    booleanDTO = repository.signUp(TokenProvider.firebaseToken!!)
+
                 if (booleanDTO.value)
                     loadUserData()
-
+                else
+                    profileViewModel.error.postValue("Can't create user on server")
             } catch (e: Exception) {
                 profileViewModel.error.postValue(e.message)
             }
@@ -135,28 +104,15 @@ class MainModel: CoroutineScope {
     private fun loadUserData() {
         launch {
             try {
-
-                val deferred = ApiFactory.API.getDataAsync(TokenProvider.firebaseToken!!)
-                val data = deferred.await()
-
-                val settings = dbDao.getSettings()
+                val data = repository.getDataAsync(TokenProvider.firebaseToken!!)
+                val settings = repository.getSettings()
                 if (settings != null) {
                     if (settings.timeOfFiltered < data.settings!!.timeOfFiltered) {
-                        dbDao.deleteAsanas()
-                        dbDao.deleteUserData()
-                        dbDao.deleteSettings()
-                        dbDao.deleteActionState()
-                        dbDao.insertAsanas(data.asanas!!)
-                        dbDao.insertSettings(data.settings!!)
-                        dbDao.insertUserData(data.userData!!)
-                        dbDao.insertActionState(data.actionState!!)
+                        repository.deleteAllData()
                     }
-                } else {
-                    dbDao.insertAsanas(data.asanas!!)
-                    dbDao.insertSettings(data.settings!!)
-                    dbDao.insertUserData(data.userData!!)
-                    dbDao.insertActionState(data.actionState!!)
                 }
+                repository.insertData(data)
+
                 profileViewModel.proportionately.postValue(data.settings!!.proportionately)
                 profileViewModel.addTime.postValue(data.settings!!.addTime)
                 profileViewModel.userData.postValue(data.userData!!)
@@ -183,10 +139,10 @@ class MainModel: CoroutineScope {
 
     fun updateSettingsAddTime(value: Int) {
         launch {
-            dbDao.updateSettingsAddTime(value)
-            val actionState = dbDao.getActionState()
-            val userData = dbDao.getUserData()
-            val settings = dbDao.getSettings()
+            repository.updateSettingsAddTime(value)
+            val actionState = repository.getActionState()
+            val userData = repository.getUserData()
+            val settings = repository.getSettings()
             val parametersDTO = ParametersDTO(actionState, userData, settings)
             updateParameters(parametersDTO)
         }
@@ -194,10 +150,10 @@ class MainModel: CoroutineScope {
 
     fun updateSettingsProportionately(value: Float) {
         launch {
-            dbDao.updateSettingsProportionately(value)
-            val actionState = dbDao.getActionState()
-            val userData = dbDao.getUserData()
-            val settings = dbDao.getSettings()
+            repository.updateSettingsProportionately(value)
+            val actionState = repository.getActionState()
+            val userData = repository.getUserData()
+            val settings = repository.getSettings()
             val parametersDTO = ParametersDTO(actionState, userData, settings)
             updateParameters(parametersDTO)
         }
@@ -205,10 +161,10 @@ class MainModel: CoroutineScope {
 
     fun updateSettingsHowToSort(value: Boolean) {
         launch {
-            val ud = dbDao.updateHowToSort(value)
-            val actionState = dbDao.getActionState()
-            val userData = dbDao.getUserData()
-            val settings = dbDao.getSettings()
+            val ud = repository.updateHowToSort(value)
+            val actionState = repository.getActionState()
+            val userData = repository.getUserData()
+            val settings = repository.getSettings()
             val parametersDTO = ParametersDTO(actionState, userData, settings)
             updateParameters(parametersDTO)
         }

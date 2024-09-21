@@ -92,6 +92,15 @@
     <string name="info_head_remember">Пожалуйста помните!</string>
     <string name="inverted">Перевёрнутые</string>
     <string name="version_is_out_of_date">Версия устарела. Обновите приложение, пожалуйста.</string>
+    <string name="email">email</string>
+    <string name="password">пароль</string>
+    <string name="confirm_password">подтвердить пароль</string>
+    <string name="signed">зарегестрироваться</string>
+    <string name="already_have_an_account_login">уже есть аккаунт</string>
+    <string name="login">войти</string>
+    <string name="don_t_have_an_account_sign_in">нет аккаунта, зарегестрироваться</string>
+    <string name="google_sign_in">Войти с Google</string>
+    <string name="logout">выйти</string>
     <string name="long_for_one_side">Длинно на одну сторону</string>
     <string name="side_by_side">Друг за другом</string>
     <string name="how_to_sort">Как сортировать</string>

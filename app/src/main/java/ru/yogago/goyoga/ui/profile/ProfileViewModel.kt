@@ -95,15 +95,19 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun create(level: Long, seekBarProportionally: Float, seekBarAddTime: Int, knee: Boolean, loins: Boolean, neck: Boolean, inverted: Boolean, sideBySideSort: Boolean) {
-        model.create(
-            level = level,
+        model.create(ParametersDTO(
+            now = 1,
+            allTime = 0,
+            allCount = 0,
+            level = Level.values()[level.toInt()].toString(),
             proportionally = seekBarProportionally,
             addTime = seekBarAddTime,
-            knee = knee,
-            loins = loins,
-            neck = neck,
+            dangerKnee = knee,
+            dangerLoins = loins,
+            dangerNeck = neck,
             inverted = inverted,
-            sideBySideSort = sideBySideSort
+            sideBySideSort = sideBySideSort,
+            System.currentTimeMillis())
         )
     }
 
