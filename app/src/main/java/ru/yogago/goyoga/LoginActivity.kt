@@ -1,6 +1,7 @@
 package ru.yogago.goyoga
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -26,6 +27,7 @@ import com.google.firebase.auth.auth
 import com.google.firebase.Firebase
 import ru.yogago.goyoga.data.AppConstants
 import ru.yogago.goyoga.service.TokenProvider
+import java.util.*
 
 /**
  * Firebase Authentication using a Google ID Token.
@@ -43,6 +45,20 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var signInRequest: BeginSignInRequest
 
     private lateinit var auth: FirebaseAuth
+
+    companion object {
+        var dLocale: Locale = Locale("")
+    }
+
+    init {
+        if(dLocale != Locale("") ) {
+            Locale.setDefault(dLocale)
+            val configuration = Configuration()
+            configuration.setLocale(dLocale)
+            this.applyOverrideConfiguration(configuration)
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -181,10 +197,5 @@ class LoginActivity : AppCompatActivity() {
             } else
                 Toast.makeText(this, "Log In failed ", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    companion object {
-        private const val TAG = "GoogleActivity"
-        private const val RC_SIGN_IN = 123
     }
 }

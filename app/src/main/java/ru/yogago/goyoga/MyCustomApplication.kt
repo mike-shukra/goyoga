@@ -37,6 +37,8 @@ class MyCustomApplication : Application()  {
         // Теперь вызываем метод setLocale, когда base контекст уже корректно установлен
         val context = setLocale(base, locale)
         MainActivity.dLocale = locale
+        LoginActivity.dLocale = locale
+        SignUpActivity.dLocale = locale
     }
 
     override fun onCreate() {

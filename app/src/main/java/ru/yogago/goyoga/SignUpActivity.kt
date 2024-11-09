@@ -1,6 +1,7 @@
 package ru.yogago.goyoga
 
 import android.content.Intent
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import ru.yogago.goyoga.data.AppConstants
+import java.util.*
 
 class SignUpActivity : AppCompatActivity() {
     lateinit var etEmail: EditText
@@ -21,6 +23,19 @@ class SignUpActivity : AppCompatActivity() {
     lateinit var tvRedirectLogin: TextView
 
     private lateinit var auth: FirebaseAuth
+
+    companion object {
+        var dLocale: Locale = Locale("")
+    }
+
+    init {
+        if(dLocale != Locale("") ) {
+            Locale.setDefault(dLocale)
+            val configuration = Configuration()
+            configuration.setLocale(dLocale)
+            this.applyOverrideConfiguration(configuration)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 

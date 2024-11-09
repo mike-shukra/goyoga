@@ -30,7 +30,7 @@ class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdate
         .build()
 
     private fun startConnect(task: () -> Unit) {
-        if (isBillingServiceConnected) {
+        if (billingClient.isReady && isBillingServiceConnected) {
             task()
         } else {
             billingClient.startConnection(object : BillingClientStateListener {
@@ -133,6 +133,7 @@ class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdate
     override fun onPurchasesUpdated(billingResult: BillingResult, purchases: List<Purchase>?) {
         Log.d(LOG_TAG_BILLING, "MyBilling - onPurchasesUpdated - billingResult: $billingResult")
         Log.d(LOG_TAG_BILLING, "MyBilling - onPurchasesUpdated - purchases: $purchases")
+        Log.e(LOG_TAG_BILLING, "MyBilling - onPurchasesUpdated - billingResult responseCode: ${billingResult.responseCode}")
 
         if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
             for (purchase in purchases) {
@@ -194,6 +195,7 @@ class MyBilling(private val activity: Activity): CoroutineScope, PurchasesUpdate
         if (billingClient.isReady) {
             billingClient.endConnection()
         }
+        job.cancel()
     }
 
 
