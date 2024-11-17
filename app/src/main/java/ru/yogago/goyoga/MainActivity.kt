@@ -15,14 +15,16 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import dagger.hilt.android.AndroidEntryPoint
 import ru.yogago.goyoga.data.AppConstants
-import ru.yogago.goyoga.service.TokenProvider
 import java.util.*
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var auth: FirebaseAuth
+    @Inject
+    lateinit var auth: FirebaseAuth
 
     companion object {
         var dLocale: Locale = Locale("")

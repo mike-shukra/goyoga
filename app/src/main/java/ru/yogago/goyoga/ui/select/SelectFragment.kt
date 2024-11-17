@@ -7,12 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
+import dagger.hilt.android.AndroidEntryPoint
+import okhttp3.OkHttpClient
 //import com.yandex.mobile.ads.AdRequest
 //import com.yandex.mobile.ads.AdSize
 //import com.yandex.mobile.ads.AdView
@@ -20,19 +23,23 @@ import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants.Companion.YANDEX_RTB_ID_SELECT_320X100
 import ru.yogago.goyoga.data.AppConstants.Companion.YANDEX_RTB_ID_SELECT_VERTICAL
 import ru.yogago.goyoga.data.BillingState
-import ru.yogago.goyoga.service.OkHttpClientFactory
+import javax.inject.Inject
+
 //import ru.yogago.goyoga.service.StickyBannerEventListener
 
+@AndroidEntryPoint
 class SelectFragment : Fragment() {
 
-    private lateinit var selectViewModel: SelectViewModel
+    @Inject
+    lateinit var okHttpClient: OkHttpClient
+
+    private val selectViewModel: SelectViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        selectViewModel = ViewModelProvider(this).get(SelectViewModel::class.java)
         return inflater.inflate(R.layout.fragment_select, container, false)
     }
 
@@ -45,6 +52,9 @@ class SelectFragment : Fragment() {
         val glm = GridLayoutManager(context, getScreenColumn())
         rvAsanas.layoutManager = glm
         val advertisingBox = view.findViewById<FrameLayout>(R.id.advertising_box)
+        val picasso = Picasso.Builder(this.requireContext())
+            .downloader(OkHttp3Downloader(okHttpClient))
+            .build()
 
 //        val mAdView = view.findViewById<AdView>(R.id.ad_view)
 //        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -72,9 +82,6 @@ class SelectFragment : Fragment() {
 
         selectViewModel.asanas.observe(viewLifecycleOwner) {
             loading.visibility = View.GONE
-            val picasso = Picasso.Builder(this.requireContext())
-                .downloader(OkHttp3Downloader(OkHttpClientFactory().getClient()))
-                .build()
 
             val adapter = Adapter(it, this.resources, picasso)
             rvAsanas.adapter = adapter

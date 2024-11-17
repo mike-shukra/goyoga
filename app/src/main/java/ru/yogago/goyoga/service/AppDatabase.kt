@@ -8,4 +8,3 @@ import ru.yogago.goyoga.data.*
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getDBDao(): DBDao
 }
-

@@ -1,25 +1,26 @@
 package ru.yogago.goyoga.model
 
 import android.util.Log
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.*
-import retrofit2.Call
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import ru.yogago.goyoga.data.*
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
-import ru.yogago.goyoga.service.ApiFactory
-import ru.yogago.goyoga.service.DataBase
-import ru.yogago.goyoga.service.TokenProvider
 import ru.yogago.goyoga.ui.profile.ProfileViewModel
 import ru.yogago.goyoga.ui.select.SelectViewModel
-import kotlin.coroutines.CoroutineContext
-import retrofit2.Callback
-import retrofit2.Response
 import ru.yogago.goyoga.service.AndroidLogger
 import ru.yogago.goyoga.service.Logger
 import ru.yogago.goyoga.service.Repository
 import java.io.IOException
+import javax.inject.Inject
 
-class MainModel: CoroutineScope {
+class MainModel @Inject constructor(
+    private val repository: Repository
+) : CoroutineScope  {
 
+    private val _navigationFlow = MutableSharedFlow<Unit>(replay = 0)
+    val navigationFlow: SharedFlow<Unit> = _navigationFlow
     private val logger: Logger = AndroidLogger()
     private val job = SupervisorJob()
     private val coroutineExceptionHandler = CoroutineExceptionHandler { context, throwable ->
@@ -27,11 +28,8 @@ class MainModel: CoroutineScope {
     }
     override val coroutineContext = Dispatchers.IO + job + coroutineExceptionHandler
 
-    private val dao = DataBase.db.getDBDao()
     private lateinit var selectViewModel: SelectViewModel
     private lateinit var profileViewModel: ProfileViewModel
-
-    private val repository = Repository(dao, ApiFactory.API)
 
     fun clear() {
         job.cancel()
@@ -42,12 +40,11 @@ class MainModel: CoroutineScope {
             val settings = repository.getSettings()
             val asanas: List<Asana> = repository.getAsanas()
             val userData: UserData = repository.getUserData()
-            userData.allTime = (userData.allTime * settings?.proportionately!!).toInt() + (settings.addTime * userData.allCount)
+            userData.allTime = (userData.allTime * settings.proportionately).toInt() + (settings.addTime * userData.allCount)
             selectViewModel.userData.postValue(userData)
             selectViewModel.asanas.postValue(asanas)
-//            selectViewModel.asanas.postValue(asanas.filter { asana ->
-//                asana.side != "first"
-//            })
+
+            logger.d(LOG_TAG, "MainModel - loadDataFromDB asanas: $asanas , userData: $userData")
         }
     }
 
@@ -59,10 +56,11 @@ class MainModel: CoroutineScope {
     }
 
     fun create(parametersDTO: ParametersDTO) {
+        Log.d(LOG_TAG, "MainModel - create - parametersDTO: $parametersDTO")
         launch {
             try {
-                val isSuccess : Boolean = repository.createNewSequence(TokenProvider.firebaseToken!!, parametersDTO)
-                profileViewModel.done.postValue(isSuccess)
+                val isSuccess : Boolean = repository.createNewSequence(parametersDTO)
+                if (isSuccess) _navigationFlow.emit(Unit)
             } catch (e: IOException) {
                 e.printStackTrace()
                 val errorMessage = e.message
@@ -72,31 +70,43 @@ class MainModel: CoroutineScope {
         }
     }
 
-    private suspend fun updateParameters(parametersDTO: ParametersDTO) {
-        try {
-            repository.updateParameters(TokenProvider.firebaseToken!!, parametersDTO)
-        } catch (e :Exception) {
-            e.printStackTrace()
-            logger.d(LOG_TAG, "MainModel - updateParameters - message error: " + e.message)
-        }
-
-    }
+//    private suspend fun updateParameters(parametersDTO: ParametersDTO) {
+//        try {
+//            repository.updateParameters(parametersDTO)
+//        } catch (e :Exception) {
+//            e.printStackTrace()
+//            logger.d(LOG_TAG, "MainModel - updateParameters - message error: " + e.message)
+//        }
+//
+//    }
 
     fun createUserOnServerIfNotExist() {
         launch {
             try {
-                Log.d(LOG_TAG, "MainModel - createUserOnServerIfNotExist TokenProvider.firebaseToken: ${TokenProvider.firebaseToken}")
-                var booleanDTO = repository.isUserExist(TokenProvider.firebaseToken!!)
-
-                if (!booleanDTO.value)
-                    booleanDTO = repository.signUp(TokenProvider.firebaseToken!!)
-
-                if (booleanDTO.value)
+                if (!repository.isUserExist().value) {
+                    repository.signUp()
                     loadUserData()
-                else
-                    profileViewModel.error.postValue("Can't create user on server")
+                }
+                else {
+                    loadDataFromDataBase()
+                }
             } catch (e: Exception) {
                 profileViewModel.error.postValue(e.message)
+            }
+        }
+    }
+
+    private fun loadDataFromDataBase() {
+        launch {
+            val settings = repository.getSettings()
+            Log.d(LOG_TAG, "MainModel - loadDataFromDataBase settings: $settings")
+            if  (settings == null) {
+                loadUserData()
+            } else {
+                val userData = repository.getUserData()
+                profileViewModel.proportionately.postValue(settings.proportionately)
+                profileViewModel.addTime.postValue(settings.addTime)
+                profileViewModel.userData.postValue(userData)
             }
         }
     }
@@ -104,7 +114,7 @@ class MainModel: CoroutineScope {
     private fun loadUserData() {
         launch {
             try {
-                val data = repository.getDataAsync(TokenProvider.firebaseToken!!)
+                val data = repository.getDataAsync()
                 val settings = repository.getSettings()
                 if (settings != null) {
                     if (settings.timeOfFiltered < data.settings!!.timeOfFiltered) {
@@ -122,13 +132,13 @@ class MainModel: CoroutineScope {
         }
     }
 
-    fun setViewModel(m: SelectViewModel) : MainModel {
-        this.selectViewModel = m
+    fun setSelectViewModel(vm: SelectViewModel) : MainModel {
+        this.selectViewModel = vm
         return this
     }
 
-    fun setProfileViewModel(m: ProfileViewModel) : MainModel {
-        this.profileViewModel = m
+    fun setProfileViewModel(vm: ProfileViewModel) : MainModel {
+        this.profileViewModel = vm
         return this
     }
 
@@ -137,38 +147,38 @@ class MainModel: CoroutineScope {
 //        Log.d(LOG_TAG, "MainModel - cancelBackgroundWork")
 //    }
 
-    fun updateSettingsAddTime(value: Int) {
-        launch {
-            repository.updateSettingsAddTime(value)
-            val actionState = repository.getActionState()
-            val userData = repository.getUserData()
-            val settings = repository.getSettings()
-            val parametersDTO = ParametersDTO(actionState, userData, settings)
-            updateParameters(parametersDTO)
-        }
-    }
+//    fun updateSettingsAddTime(value: Int) {
+//        launch {
+//            repository.updateSettingsAddTime(value)
+//            val actionState = repository.getActionState()
+//            val userData = repository.getUserData()
+//            val settings = repository.getSettings()
+//            val parametersDTO = ParametersDTO(actionState, userData, settings)
+//            updateParameters(parametersDTO)
+//        }
+//    }
 
-    fun updateSettingsProportionately(value: Float) {
-        launch {
-            repository.updateSettingsProportionately(value)
-            val actionState = repository.getActionState()
-            val userData = repository.getUserData()
-            val settings = repository.getSettings()
-            val parametersDTO = ParametersDTO(actionState, userData, settings)
-            updateParameters(parametersDTO)
-        }
-    }
+//    fun updateSettingsProportionately(value: Float) {
+//        launch {
+//            repository.updateSettingsProportionately(value)
+//            val actionState = repository.getActionState()
+//            val userData = repository.getUserData()
+//            val settings = repository.getSettings()
+//            val parametersDTO = ParametersDTO(actionState, userData, settings)
+//            updateParameters(parametersDTO)
+//        }
+//    }
 
-    fun updateSettingsHowToSort(value: Boolean) {
-        launch {
-            val ud = repository.updateHowToSort(value)
-            val actionState = repository.getActionState()
-            val userData = repository.getUserData()
-            val settings = repository.getSettings()
-            val parametersDTO = ParametersDTO(actionState, userData, settings)
-            updateParameters(parametersDTO)
-        }
-
-    }
+//    fun updateSettingsHowToSort(value: Boolean) {
+//        launch {
+//            val ud = repository.updateHowToSort(value)
+//            val actionState = repository.getActionState()
+//            val userData = repository.getUserData()
+//            val settings = repository.getSettings()
+//            val parametersDTO = ParametersDTO(actionState, userData, settings)
+//            updateParameters(parametersDTO)
+//        }
+//
+//    }
 
 }

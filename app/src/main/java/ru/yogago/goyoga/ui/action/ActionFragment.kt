@@ -13,26 +13,31 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.squareup.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
+import dagger.hilt.android.AndroidEntryPoint
+import okhttp3.OkHttpClient
 //import com.yandex.mobile.ads.AdRequest
 //import com.yandex.mobile.ads.AdSize
 //import com.yandex.mobile.ads.AdView
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.*
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
-import ru.yogago.goyoga.service.OkHttpClientFactory
 //import ru.yogago.goyoga.service.StickyBannerEventListener
 import java.util.*
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class ActionFragment : Fragment() {
+    @Inject
+    lateinit var okHttpClient: OkHttpClient
+    private val actionViewModel: ActionViewModel by viewModels()
     private var isInstanceState: Boolean = false
     private val isRussianLanguage: Boolean = Locale.getDefault().language == "ru"
     private lateinit var viewPager: ViewPager2
-    private lateinit var actionViewModel: ActionViewModel
     private lateinit var actionState: ActionState
     private var count = 1
     private var ttsEnabled: Boolean = true
@@ -45,9 +50,9 @@ class ActionFragment : Fragment() {
     private lateinit var buttonSound: ToggleButton
     private var settings: Settings? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        actionViewModel = ActionViewModel()
         arguments?.getLong("id")?.let {
             if (it != 0L) {
                 currentAsanaId = (it.toInt() - 1)
@@ -274,7 +279,7 @@ class ActionFragment : Fragment() {
             Log.d(LOG_TAG, patch)
 
             val picasso = Picasso.Builder(requireContext())
-                .downloader(OkHttp3Downloader(OkHttpClientFactory().getClient()))
+                .downloader(OkHttp3Downloader(okHttpClient))
                 .build()
 
             picasso.setIndicatorsEnabled(false)

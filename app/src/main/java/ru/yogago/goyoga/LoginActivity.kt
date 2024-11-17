@@ -25,14 +25,17 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import com.google.firebase.Firebase
+import dagger.hilt.android.AndroidEntryPoint
 import ru.yogago.goyoga.data.AppConstants
-import ru.yogago.goyoga.service.TokenProvider
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Firebase Authentication using a Google ID Token.
  * email and password authentication
  */
+
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var tvRedirectSignUp: TextView
@@ -44,7 +47,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var oneTapClient: SignInClient
     private lateinit var signInRequest: BeginSignInRequest
 
-    private lateinit var auth: FirebaseAuth
+    @Inject
+    lateinit var auth: FirebaseAuth
 
     companion object {
         var dLocale: Locale = Locale("")
@@ -164,9 +168,8 @@ class LoginActivity : AppCompatActivity() {
         auth.currentUser!!.getIdToken(true)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    TokenProvider.firebaseToken = task.result.token
                     // Send token to your backend via HTTPS
-                    Log.d(AppConstants.LOG_TAG, "token: " + TokenProvider.firebaseToken)
+                    Log.d(AppConstants.LOG_TAG, "token: " + task.result.token)
                     navigateToHomeScreen()
                 } else {
                     task.exception

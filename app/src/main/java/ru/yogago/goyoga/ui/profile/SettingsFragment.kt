@@ -20,6 +20,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -30,22 +31,23 @@ import ru.yogago.goyoga.MainActivity
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
 import ru.yogago.goyoga.data.Settings
-import ru.yogago.goyoga.service.ApiFactory
-import ru.yogago.goyoga.service.DataBase
+import ru.yogago.goyoga.service.Api
+import ru.yogago.goyoga.service.DBDao
 import ru.yogago.goyoga.service.Repository
 import java.util.*
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-
+@AndroidEntryPoint
 class SettingsFragment : Fragment(), CoroutineScope {
+
+    @Inject
+    lateinit var repository: Repository
 
     private val job = SupervisorJob()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
     private val settings: MutableLiveData<Settings> = MutableLiveData()
-
-    private val dao = DataBase.db.getDBDao()
-    private val repository = Repository(dao, ApiFactory.API)
 
     override fun onCreateView(
         inflater: LayoutInflater,

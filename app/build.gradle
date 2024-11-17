@@ -4,6 +4,7 @@ apply plugin: 'kotlin-android'
 //apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.dagger.hilt.android'
 
 
 android {
@@ -44,7 +45,20 @@ android {
 //    }
 }
 
+
 dependencies {
+
+    //Dagger
+//    implementation 'com.google.dagger:dagger:2.52'
+//    kapt 'com.google.dagger:dagger-compiler:2.52'
+
+    //Hilt
+    implementation "com.google.dagger:hilt-android:2.52"
+    kapt "com.google.dagger:hilt-android-compiler:2.52"
+
+    //Hilt billing
+    implementation 'com.android.billingclient:billing:7.1.1'
+    implementation "androidx.hilt:hilt-navigation-fragment:1.2.0"
 
     // Import the BoM for the Firebase platform
     implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
@@ -69,30 +83,12 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.1'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.1'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.1'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.1'
+//    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7'
     implementation 'com.google.android.gms:play-services-auth:21.2.0'
     implementation 'androidx.test:core-ktx:1.6.1'
-    testImplementation 'junit:junit:4.13.1'
-    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 
-
-    // Room
-    implementation "androidx.room:room-runtime:2.6.1"
-    kapt "androidx.room:room-compiler:2.6.1"
-
-    // optional - Kotlin Extensions and Coroutines support for Room
-    implementation "androidx.room:room-ktx:2.6.1"
-
-    // optional - RxJava support for Room
-    implementation "androidx.room:room-rxjava2:2.6.1"
-
-    // Test helpers
-    testImplementation "androidx.room:room-testing:2.6.1"
 
     //Picasso
     def picassoVersion = "2.71828"
@@ -117,7 +113,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
 
     //billing
-    implementation 'com.android.billingclient:billing-ktx:7.0.0'
+    implementation 'com.android.billingclient:billing-ktx:7.1.1'
 
 //    //yandex
 //    implementation 'com.yandex.android:mobileads:3.0.0'
@@ -138,8 +134,20 @@ dependencies {
 
     // Room and Retrofit dependencies
     implementation 'androidx.room:room-runtime:2.6.1'
-    annotationProcessor 'androidx.room:room-compiler:2.6.1'
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    kapt 'androidx.room:room-compiler:2.6.1'
+
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:2.6.1"
+
+    // optional - RxJava support for Room
+    implementation "androidx.room:room-rxjava2:2.6.1"
+
+    // Test helpers
+    testImplementation "androidx.room:room-testing:2.6.1"
+}
+
+kapt {
+    correctErrorTypes = true
 }
 
 apply plugin: 'com.google.gms.google-services'
