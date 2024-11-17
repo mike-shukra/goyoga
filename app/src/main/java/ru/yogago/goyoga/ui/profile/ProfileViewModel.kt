@@ -1,22 +1,26 @@
 package ru.yogago.goyoga.ui.profile
 
-import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.android.billingclient.api.Purchase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import ru.yogago.goyoga.data.*
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG_BILLING
 import ru.yogago.goyoga.model.MainModel
 import ru.yogago.goyoga.model.MyBilling
+import javax.inject.Inject
 
-class ProfileViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class ProfileViewModel @Inject constructor(
+    private val model: MainModel
+) : ViewModel() {
 
-    private val model = MainModel()
+    val navigationFlow: SharedFlow<Unit> = model.navigationFlow
     val userData: MutableLiveData<UserData> = MutableLiveData()
     val error: MutableLiveData<String> = MutableLiveData()
-    val done: MutableLiveData<Boolean> = MutableLiveData()
     val proportionately: MutableLiveData<Float> = MutableLiveData()
     val addTime: MutableLiveData<Int> = MutableLiveData()
     private lateinit var myBilling: MyBilling
@@ -32,7 +36,6 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     fun loadUserData() {
         model.createUserOnServerIfNotExist()
-//        model.loadUserData()
     }
 
 //    viewModelScope.launch {
@@ -53,7 +56,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             }
             else {
                 purchases.forEach {
-                    myBilling.acknowledgedPurchase(it)
+//                    myBilling.acknowledgedPurchase(it)
                     Log.d(LOG_TAG_BILLING, "ProfileViewModel - purchase.sku: ${it.skus}")
                     Log.d(LOG_TAG_BILLING, "ProfileViewModel - purchase.purchaseState: ${it.purchaseState}")
                     Log.d(LOG_TAG_BILLING, "ProfileViewModel - purchase.isAcknowledged: ${it.isAcknowledged}")
@@ -73,7 +76,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         val onError: (message: String) -> Unit = {message: String ->
             Log.d(LOG_TAG_BILLING, "ProfileViewModel - handleBilling - onError - message: $message")
         }
-        myBilling.queryPurchases(onSuccess, onError)
+//        myBilling.queryPurchases(onSuccess, onError)
     }
 
     private fun checkContain(purchases: List<Purchase>) {
@@ -115,14 +118,14 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         myBilling.destroy()
     }
 
-    fun updateSettingsAddTime(value: Int) {
-        model.updateSettingsAddTime(value)
-    }
-
-    fun updateSettingsProportionately(value: Float) {
-        model.updateSettingsProportionately(value)
-    }
-    fun updateSettingsHowToSort(value: Boolean) {
-        model.updateSettingsHowToSort(value)
-    }
+//    fun updateSettingsAddTime(value: Int) {
+//        model.updateSettingsAddTime(value)
+//    }
+//
+//    fun updateSettingsProportionately(value: Float) {
+//        model.updateSettingsProportionately(value)
+//    }
+//    fun updateSettingsHowToSort(value: Boolean) {
+//        model.updateSettingsHowToSort(value)
+//    }
 }

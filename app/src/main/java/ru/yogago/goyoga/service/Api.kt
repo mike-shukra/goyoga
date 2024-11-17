@@ -10,28 +10,22 @@ import ru.yogago.goyoga.data.*
 interface Api {
 
     @GET("api/data")
-    fun getDataAsync(@Header("X-Authorization-Firebase") header: String): Deferred<Data>
+    suspend fun getDataAsync(): Data
 
     @POST("api/create")
-    fun createAsync(
-        @Header("X-Authorization-Firebase") header: String,
+    suspend fun createAsync(
         @Body parametersDTO: ParametersDTO
-    ): Deferred<Data>
+    ): Data
 
     @POST("api/public/firebase-signup")
-    fun signUp(
-        @Header("firebaseToken") header: String
-    ): Deferred<BooleanDTO>
+    suspend fun signUp(@Header("firebaseToken") header: String): BooleanDTO
 
     @POST("api/public/is-exists")
-    fun isUserExist(
-        @Header("firebaseToken") header: String
-    ): Deferred<BooleanDTO>
+    suspend fun isUserExist(@Header("firebaseToken") header: String): BooleanDTO
 
     @POST("api/update-parameters")
-    fun updateParameters(
-        @Header("X-Authorization-Firebase") header: String,
+    suspend fun updateParameters(
         @Body parametersDTO: ParametersDTO
-    ): Deferred<Data>
+    ): Data
 
 }

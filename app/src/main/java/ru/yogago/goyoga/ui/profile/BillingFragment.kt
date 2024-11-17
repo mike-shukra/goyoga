@@ -10,23 +10,24 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
 import ru.yogago.goyoga.R
 import ru.yogago.goyoga.data.AppConstants
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG_BILLING
 import ru.yogago.goyoga.model.MyBilling
 
-
+@AndroidEntryPoint
 class BillingFragment : Fragment() {
 
-    private lateinit var viewModel: BillingViewModel
+    private val viewModel: BillingViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(BillingViewModel::class.java)
-        viewModel.setMyBilling(MyBilling(requireActivity()))
+//        viewModel.setMyBilling(MyBilling(requireActivity()))
     }
 
     override fun onCreateView(

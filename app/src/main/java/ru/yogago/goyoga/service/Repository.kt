@@ -1,6 +1,6 @@
 package ru.yogago.goyoga.service
 
-import kotlinx.coroutines.Deferred
+import com.google.firebase.auth.FirebaseAuth
 import ru.yogago.goyoga.data.ActionState
 import ru.yogago.goyoga.data.AppConstants
 import ru.yogago.goyoga.data.Asana
@@ -10,9 +10,13 @@ import ru.yogago.goyoga.data.ParametersDTO
 import ru.yogago.goyoga.data.PurchaseItem
 import ru.yogago.goyoga.data.Settings
 import ru.yogago.goyoga.data.UserData
-import java.io.IOException
+import javax.inject.Inject
 
-open class Repository(private val dbDao: DBDao, private val api: Api) {
+open class Repository @Inject constructor(
+    private val dbDao: DBDao,
+    private val api: Api,
+    private val firebaseAuth: FirebaseAuth
+) {
 
     private val logger: Logger = AndroidLogger()
 
@@ -121,11 +125,8 @@ open class Repository(private val dbDao: DBDao, private val api: Api) {
     }
 
     @Throws(Exception::class)
-    suspend fun createNewSequence(token: String, parametersDTO: ParametersDTO): Boolean {
-
-        val deferred = api.createAsync(token, parametersDTO)
-        val data: Data = deferred.await()
-
+    suspend fun createNewSequence(parametersDTO: ParametersDTO): Boolean {
+        val data: Data = api.createAsync(parametersDTO)
         val del = dbDao.deleteAsanas()
         val insA = dbDao.insertAsanas(data.asanas!!)
         val insS = dbDao.insertSettings(data.settings!!)
@@ -139,26 +140,27 @@ open class Repository(private val dbDao: DBDao, private val api: Api) {
     }
 
     @Throws(Exception::class)
-    suspend fun updateParameters(token: String,parametersDTO: ParametersDTO)  {
-        val deferred = api.updateParameters(token, parametersDTO)
-        val data: Data = deferred.await()
+    suspend fun updateParameters(parametersDTO: ParametersDTO)  {
+        val data: Data = api.updateParameters(parametersDTO)
         logger.d(AppConstants.LOG_TAG, "Repository - updateParameters data: $data")
         dbDao.deleteAsanas()
         dbDao.insertAsanas(data.asanas!!)
     }
 
     @Throws(Exception::class)
-    suspend fun isUserExist(firebaseToken: String): BooleanDTO {
-        return api.isUserExist(firebaseToken).await()
+    suspend fun isUserExist(): BooleanDTO {
+        val token = firebaseAuth.currentUser?.getIdToken(false)?.result?.token!!
+        return api.isUserExist(token)
     }
 
     @Throws(Exception::class)
-    suspend fun signUp(firebaseToken: String): BooleanDTO {
-        return api.signUp(firebaseToken).await()
+    suspend fun signUp(): BooleanDTO {
+        val token = firebaseAuth.currentUser?.getIdToken(false)?.result?.token!!
+        return api.signUp(token)
     }
 
     @Throws(Exception::class)
-    suspend fun getDataAsync(firebaseToken: String): Data {
-        return api.getDataAsync(firebaseToken).await()
+    suspend fun getDataAsync(): Data {
+        return api.getDataAsync()
     }
 }

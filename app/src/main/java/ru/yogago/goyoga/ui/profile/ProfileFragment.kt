@@ -12,8 +12,11 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 //import com.yandex.mobile.ads.AdRequest
 //import com.yandex.mobile.ads.AdSize
@@ -24,20 +27,19 @@ import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
 import ru.yogago.goyoga.data.BillingState
 import ru.yogago.goyoga.data.SelectedIndexArray
 import ru.yogago.goyoga.model.MyBilling
-import ru.yogago.goyoga.service.DataBase
+import javax.inject.Inject
 
 //import ru.yogago.goyoga.service.StickyBannerEventListener
 
-
+@AndroidEntryPoint
 class ProfileFragment : Fragment() {
 
-    private lateinit var profileViewModel: ProfileViewModel
+    // Используем Hilt для создания ViewModel
+    private val profileViewModel: ProfileViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
         profileViewModel.setModel()
-        profileViewModel.setMyBilling(MyBilling(requireActivity()))
     }
 
     override fun onCreateView(
@@ -84,7 +86,7 @@ class ProfileFragment : Fragment() {
             val isCheckedLong = checkedId == radioButtonLong.id
             val isCheckedShort = checkedId == radioButtonShort.id
 
-            profileViewModel.updateSettingsHowToSort(isCheckedShort)
+//            profileViewModel.updateSettingsHowToSort(isCheckedShort)
         }
 
         seekBarProportionally.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -100,7 +102,7 @@ class ProfileFragment : Fragment() {
                 val value = (seekBarProportionally.progress / 500F + 1)
                 val formattedDouble = String.format("%.2f", value)
                 seekBarProportionallyValue.text = formattedDouble
-                profileViewModel.updateSettingsProportionately(value)
+//                profileViewModel.updateSettingsProportionately(value)
             }
 
         })
@@ -115,14 +117,14 @@ class ProfileFragment : Fragment() {
             override fun onStopTrackingTouch(p0: SeekBar?) {
                 val value = (seekBarAddTime.progress)
                 seekBarAddTimeValue.text = value.toString()
-                profileViewModel.updateSettingsAddTime(value)
+//                profileViewModel.updateSettingsAddTime(value)
             }
 
         })
 
         profileViewModel.proportionately.observe(viewLifecycleOwner) {
             val f = (500 * (it - 1))
-            Log.d(LOG_TAG, "ProfileFragment f: $f")
+            Log.d(LOG_TAG, "ProfileFragment seekBarProportionally progress: $f")
             seekBarProportionally.progress = f.toInt()
         }
         profileViewModel.addTime.observe(viewLifecycleOwner) {
@@ -183,7 +185,8 @@ class ProfileFragment : Fragment() {
             }
         }
         createButton.setOnClickListener {
-    profileViewModel.create(
+            Log.d(LOG_TAG, "ProfileFragment createButton OnClickListener it: $it")
+            profileViewModel.create(
                 levelSpinner.selectedItemId,
                 seekBarProportionallyValue.text.toString().toFloat(),
                 seekBarAddTimeValue.text.toString().toInt(),
@@ -193,8 +196,11 @@ class ProfileFragment : Fragment() {
                 checkBoxInverted.isChecked,
                 radioButtonShort.isChecked
             )
-            profileViewModel.done.observe(viewLifecycleOwner) {
-                if (it) findNavController().navigate(R.id.nav_select)
+        }
+
+        lifecycleScope.launchWhenStarted {
+            profileViewModel.navigationFlow.collect {
+                findNavController().navigate(R.id.nav_select)
             }
         }
 

@@ -6,14 +6,15 @@ import android.os.Build
 
 import android.util.Log
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import dagger.hilt.android.HiltAndroidApp
 //import com.yandex.metrica.YandexMetrica
 //import com.yandex.metrica.YandexMetricaConfig
 import ru.yogago.goyoga.data.AppConstants.Companion.API_key
 import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
 import ru.yogago.goyoga.data.Settings
-import ru.yogago.goyoga.service.DataBase
 import java.util.*
 
+@HiltAndroidApp
 class MyCustomApplication : Application()  {
 
     private fun setLocale(context: Context, locale: Locale): Context {
@@ -52,7 +53,6 @@ class MyCustomApplication : Application()  {
 //        // Automatic tracking of user activity.
 //        YandexMetrica.enableActivityAutoTracking(this)
 
-        DataBase.createDataBase(this)
 
     }
 
