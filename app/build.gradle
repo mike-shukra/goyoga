@@ -22,6 +22,7 @@ android {
     }
 
     buildFeatures {
+        compose true
         viewBinding true
     }
 
@@ -38,6 +39,11 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.15"
+    }
+
     namespace 'ru.yogago.goyoga'
 
 //    packagingOptions {
@@ -47,6 +53,21 @@ android {
 
 
 dependencies {
+
+    implementation "androidx.compose.ui:ui:1.7.5"
+    implementation "androidx.compose.material:material:1.7.5"
+    implementation "androidx.compose.ui:ui-tooling-preview:1.7.5"
+
+    implementation "androidx.compose.ui:ui-tooling:1.7.5"
+
+
+    implementation "androidx.compose.ui:ui-text:1.7.5"
+    implementation "androidx.compose.runtime:runtime-livedata:1.7.5"
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.1.0"
+
+    implementation "androidx.activity:activity-compose:1.9.3"
+    implementation "androidx.navigation:navigation-compose:2.8.4"
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.8.7"
 
     //Dagger
 //    implementation 'com.google.dagger:dagger:2.52'

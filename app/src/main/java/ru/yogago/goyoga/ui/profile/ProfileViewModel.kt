@@ -115,7 +115,8 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun destroyBilling(){
-        myBilling.destroy()
+        //TODO
+//        myBilling.destroy()
     }
 
 //    fun updateSettingsAddTime(value: Int) {
