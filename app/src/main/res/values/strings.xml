@@ -106,5 +106,8 @@
     <string name="side_by_side">Side by side</string>
     <string name="how_to_sort">How to sort</string>
     <string name="server_client_id" translatable="false">1095319247800-2geo5024149lnm6vodmgrp7m66j9upmo.apps.googleusercontent.com</string>
+    <string name="show_password">Show password</string>
+    <string name="hide_password">Hide password</string>
+    <string name="clear_text">clar text</string>
 
 </resources>

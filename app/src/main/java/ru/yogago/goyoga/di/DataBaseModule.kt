@@ -1,4 +1,4 @@
-package ru.yogago.goyoga.module
+package ru.yogago.goyoga.di
 
 import android.content.Context
 import androidx.room.Room

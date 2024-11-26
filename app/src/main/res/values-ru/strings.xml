@@ -104,6 +104,9 @@
     <string name="long_for_one_side">Длинно на одну сторону</string>
     <string name="side_by_side">Друг за другом</string>
     <string name="how_to_sort">Как сортировать</string>
+    <string name="show_password">Показать пароль</string>
+    <string name="hide_password">Скрыть пароль</string>
+    <string name="clear_text">Очистить текст</string>
 
 
 </resources>

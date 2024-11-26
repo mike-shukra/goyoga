@@ -1,4 +1,4 @@
-package ru.yogago.goyoga.module
+package ru.yogago.goyoga.di
 
 import com.google.firebase.auth.FirebaseAuth
 import dagger.Module

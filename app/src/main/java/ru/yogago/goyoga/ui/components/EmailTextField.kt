@@ -1,13 +1,18 @@
 package ru.yogago.goyoga.ui.components
 
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -91,6 +96,19 @@ fun EmailTextField(
             imeAction = ImeAction.Next
         ),
         visualTransformation = VisualTransformation.None,
-        textStyle = TextStyle(fontSize = textSize)
+        textStyle = TextStyle(fontSize = textSize),
+        trailingIcon = {
+            Row {
+                if (email.isNotEmpty()) {
+                    IconButton(onClick = { onEmailChange("") }) {
+                        Icon(
+                            imageVector = Icons.Filled.Clear,
+                            contentDescription = stringResource(R.string.clear_text),
+                            tint = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
+                        )
+                    }
+                }
+            }
+        }
     )
 }
