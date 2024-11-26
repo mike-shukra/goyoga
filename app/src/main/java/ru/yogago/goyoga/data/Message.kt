@@ -1,8 +1,9 @@
 package ru.yogago.goyoga.data
 
 data class Message (
-    val message: String? = null,
-    val image_url: String? = null,
-    val error: String? = null,
-    val errorKey: Int? = null
+    var message: String? = null,
+    var result: Boolean? = null,
+    var image_url: String? = null,
+    var error: String? = null,
+    var errorKey: Int? = null
 )

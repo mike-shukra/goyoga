@@ -1,36 +1,31 @@
 package ru.yogago.goyoga.service
 
 import kotlinx.coroutines.Deferred
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
 import ru.yogago.goyoga.data.*
 
 
-interface Api{
+interface Api {
 
-    @GET("Action/data")
-    fun getDataAsync(): Deferred<Response<Data>>
+    @GET("api/data")
+    suspend fun getDataAsync(): Data
 
-    @POST("/register")
-    fun registerUserAsync(@Body registrationBody: RegistrationBody): Deferred<Response<RegistrationResponse>>
+    @POST("api/create")
+    suspend fun createAsync(
+        @Body parametersDTO: ParametersDTO
+    ): Data
 
-    @FormUrlEncoded
-    @POST("Login/app")
-    fun authAsync(
-        @Field("login") login: String,
-        @Field("passwd") passwd: String
-    ): Deferred<Response<Token>>
+    @POST("api/public/firebase-signup")
+    suspend fun signUp(@Header("firebaseToken") header: String): BooleanDTO
 
-    @DELETE("api/user/sign_out")
-    fun logOutAsync(): Deferred<Response<Message>>
+    @POST("api/public/is-exists")
+    suspend fun isUserExist(@Header("firebaseToken") header: String): BooleanDTO
 
-    @DELETE("api/user")
-    fun deleteUserAsync(): Deferred<Response<Message>>
-
-    @PATCH("api/user/password")
-    fun updatePasswordAsync(@Body password: String): Deferred<Response<Token>>
-
-    @PATCH("api/user/data")
-    fun updateUserAsync(@Body user: UserData): Deferred<Response<UserData>>
+    @POST("api/update-parameters")
+    suspend fun updateParameters(
+        @Body parametersDTO: ParametersDTO
+    ): Data
 
 }

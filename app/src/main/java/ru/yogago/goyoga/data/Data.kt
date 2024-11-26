@@ -1,7 +1,9 @@
 package ru.yogago.goyoga.data
 
 data class Data(
-    val userData: UserData,
-    val asanas: List<Asana>,
-    val error: String = "no"
+    var userData: UserData? = null,
+    var asanas: List<Asana>? = null,
+    var actionState: ActionState? = null,
+    var settings: Settings? = null,
+    var error: String = "no"
 )

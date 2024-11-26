@@ -1,34 +1,113 @@
 <resources>
-    <string name="app_name">GoYoga</string>
+    <string name="app_name">Do Yoga</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="welcome">Добро пожаловать</string>
-    <string name="invalid_username">Неверное имя пользователя</string>
-    <string name="invalid_password">Неверный пароль</string>
-    <string name="noValue">Не указано</string>
-    <string name="invalid_password_replay">Пароли не совпадают</string>
-    <string name="user_pict">Картинка</string>
-    <string name="e_mail">e-mail:</string>
-    <string name="pass">Пароль:</string>
-    <string name="replay">Повтор:</string>
-    <string name="prompt_password">Пароль</string>
-    <string name="action_sign_in">Войти</string>
-    <string name="action_sign_in_short">Вход</string>
-    <string name="save">Сохранить</string>
-    <string name="name">Имя:</string>
-    <string name="registrationHead">Регистрация</string>
-    <string name="registration">Регистрация</string>
-    <string name="timeOutMessage">Сервер заснул, подождите секунд 10 и повторите попытку.</string>
-    <string name="repeat">Повторить</string>
-    <string name="name_login">Имя</string>
-    <string name="profile_field_name">Имя</string>
-    <string name="profile_field_email">email</string>
-    <string name="edit">Редактировать</string>
-    <string name="new_pass">Изменить пароль</string>
-    <string name="title_profile">Профиль</string>
-    <string name="title_select">Выборка</string>
-    <string name="title_action">Тренировка</string>
-    <string name="login">Логин:</string>
+    <string name="noValue">Not specified</string>
+    <string name="image_title">Image</string>
+    <string name="title_profile">Profile page</string>
+    <string name="title_select">Selection page</string>
+    <string name="title_action">Training page</string>
+    <string name="level_head">Difficulty level</string>
+    <string name="create">Create</string>
+    <string name="dangers_head">Limit the load on</string>
+    <string name="knee">Knee</string>
+    <string name="loins">Loins</string>
+    <string name="neck">Neck</string>
+    <string name="field_title">Field</string>
+    <string name="count_asanas">asanas</string>
+    <string name="min">min</string>
+    <string name="icon">icon</string>
+    <string name="_00">00</string>
+    <string name="_01">01</string>
+    <string name="start">Start</string>
+    <string name="of_the">of the</string>
+    <string name="sound">sound</string>
+    <string name="no_internet">Network unavailable!</string>
+    <string name="difficulty_level">Difficulty level select</string>
+    <string name="asanas_card_list">Asana cards of the formed sequence</string>
+    <string name="not_created_yet">Not created yet</string>
+    <string name="select_head">Sequence</string>
+    <string name="description_title">Description</string>
+    <string name="billing_head">Subscriptions</string>
+    <string name="type_title">Type:</string>
+    <string name="price_title">Price:</string>
+    <string name="period_title">Period:</string>
+    <string name="week">week</string>
+    <string name="weeks">weeks</string>
+    <string name="month">month</string>
+    <string name="months">months</string>
+    <string name="year">year</string>
+    <string name="years">years</string>
+    <string name="subscribe">Subscribe</string>
+    <string name="manage_subscription_label">Manage subscriptions</string>
+    <string name="google_play_subscriptions">Google Play Subscriptions</string>
+    <string name="manage_subscription_message">Manage your subscription on Google Play.</string>
+    <string name="info_head">Instructions</string>
+    <string name="info_text_difficult">
+        Preparatory — if you have not done yoga before
+        \nElementary — have been engaged from a year
+        \nBeginner — from two years
+        \nBasic — more than five years, you can try
+    </string>
+    <string name="info_text_contraindications">
+        Consult your doctor or yoga therapist, probably there are options for performing some poses.
+    </string>
+    <string name="info_text_warm_up">
+        Do a few rounds of surya namaskar.
+    </string>
+    <string name="info_text_finished">
+        Such as savasana for at least five minutes. Or just sit quietly with your back straight.
+    </string>
+    <string name="info_text_side_group">
+        The repeat will be marked with an icon.
+        \nIt is easier to change the loaded side in the next asana, more difficult to do several, loading one side. Focus on your own feelings.
+        \nRemember your choice of side to repeat to the other side.
+    </string>
+    <string name="info_text_remember">
+        No one is responsible for injuries sustained as a result of independent exercise.
+        \nBut the biggest risk is not doing them at all.
+        \n
+        \nBe careful and good luck!
+    </string>
+    <string name="wait">Wait</string>
+    <string name="no_auth">Authorized</string>
+    <string name="tts_error">Text to speech error</string>
+    <string name="ads">ADVERTISING</string>
+    <string name="language_head">Language</string>
+    <string name="english">English</string>
+    <string name="russian">Russian</string>
+    <string name="restart">Restart</string>
+    <string name="seek_bar_proportionately_head">Proportionally by</string>
+    <string name="seek_bar_add_time_head">Add to each asana</string>
+    <string name="sec">sec.</string>
+    <string name="times">times</string>
+    <string name="time_control_head">Time control</string>
+    <string name="training_head">Training</string>
+    <string name="switch_is_name_talk">Voice the name of the asana</string>
+    <string name="info_head_difficult">Choose your difficulty level</string>
+    <string name="info_head_contraindications">If available, indicate the available contraindications</string>
+    <string name="info_head_warm_up">Warm-up your body before pressing the start button</string>
+    <string name="info_head_finished">When finished, do relaxation techniques</string>
+    <string name="info_head_side_group">The algorithm groups asanas on each side</string>
+    <string name="info_head_remember">Please remember!</string>
+    <string name="inverted">Inverted</string>
+    <string name="version_is_out_of_date">The version is out of date. Update the app please.</string>
+    <string name="your_web_client_id" translatable="false">1095319247800-2geo5024149lnm6vodmgrp7m66j9upmo.apps.googleusercontent.com</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
+    <string name="confirm_password">confirm password</string>
+    <string name="signed">signed</string>
+    <string name="already_have_an_account_login">already have an account, login</string>
+    <string name="login">login</string>
+    <string name="don_t_have_an_account_sign_in">don\'t have an account, sign in</string>
+    <string name="google_sign_in">Google Sign In</string>
+    <string name="logout">Logout</string>
+    <string name="long_for_one_side">Long for one side</string>
+    <string name="side_by_side">Side by side</string>
+    <string name="how_to_sort">How to sort</string>
+    <string name="server_client_id" translatable="false">1095319247800-2geo5024149lnm6vodmgrp7m66j9upmo.apps.googleusercontent.com</string>
+    <string name="show_password">Show password</string>
+    <string name="hide_password">Hide password</string>
+    <string name="clear_text">clar text</string>
 
 </resources>

@@ -1,108 +1,456 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="56dp"
     tools:context=".ui.profile.ProfileFragment">
+<!--    android:translationY="-84dp"-->
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@color/colorPrimary"
+        android:layout_height="wrap_content"
+        android:paddingTop="56dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:orientation="vertical">
+
+            <ProgressBar
+                android:id="@+id/loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="16dp" />
+
+            <LinearLayout
+                android:id="@+id/advertising_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="56dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+<!--                <com.yandex.mobile.ads.AdView-->
+<!--                    android:id="@+id/ad_view"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content" />-->
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/level_head"
+                android:textColor="@color/colorAccent"
+                android:textSize="16sp" />
+
+            <Spinner
+                android:id="@+id/levelSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:background="@color/colorPrimaryLite"
+                android:contentDescription="@string/difficulty_level"
+                android:spinnerMode="dialog"
+                android:textSize="18sp">
+
+            </Spinner>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/time_control_head"
+                android:textColor="@color/colorAccent"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="vertical">
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="32dp"
+                        android:text="@string/seek_bar_proportionately_head"
+                        android:textColor="@color/colorWhiteLite"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/seekBarProportionallyValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="32dp"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/_01"
+                        android:textColor="@color/colorWhiteLite"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="32dp"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/times"
+                        android:textColor="@color/colorWhiteLite"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+                <SeekBar
+                    android:id="@+id/seekBarProportionally"
+                    android:layout_marginTop="16dp"
+                    android:max="1000"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="32dp"
+                        android:text="@string/seek_bar_add_time_head"
+                        android:textColor="@color/colorWhiteLite"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/seekBarAddTimeValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="32dp"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/_00"
+                        android:textColor="@color/colorWhiteLite"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="32dp"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/sec"
+                        android:textColor="@color/colorWhiteLite"
+                        android:textSize="18sp" />
+
+                </LinearLayout>
+
+                <SeekBar
+                    android:id="@+id/seekBarAddTime"
+                    android:layout_marginTop="16dp"
+                    android:max="120"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/how_to_sort"
+                android:textColor="@color/colorAccent"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="vertical">
+
+                <RadioGroup
+                    android:id="@+id/sideBySideSort"
+                    android:layout_width="match_parent"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_height="wrap_content">
+
+
+                    <RadioButton
+                        android:id="@+id/checkBoxLong"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="16dp"
+                        android:layoutDirection="rtl"
+                        android:text="@string/long_for_one_side"
+                        android:textSize="18sp"/>
+
+                    <RadioButton
+                        android:id="@+id/checkBoxShort"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="16dp"
+                        android:layoutDirection="rtl"
+                        android:text="@string/side_by_side"
+                        android:textSize="18sp" />
+
+
+                </RadioGroup>
+
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/dangers_head"
+                android:textColor="@color/colorAccent"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="vertical">
+
+                <CheckBox
+                    android:id="@+id/checkBoxInverted"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="16dp"
+                    android:layoutDirection="rtl"
+                    android:text="@string/inverted"
+                    android:textSize="18sp" />
+
+                <CheckBox
+                    android:id="@+id/checkBoxKnee"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="16dp"
+                    android:layoutDirection="rtl"
+                    android:text="@string/knee"
+                    android:textSize="18sp" />
+
+                <CheckBox
+                    android:id="@+id/checkBoxNeck"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="16dp"
+                    android:layoutDirection="rtl"
+                    android:text="@string/loins"
+                    android:textSize="18sp" />
+
+                <CheckBox
+                    android:id="@+id/checkBoxLoins"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="16dp"
+                    android:layoutDirection="rtl"
+                    android:text="@string/neck"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/createButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/button_background"
+                    android:enabled="true"
+                    android:paddingStart="32dp"
+                    android:paddingTop="16dp"
+                    android:paddingEnd="32dp"
+                    android:paddingBottom="16dp"
+                    android:text="@string/create"
+                    android:textColor="@color/colorWhiteLite" />
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+<!--    android:translationY="-84dp"    -->
+    <LinearLayout
+        android:translationY="0dp"
+        android:id="@+id/topLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
+            android:id="@+id/profileWrapper"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryDark"
+            android:layout_height="84dp"
+            android:background="@color/colorPrimaryMiddle"
+            android:baselineAligned="false"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:padding="8dp">
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:orientation="vertical">
+                android:layout_width="36dp"
+                android:layout_height="56dp"
+                android:layout_margin="4dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="10"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:id="@+id/profileUserName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/profile_field_name"
-                    android:textColor="@color/colorWhiteMiddle" />
+                <ImageView
+                    android:layout_width="86dp"
+                    android:layout_height="86dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/logo"
+                    android:contentDescription="@string/icon"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                     />
 
-                <TextView
-                    android:id="@+id/profileUserEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/profile_field_email"
-                    android:textColor="@color/colorWhiteMiddle" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_weight="90"
+                android:layout_gravity="end"
+                android:gravity="end"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <Button
-                    android:id="@+id/profileDeleteButton"
+                    android:id="@+id/profileInfoButton"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="16dp"
                     android:background="@drawable/button_background"
-                    android:drawableTop="@drawable/ic_baseline_delete_forever_24"
+                    android:drawableTop="@drawable/ic_baseline_info_24"
                     android:padding="16dp"
                     android:textColor="@color/colorWhiteLite"
                     tools:ignore="ButtonStyle" />
 
                 <Button
-                    android:id="@+id/profileEditButton"
+                    android:id="@+id/profileBillingButton"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
                     android:background="@drawable/button_background"
-                    android:drawableTop="@drawable/ic_baseline_edit_24"
+                    android:drawableTop="@drawable/ic_baseline_shopping_cart_24"
                     android:padding="16dp"
                     android:textColor="@color/colorWhiteLite"
                     tools:ignore="ButtonStyle" />
 
                 <Button
-                    android:id="@+id/profileLogOutButton"
+                    android:id="@+id/profileWebButton"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/button_background"
+                    android:drawableTop="@drawable/ic_baseline_link_24"
+                    android:padding="16dp"
+                    android:textColor="@color/colorWhiteLite"
+                    tools:ignore="ButtonStyle" />
+
+                <Button
+                    android:id="@+id/settingsButton"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
                     android:background="@drawable/button_background"
-                    android:drawableTop="@drawable/ic_baseline_exit_to_app_24"
+                    android:drawableTop="@drawable/ic_baseline_settings_24"
                     android:padding="16dp"
                     android:textColor="@color/colorWhiteLite"
                     tools:ignore="ButtonStyle" />
+
             </LinearLayout>
 
         </LinearLayout>
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:background="@color/colorAccent">
+
+            </FrameLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:translationY="-8dp">
+
+                <FrameLayout
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:background="@drawable/round_background"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ToggleButton
+                    android:id="@+id/buttonMainTransition"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/icon_arrow_down"
+                    android:textOff=""
+                    android:textOn=""
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ButtonStyle" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </FrameLayout>
+
     </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

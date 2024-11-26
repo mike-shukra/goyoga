@@ -1,0 +1,112 @@
+<resources>
+    <string name="app_name">Do Yoga</string>
+    <string name="title_home">Домой</string>
+    <string name="title_notifications">Уведомления</string>
+    <string name="noValue">Не указано</string>
+    <string name="image_title">Картинка</string>
+    <string name="title_profile">Профиль лист</string>
+    <string name="title_select">Выборка лист</string>
+    <string name="title_action">Тренировка лист</string>
+    <string name="level_head">Уровень сложности</string>
+    <string name="create">Сформировать</string>
+    <string name="dangers_head">Ограничить нагрузку на</string>
+    <string name="knee">Колено</string>
+    <string name="loins">Поясница</string>
+    <string name="neck">Шея</string>
+    <string name="field_title">Значение</string>
+    <string name="count_asanas">асан</string>
+    <string name="min">мин</string>
+    <string name="icon">icon</string>
+    <string name="_00">00</string>
+    <string name="start">Старт</string>
+    <string name="of_the">из</string>
+    <string name="no_internet">Сеть недоступна!</string>
+    <string name="sound">Звук</string>
+    <string name="difficulty_level">Уровень сложности выбор</string>
+    <string name="asanas_card_list">Карточки асан сформированной последовательности</string>
+    <string name="not_created_yet">Ещё не создано</string>
+    <string name="select_head">Выбор</string>
+    <string name="_01">01</string>
+    <string name="description_title">Описание</string>
+    <string name="billing_head">Подписки</string>
+    <string name="type_title">Тип:</string>
+    <string name="price_title">Цена:</string>
+    <string name="period_title">Период:</string>
+    <string name="week">неделя</string>
+    <string name="weeks">недель</string>
+    <string name="month">месяц</string>
+    <string name="months">месяцев</string>
+    <string name="year">год</string>
+    <string name="years">лет</string>
+    <string name="subscribe">Подписаться</string>
+    <string name="manage_subscription_label">Управлять подписками</string>
+    <string name="google_play_subscriptions">Подписки Google Play</string>
+    <string name="manage_subscription_message">Управлять подписками в Google Play</string>
+    <string name="info_head">Инструкция</string>
+    <string name="info_text_difficult">
+        Подготовительный — Если не занимались раньше йогой
+        \nПростой — занимались от года
+        \nНачальный — от двух лет
+        \nОсновной — больше пяти лет, можно пробовать
+    </string>
+    <string name="info_text_contraindications">
+        Проконсультируйтесь с врачом или йогатерапевтом, вероятно есть свои варианты выполнения некоторых поз.
+    </string>
+    <string name="info_text_warm_up">
+        Выполните несколько кругов сурья намаскар.
+    </string>
+    <string name="info_text_finished">
+        Например шавасану, не менее пяти минут. Или просто посидите спокойно с прямой спиной.
+    </string>
+    <string name="info_text_side_group">
+        Повтор будет отмечен иконкой.
+        \nПроще — менять нагруженную сторону в следующей асане, сложнее — делать несколько, нагружая одну сторону. Ориентируйтесь на собственные ощущения.
+        \nЗапомните свой выбор стороны для повтора на другую сторону.
+    </string>
+    <string name="info_text_remember">
+        Никто не несёт ответственности  за травмы полученные в результате самостоятельного выполнения упражнений.
+        \nНо самый большой риск, это не делать их вовсе.
+        \n
+        \nБудьте осторожны и удачи!
+    </string>
+    <string name="wait">Подождите</string>
+    <string name="no_auth">Авторизация</string>
+    <string name="tts_error">Ошибка синтезатора речи</string>
+    <string name="ads">РЕКЛАМА</string>
+    <string name="language_head">Язык</string>
+    <string name="english">Английский</string>
+    <string name="russian">Русский</string>
+    <string name="restart">Перезапустить</string>
+    <string name="seek_bar_proportionately_head">Пропорционально в</string>
+    <string name="seek_bar_add_time_head">Добавить каждой асане</string>
+    <string name="sec">сек.</string>
+    <string name="times">раз</string>
+    <string name="time_control_head">Контроль времени</string>
+    <string name="training_head">Тренировка</string>
+    <string name="switch_is_name_talk">Озвучивать название асаны</string>
+    <string name="info_head_difficult">Выбирайте свой уровень сложности</string>
+    <string name="info_head_contraindications">При наличии, указывайте имеющиеся противопоказания</string>
+    <string name="info_head_warm_up">Перед нажатием кнопки старт выполните разминку на все сутавные группы</string>
+    <string name="info_head_finished">По окончании выполните релаксационные техники</string>
+    <string name="info_head_side_group">Алгоритм группирует асаны на каждую сторону</string>
+    <string name="info_head_remember">Пожалуйста помните!</string>
+    <string name="inverted">Перевёрнутые</string>
+    <string name="version_is_out_of_date">Версия устарела. Обновите приложение, пожалуйста.</string>
+    <string name="email">email</string>
+    <string name="password">пароль</string>
+    <string name="confirm_password">подтвердить пароль</string>
+    <string name="signed">зарегестрироваться</string>
+    <string name="already_have_an_account_login">уже есть аккаунт</string>
+    <string name="login">войти</string>
+    <string name="don_t_have_an_account_sign_in">нет аккаунта, зарегестрироваться</string>
+    <string name="google_sign_in">Войти с Google</string>
+    <string name="logout">выйти</string>
+    <string name="long_for_one_side">Длинно на одну сторону</string>
+    <string name="side_by_side">Друг за другом</string>
+    <string name="how_to_sort">Как сортировать</string>
+    <string name="show_password">Показать пароль</string>
+    <string name="hide_password">Скрыть пароль</string>
+    <string name="clear_text">Очистить текст</string>
+
+
+</resources>

@@ -1,111 +1,184 @@
 package ru.yogago.goyoga.model
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import ru.yogago.goyoga.data.AppConstants.LOG_TAG
-import ru.yogago.goyoga.data.Asana
-import ru.yogago.goyoga.data.Data
-import ru.yogago.goyoga.service.ApiFactory
-import ru.yogago.goyoga.service.DataBase
-import ru.yogago.goyoga.service.TokenProvider
-import ru.yogago.goyoga.ui.home.SelectViewModel
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import ru.yogago.goyoga.data.*
+import ru.yogago.goyoga.data.AppConstants.Companion.LOG_TAG
+import ru.yogago.goyoga.ui.profile.ProfileViewModel
+import ru.yogago.goyoga.ui.select.SelectViewModel
+import ru.yogago.goyoga.service.AndroidLogger
+import ru.yogago.goyoga.service.Logger
+import ru.yogago.goyoga.service.Repository
+import java.io.IOException
+import javax.inject.Inject
 
-class MainModel {
-    private val dbDao = DataBase.db.getDBDao()
-    private val service = ApiFactory.API
-    private val db = DataBase.db
+class MainModel @Inject constructor(
+    private val repository: Repository
+) : CoroutineScope  {
+
+    private val _navigationFlow = MutableSharedFlow<Unit>(replay = 0)
+    val navigationFlow: SharedFlow<Unit> = _navigationFlow
+    private val logger: Logger = AndroidLogger()
+    private val job = SupervisorJob()
+    private val coroutineExceptionHandler = CoroutineExceptionHandler { context, throwable ->
+        Log.e(LOG_TAG,"MainModel coroutineExceptionHandler Error: $throwable in $context")
+    }
+    override val coroutineContext = Dispatchers.IO + job + coroutineExceptionHandler
+
     private lateinit var selectViewModel: SelectViewModel
-    val error: MutableLiveData<String> = MutableLiveData()
-    val isTimeout: MutableLiveData<Boolean> = MutableLiveData()
-    val isToken: MutableLiveData<Boolean> = MutableLiveData()
+    private lateinit var profileViewModel: ProfileViewModel
 
-    fun loadData() {
-        GlobalScope.launch(Dispatchers.IO) {
-            val data = getRemoteData()
-            if (data?.error == "no") {
-                val saveAsanasToDB = saveAsanasToDB(data.asanas)
-                Log.d(LOG_TAG, "MainModel - loadData - saveAsanasToDB: $saveAsanasToDB")
+    fun clear() {
+        job.cancel()
+    }
 
-            } else {
-                selectViewModel.error.postValue(data?.error)
-            }
-            val asanas = loadAsanasFromDB()
+    fun loadDataFromDB() {
+        launch {
+            val settings = repository.getSettings()
+            val asanas: List<Asana> = repository.getAsanas()
+            val userData: UserData = repository.getUserData()
+            userData.allTime = (userData.allTime * settings.proportionately).toInt() + (settings.addTime * userData.allCount)
+            selectViewModel.userData.postValue(userData)
             selectViewModel.asanas.postValue(asanas)
 
+            logger.d(LOG_TAG, "MainModel - loadDataFromDB asanas: $asanas , userData: $userData")
         }
     }
 
-    private suspend fun saveAsanasToDB(items: List<Asana>): List<Long> {
-        return suspendCoroutine {
-            val response = dbDao.insertAsanas(items)
-            Log.d(LOG_TAG, "MainModel - saveAsanasToDB response: $response")
-            it.resume(response)
+    fun deleteUserData(){
+        launch {
+            val responseDeleteUserData = repository.deleteUserData()
+            logger.d(LOG_TAG, "MainModel - deleteTokenAndUserData responseDeleteUserData: $responseDeleteUserData")
         }
     }
 
-    private suspend fun loadAsanasFromDB(): List<Asana> {
-        return suspendCoroutine {
-            val asanas = dbDao.getAll()
-            Log.d(LOG_TAG, "MainModel - loadAsanasFromDB: $asanas")
-            it.resume(asanas)
+    fun create(parametersDTO: ParametersDTO) {
+        Log.d(LOG_TAG, "MainModel - create - parametersDTO: $parametersDTO")
+        launch {
+            try {
+                val isSuccess : Boolean = repository.createNewSequence(parametersDTO)
+                if (isSuccess) _navigationFlow.emit(Unit)
+            } catch (e: IOException) {
+                e.printStackTrace()
+                val errorMessage = e.message
+                Log.d(LOG_TAG, "MainModel - create - message error: $errorMessage")
+                profileViewModel.error.postValue(errorMessage)
+            }
         }
     }
 
-    private suspend fun getRemoteData(): Data? {
-        return suspendCoroutine {
-            GlobalScope.launch(Dispatchers.Main) {
-                val request = service.getDataAsync()
-                try {
-                    val response = request.await()
-                    if(response.isSuccessful) {
-                        val data = response.body()!!
-                        Log.d(LOG_TAG, "MainModel - getRemoteData - data: $data")
-                        val asanas = data.asanas
-                        Log.d(LOG_TAG, "MainModel - getRemoteData - asanas: $asanas")
-                        val userData = data.userData
-                        Log.d(LOG_TAG, "MainModel - getRemoteData - userData: $userData")
-                        it.resume(data)
-                    } else {
-                        Log.d(LOG_TAG,"MainModel - getRemoteData error: " + response.errorBody().toString())
-                        val error = response.errorBody().toString()
-                        selectViewModel.error.postValue(error)
-                        it.resume(null)
+//    private suspend fun updateParameters(parametersDTO: ParametersDTO) {
+//        try {
+//            repository.updateParameters(parametersDTO)
+//        } catch (e :Exception) {
+//            e.printStackTrace()
+//            logger.d(LOG_TAG, "MainModel - updateParameters - message error: " + e.message)
+//        }
+//
+//    }
+
+    fun createUserOnServerIfNotExist() {
+        launch {
+            try {
+                if (!repository.isUserExist().value) {
+                    repository.signUp()
+                    loadUserData()
+                }
+                else {
+                    loadDataFromDataBase()
+                }
+            } catch (e: Exception) {
+                profileViewModel.error.postValue(e.message)
+            }
+        }
+    }
+
+    private fun loadDataFromDataBase() {
+        launch {
+            val settings = repository.getSettings()
+            Log.d(LOG_TAG, "MainModel - loadDataFromDataBase settings: $settings")
+            if  (settings == null) {
+                loadUserData()
+            } else {
+                val userData = repository.getUserData()
+                profileViewModel.proportionately.postValue(settings.proportionately)
+                profileViewModel.addTime.postValue(settings.addTime)
+                profileViewModel.userData.postValue(userData)
+            }
+        }
+    }
+
+    private fun loadUserData() {
+        launch {
+            try {
+                val data = repository.getDataAsync()
+                val settings = repository.getSettings()
+                if (settings != null) {
+                    if (settings.timeOfFiltered < data.settings!!.timeOfFiltered) {
+                        repository.deleteAllData()
                     }
                 }
-                catch (e: Exception) {
-                    Log.d(LOG_TAG, "MainModel - getRemoteData - Exception: $e")
-                    val error = e.toString()
-                    selectViewModel.error.postValue(error)
-                    it.resume(null)
-                }
+                repository.insertData(data)
+
+                profileViewModel.proportionately.postValue(data.settings!!.proportionately)
+                profileViewModel.addTime.postValue(data.settings!!.addTime)
+                profileViewModel.userData.postValue(data.userData!!)
+            } catch (e: Exception) {
+                profileViewModel.error.postValue(e.message)
             }
         }
     }
 
-    fun isTokenDB() {
-        GlobalScope.launch(Dispatchers.IO) {
-            val response = db.getDBDao().getToken()
-            if (response != null) {
-                Log.d(LOG_TAG, "MainModel - isTokenDB: $response")
-                TokenProvider.token = response
-                TokenProvider.cookieString = "id_user=${TokenProvider.token.userId}; code_user=${TokenProvider.token.token}"
-                isToken.postValue(true)
-            }
-            else {
-                isToken.postValue(false)
-                Log.d(LOG_TAG, "MainModel - isTokenDB: no token")
-            }
-        }
-    }
-
-    fun setViewModel(m: SelectViewModel) : MainModel {
-        this.selectViewModel = m
+    fun setSelectViewModel(vm: SelectViewModel) : MainModel {
+        this.selectViewModel = vm
         return this
     }
+
+    fun setProfileViewModel(vm: ProfileViewModel) : MainModel {
+        this.profileViewModel = vm
+        return this
+    }
+
+//    fun cancelBackgroundWork() {
+//        coroutineContext.cancelChildren()
+//        Log.d(LOG_TAG, "MainModel - cancelBackgroundWork")
+//    }
+
+//    fun updateSettingsAddTime(value: Int) {
+//        launch {
+//            repository.updateSettingsAddTime(value)
+//            val actionState = repository.getActionState()
+//            val userData = repository.getUserData()
+//            val settings = repository.getSettings()
+//            val parametersDTO = ParametersDTO(actionState, userData, settings)
+//            updateParameters(parametersDTO)
+//        }
+//    }
+
+//    fun updateSettingsProportionately(value: Float) {
+//        launch {
+//            repository.updateSettingsProportionately(value)
+//            val actionState = repository.getActionState()
+//            val userData = repository.getUserData()
+//            val settings = repository.getSettings()
+//            val parametersDTO = ParametersDTO(actionState, userData, settings)
+//            updateParameters(parametersDTO)
+//        }
+//    }
+
+//    fun updateSettingsHowToSort(value: Boolean) {
+//        launch {
+//            val ud = repository.updateHowToSort(value)
+//            val actionState = repository.getActionState()
+//            val userData = repository.getUserData()
+//            val settings = repository.getSettings()
+//            val parametersDTO = ParametersDTO(actionState, userData, settings)
+//            updateParameters(parametersDTO)
+//        }
+//
+//    }
 
 }

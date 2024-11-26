@@ -1,6 +1,29 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Work/goyoga/app/src/main/res/layout-land/fragment_select.xml" value="0.4875" />
+        <entry key="..\:/Work/goyoga/app/src/main/res/layout-land/page_action.xml" value="0.4875" />
+        <entry key="..\:/Work/goyoga/app/src/main/res/layout/activity_main.xml" value="0.3625" />
+        <entry key="..\:/Work/goyoga/app/src/main/res/layout/billing_fragment.xml" value="0.3625" />
+        <entry key="..\:/Work/goyoga/app/src/main/res/layout/card_view_asana.xml" value="0.3569230769230769" />
+        <entry key="..\:/Work/goyoga/app/src/main/res/layout/card_view_asana_first_side.xml" value="0.3625" />
+        <entry key="..\:/Work/goyoga/app/src/main/res/layout/card_view_asana_second_side.xml" value="0.3625" />
+        <entry key="..\:/Work/goyoga/app/src/main/res/layout/card_view_billings.xml" value="0.3625" />
+        <entry key="..\:/Work/goyoga/app/src/main/res/layout/fragment_action.xml" value="0.3625" />
+        <entry key="..\:/Work/goyoga/app/src/main/res/layout/fragment_profile.xml" value="0.20260416666666667" />
+        <entry key="..\:/Work/goyoga/app/src/main/res/layout/fragment_select.xml" value="0.3569230769230769" />
+        <entry key="..\:/Work/goyoga/app/src/main/res/layout/info_fragment.xml" value="0.3625" />
+        <entry key="..\:/Work/goyoga/app/src/main/res/layout/page_action.xml" value="0.3625" />
+        <entry key="..\:/Work/goyoga/app/src/main/res/layout/settings_fragment.xml" value="0.3625" />
+        <entry key="..\:/Work/goyoga/app/src/main/res/layout/spinner.xml" value="0.3625" />
+      </map>
+    </option>
+  </component>
+  <component name="EntryPointsManager">
+    <pattern value="ru.yogago.goyoga.Application" />
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
